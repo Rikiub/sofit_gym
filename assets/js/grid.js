@@ -1,8 +1,10 @@
+import { Grid, h } from "gridjs";
+
 /** Crear y obtener una instancia Grid
  * @param {object} config 
  */
 export function createGrid(config) {
-    const grid = new gridjs.Grid({
+    const grid = new Grid({
         language: {
             search: {
                 placeholder: "Buscar..."
@@ -40,12 +42,12 @@ export function crudButtons(onModificar, onEliminar) {
     return {
         name: "Acciones",
         formatter: (cell, row) => {
-            return gridjs.h("div", { className: "actions" }, [
-                gridjs.h("button", {
+            return h("div", { className: "actions" }, [
+                h("button", {
                     className: "btn-edit",
                     onClick: () => onModificar(row.cells[0].data),
                 }, "Editar"),
-                gridjs.h("button", {
+                h("button", {
                     className: "btn-delete",
                     onClick: () => onEliminar(row.cells[0].data),
                 }, "Eliminar")
