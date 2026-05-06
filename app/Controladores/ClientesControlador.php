@@ -23,20 +23,20 @@ class ClientesControlador extends BaseControlador
 
     public function get(): string
     {
-        $res = $this->modelo->getAll();
-        return $this->objectToJson($res);
+        $clientes = $this->modelo->getAll();
+        return $this->jsonResponse($clientes);
     }
 
     public function getFind(array $vars): ?string
     {
-        $res = $this->modelo->findByCedula($vars['cedula']);
+        $cliente = $this->modelo->findByCedula($vars['cedula']);
 
-        if (!$res) {
+        if (!$cliente) {
             http_response_code(404);
             return null;
         }
 
-        return $this->objectToJson($res);
+        return $this->jsonResponse($cliente);
     }
 
     /**
@@ -45,28 +45,25 @@ class ClientesControlador extends BaseControlador
     public function post(): string
     {
         try {
-            $body = $this->getRequestData();
+            $body = $this->getRequestBody();
             $body['fecha_registro'] = new DateTimeImmutable();  // Asignar fecha actual
 
             // Valida el POST
-            $cliente = $this->mapper->map(Cliente::class, $_POST);
+            $cliente = $this->mapper->map(Cliente::class, $body);
 
             // Verificar que el cliente no exista
             $check = $this->modelo->findByCedula($cliente->cedula);
             if ($check) {
-                http_response_code(400);
-                return json_encode(['error' => 'El cliente ya existe']);
+                return $this->jsonResponse(['error' => 'El cliente ya existe'], 400);
             }
 
             // Crea el cliente
             $cliente = $this->modelo->insertCliente($cliente);
 
             // Enviar JSON
-            http_response_code(201);
-            return $this->objectToJson($cliente);
+            return $this->jsonResponse($cliente, 201);
         } catch (Throwable $e) {
-            http_response_code(400);
-            return json_encode(['error' => $e->getMessage()]);
+            return $this->jsonResponse(['error' => $e->getMessage()], 400);
         }
     }
 
@@ -78,22 +75,18 @@ class ClientesControlador extends BaseControlador
         try {
             $cedula = $vars['cedula'];
 
-            $body = $this->getRequestData();
+            $body = $this->getRequestBody();
             $cliente = $this->mapper->map(Cliente::class, $body);
 
             $check = $this->modelo->findByCedula($cedula);
             if (!$check) {
-                http_response_code(400);
-                return json_encode(['error' => 'El cliente no existe']);
+                return $this->jsonResponse(['error' => 'El cliente no existe'], 400);
             }
 
             $cliente = $this->modelo->updateCliente($cliente);
-
-            http_response_code(201);
-            return $this->objectToJson($cliente);
+            return $this->jsonResponse($cliente, 201);
         } catch (Throwable $e) {
-            http_response_code(400);
-            return json_encode(['error' => $e->getMessage()]);
+            return $this->jsonResponse(['error' => $e->getMessage()], 400);
         }
     }
 
@@ -106,13 +99,12 @@ class ClientesControlador extends BaseControlador
 
         $check = $this->modelo->findByCedula($cedula);
         if (!$check) {
-            http_response_code(404);
-            return json_encode(['error' => 'El cliente no existe']);
+            return $this->jsonResponse(['error' => 'El cliente no existe'], 404);
         }
 
         $this->modelo->deleteByCedula($cedula);
-        http_response_code(204);
 
+        http_response_code(204);
         return null;
     }
 }

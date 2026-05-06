@@ -19,12 +19,25 @@ abstract class BaseControlador
     #[Inject]
     private Normalizer $normalizer;
 
-    public function objectToJson(mixed $object): string
+    public function render(string $vista, array $datos = []): string
     {
-        return $this->normalizer->normalize($object);
+        return $this->templates->render($vista, $datos);
     }
 
-    function getRequestData(): array
+    /**
+     * Convertir los datos en una JSON string y setear los headers
+     */
+    function jsonResponse(mixed $data, int $code = 200): string
+    {
+        header('Content-Type: application/json');
+        http_response_code($code);
+        return $this->normalizer->normalize($data);
+    }
+
+    /**
+     * Intentar obtener los datos desde el POST o JSON
+     */
+    function getRequestBody(): array
     {
         $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
 
@@ -37,15 +50,10 @@ abstract class BaseControlador
                 return $data;
             }
 
-            throw new Exception('Invalid JSON');
+            throw new Exception('JSON invalido');
         }
 
         // Si el contenido es form POST, entonces devolver directamente
         return $_POST;
-    }
-
-    public function render(string $vista, array $datos = []): string
-    {
-        return $this->templates->render($vista, $datos);
     }
 }
