@@ -18,7 +18,7 @@
 			>&times;</button>
 		</header>
 
-        <form id="form">
+        <form name="edit">
 		    <div class="content">
                 <div class="grid">
                     <label>Cédula
@@ -89,20 +89,27 @@
         <header>
 			<h2>Eliminar</h2>
 			
-			<button
-				aria-label="Close"
-				rel="prev"
+            <button
+                aria-label="Close"
+                rel="prev"
                 command="close"
                 commandfor="modal-delete"
-			>&times;</button>
-		</header>
+            >&times;</button>
+        </header>
+
+        <footer>
+            <form name="delete">
+                <button type="button" command="close" commandfor="modal-delete">No</button>
+                <button type="submit">Si</button>
+            </form>
+        </footer>
     </article>
 </dialog>
 
 <div class="Clientes">
     <h1>Clientes</h1>
 
-    <button id="btn-insertar" class="btn-insertar">Insertar</button>
+    <button id="boton-insert">Insertar</button>
 
     <div class="table" id="table"></div>
 </div>
