@@ -20,10 +20,18 @@
     <script type="importmap">
         {
             "imports": {
-                "gridjs": "/assets/lib/gridjs/gridjs.module.js"
+                "gridjs": "/assets/lib/gridjs/gridjs.module.js",
+                "alpinejs": "/assets/lib/alpinejs/alpinejs.esm.min.js"
             }
         }
     </script>
+
+    <script type="module">
+        import Alpine from 'alpinejs'
+        window.Alpine = Alpine;
+        Alpine.start();
+    </script>
+
     <link rel="stylesheet" href="/assets/lib/gridjs/mermaid.min.css"> <!-- GridJS -->
 
     <!-- TODO: Esto deberia guardarse como archivos en la carpeta "lib" -->

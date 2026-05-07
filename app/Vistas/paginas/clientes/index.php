@@ -126,6 +126,5 @@
     <h1>Clientes</h1>
 
     <button id="boton-insert">Insertar</button>
-
     <div class="table" id="table"></div>
 </div>
