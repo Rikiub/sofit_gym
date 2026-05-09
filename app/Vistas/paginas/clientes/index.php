@@ -119,8 +119,6 @@
 
     <div>
         <h1 class="title">Clientes</h1>
-
-        <button @click="onCreate">Crear</button>
         <div class="overflow-auto" x-ref="table"></div>
     </div>
 </div>

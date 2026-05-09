@@ -1,4 +1,4 @@
-import { createGrid, crudButtons } from "/assets/js/grid.js";
+import { createGrid } from "/assets/js/grid.js";
 import Alpine from "alpinejs";
 
 document.addEventListener("alpine:init", () => {
@@ -15,7 +15,6 @@ document.addEventListener("alpine:init", () => {
                     "Apellido",
                     "Correo",
                     "Telefono",
-                    crudButtons(this.onEdit.bind(this), this.onDelete.bind(this))
                 ],
                 server: {
                     url: this.endpoint,
@@ -28,6 +27,9 @@ document.addEventListener("alpine:init", () => {
                         item.direccion,
                     ]),
                 },
+                onAdd: this.onAdd.bind(this),
+                onEdit: this.onEdit.bind(this),
+                onDelete: this.onDelete.bind(this),
             });
             this.grid.render(this.$refs.table);
         },
@@ -46,7 +48,7 @@ document.addEventListener("alpine:init", () => {
             this.grid.forceRender();
         },
 
-        async onCreate() {
+        async onAdd() {
             this.method = "POST";
             this.$refs.form.reset();
             this.$refs.modal.showModal();

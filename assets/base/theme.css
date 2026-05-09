@@ -7,4 +7,22 @@
     display: flex;
     flex-wrap: wrap;
     gap: 3px;
+
+    button {
+        width: 50px;
+    }
+}
+
+.gridjs-head {
+    display: flex;
+    justify-content: space-between;
+
+    &::after {
+        content: unset;
+    }
+
+    button {
+        width: 50px;
+        background-color: var(--pico-primary);
+    }
 }

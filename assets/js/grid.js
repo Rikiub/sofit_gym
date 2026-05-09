@@ -1,9 +1,9 @@
-import { Grid, h } from "gridjs";
+import { Grid, PluginPosition, h } from "gridjs";
 
-/** Crear y obtener una instancia Grid
- * @param {object} config 
- */
+/** Crear y obtener una instancia Grid */
 export function createGrid(config) {
+    config.columns?.push(crudButtons(config.onEdit, config.onDelete));
+
     const grid = new Grid({
         language: {
             search: {
@@ -35,22 +35,36 @@ export function createGrid(config) {
         },
         ...config
     });
+    grid.plugin.add({
+        id: "add",
+        component: () => addButton(config.onAdd),
+        position: PluginPosition.Header,
+    })
     return grid;
 }
 
-export function crudButtons(onModificar, onEliminar) {
+function addButton(callback) {
+    return h("button", { className: "crud-actions-add", onClick: callback },
+        h("i", { className: "fa-solid fa-square-plus" })
+    );
+}
+
+export function crudButtons(onEdit, onDelete) {
     return {
         name: "Acciones",
+        width: "150px",
+        sort: false,
+        data: () => null,
         formatter: (cell, row) => {
             return h("div", { className: "crud-actions" }, [
                 h("button", {
                     className: "button-edit",
-                    onClick: () => onModificar(row.cells[0].data),
-                }, "Editar"),
+                    onClick: () => onEdit(row.cells[0].data),
+                }, h("i", { className: "fa-solid fa-pen-to-square" })),
                 h("button", {
                     className: "button-delete",
-                    onClick: () => onEliminar(row.cells[0].data),
-                }, "Eliminar")
+                    onClick: () => onDelete(row.cells[0].data),
+                }, h("i", { className: "fa-solid fa-trash-can" }))
             ]);
         }
     }
