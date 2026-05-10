@@ -49,14 +49,12 @@ class ClientesControlador extends BaseControlador
     public function insertCliente(): string
     {
         $body = $this->getParsedBody();
-        $body['fecha_registro'] = new DateTimeImmutable();  // Asignar fecha actual
 
         // Valida el POST
         $cliente = $this->mapper->map(Cliente::class, $body);
 
         // Verificar que el cliente no exista
-        $check = $this->modelo->findByCedula($cliente->cedula);
-        if ($check) {
+        if ($this->modelo->findByCedula($cliente->cedula)) {
             return $this->jsonResponse(['message' => 'El cliente ya existe'], 400);
         }
 
@@ -79,8 +77,7 @@ class ClientesControlador extends BaseControlador
 
         $cliente = $this->mapper->map(Cliente::class, $body);
 
-        $check = $this->modelo->findByCedula($cedula);
-        if (!$check) {
+        if (!$this->modelo->findByCedula($cedula)) {
             return $this->jsonResponse(['message' => 'El cliente no existe'], 400);
         }
 
@@ -95,8 +92,7 @@ class ClientesControlador extends BaseControlador
     {
         $cedula = $vars['cedula'];
 
-        $check = $this->modelo->findByCedula($cedula);
-        if (!$check) {
+        if (!$this->modelo->findByCedula($cedula)) {
             return $this->jsonResponse(['message' => 'El cliente no existe'], 404);
         }
 

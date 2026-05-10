@@ -31,7 +31,7 @@ readonly class Cliente
         public ?string $direccion = null,
         public ?bool $activo = true,
         public ?DateTimeImmutable $fecha_nacimiento = null,
-        public ?DateTimeImmutable $fecha_registro = null,
+        public ?DateTimeImmutable $fecha_registro = new DateTimeImmutable(),
         public ?Membresia $membresia = null,
     ) {}
 

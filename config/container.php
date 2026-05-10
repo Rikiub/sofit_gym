@@ -59,6 +59,7 @@ return [
     // Normalizador
     Normalizer::class => function () {
         return new NormalizerBuilder()
+            ->registerTransformer(fn(DateTimeInterface $date) => $date->format(DateTimeInterface::ATOM))
             ->normalizer(Format::json());
     },
 ];

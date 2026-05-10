@@ -19,7 +19,8 @@
         {
             "imports": {
                 "gridjs": "/assets/lib/gridjs/gridjs.module.js",
-                "alpinejs": "/assets/lib/alpinejs/alpinejs.esm.min.js"
+                "alpinejs": "/assets/lib/alpinejs/alpinejs.esm.min.js",
+                "form-data-json": "/assets/lib/form-data-json/form-data-json.es6.js"
             }
         }
     </script>
