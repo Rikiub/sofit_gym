@@ -9,8 +9,8 @@
 <?php $this->layout('layout', ['titulo' => 'Clientes']) ?>
 
 <?php
-$this->pushCss("/assets/paginas/clientes/clientes.css");
-$this->pushJs("/assets/paginas/clientes/clientes.js");
+$this->pushCss('/assets/paginas/clientes/clientes.css');
+$this->pushJs('/assets/paginas/clientes/clientes.js');
 ?>
 
 <div x-data="crud">
