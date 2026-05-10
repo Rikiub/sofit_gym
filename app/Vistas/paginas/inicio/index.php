@@ -1,12 +1,12 @@
 <?php $this->layout('layout', ['titulo' => 'Inicio']) ?>
 
-<?php $this->push('head') ?>
-    <? // TODO: Esto deberia guardarse como archivos en la carpeta "lib" ?>
-    <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<?php
+// TODO: Esto deberia guardarse como archivos en la carpeta "lib"
+$this->pushJs('https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js', false);
 
-    <link rel="stylesheet" href="/assets/paginas/inicio/inicio.css">
-    <script defer src="/assets/paginas/inicio/inicio.js"></script>
-<?php $this->stop() ?>
+$this->pushCss('/assets/paginas/inicio/inicio.css');
+$this->pushJs('/assets/paginas/inicio/inicio.js');
+?>
 
 <div class="Inicio">
     <main class="main-content">

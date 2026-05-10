@@ -34,12 +34,13 @@
 
     <!-- Importes globales -->
     <link rel="icon" href="/assets/favicon.png">
+    
     <link rel="stylesheet" href="/assets/base/index.css">
-
     <script type="module" src="/assets/js/dialog.js"></script>
 
-    <?= $this->section('head') ?>
-
+    <?= $this->renderCss() ?>
+    <?= $this->renderJs() ?>
+    
     <script type="module">
         import Alpine from 'alpinejs'
         window.Alpine = Alpine;

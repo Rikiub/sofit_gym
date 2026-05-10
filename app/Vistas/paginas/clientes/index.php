@@ -8,10 +8,10 @@
 
 <?php $this->layout('layout', ['titulo' => 'Clientes']) ?>
 
-<?php $this->push('head') ?>
-    <link rel="stylesheet" href="/assets/paginas/clientes/clientes.css">
-    <script type="module" src="/assets/paginas/clientes/clientes.js"></script>
-<?php $this->stop() ?>
+<?php
+$this->pushCss("/assets/paginas/clientes/clientes.css");
+$this->pushJs("/assets/paginas/clientes/clientes.js");
+?>
 
 <div x-data="crud">
     <dialog x-ref="modal" x-id="['form']">

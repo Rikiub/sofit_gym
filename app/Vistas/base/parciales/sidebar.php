@@ -1,3 +1,8 @@
+<?php
+$this->pushCss('/assets/base/parciales/sidebar/sidebar.css');
+$this->pushJs('/assets/base/parciales/sidebar/sidebar.js');
+?>
+
 <aside class="sidebar" id="sidebar">
 	<div class="sidebar-header">
 		<div class="logo-container">

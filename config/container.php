@@ -1,5 +1,6 @@
 <?php
 
+use App\Core\AssetExtension;
 use CuyZ\Valinor\Mapper\TreeMapper;
 use CuyZ\Valinor\Normalizer\Format;
 use CuyZ\Valinor\Normalizer\Normalizer;
@@ -41,7 +42,8 @@ return [
         return Engine::fromTheme(Theme::hierarchy([
             Theme::new('app/Vistas/base', 'Base'),
             Theme::new('app/Vistas/paginas', 'Pagina'),
-        ]));
+        ]))
+            ->loadExtension(new AssetExtension());
     },
     // Validador
     TreeMapper::class => function () {
