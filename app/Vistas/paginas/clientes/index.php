@@ -24,7 +24,7 @@
                 ></button>
 
                 <h3 x-show="method == 'POST'">Crear</h3>
-                <h3 x-show="method == 'PUT'">Modificar</h3>
+                <h3 x-show="method == 'PUT'">Editar</h3>
                 <h3 x-show="method == 'DELETE'">Eliminar</h3>
             </header>
 

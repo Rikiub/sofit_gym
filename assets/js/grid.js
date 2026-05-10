@@ -44,9 +44,12 @@ export function createGrid(config) {
 }
 
 function addButton(callback) {
-    return h("button", { className: "crud-actions-add", onClick: callback },
-        h("i", { className: "fa-solid fa-square-plus" })
-    );
+    return h("button", {
+        className: "crud-actions-add",
+        "data-tooltip": "Crear",
+        "data-placement": "left",
+        onClick: callback
+    }, h("i", { className: "fa-solid fa-square-plus" }));
 }
 
 export function crudButtons(onEdit, onDelete) {
@@ -59,10 +62,12 @@ export function crudButtons(onEdit, onDelete) {
             return h("div", { className: "crud-actions" }, [
                 h("button", {
                     className: "button-edit",
+                    "data-tooltip": "Editar",
                     onClick: () => onEdit(row.cells[0].data),
                 }, h("i", { className: "fa-solid fa-pen-to-square" })),
                 h("button", {
                     className: "button-delete",
+                    "data-tooltip": "Eliminar",
                     onClick: () => onDelete(row.cells[0].data),
                 }, h("i", { className: "fa-solid fa-trash-can" }))
             ]);
