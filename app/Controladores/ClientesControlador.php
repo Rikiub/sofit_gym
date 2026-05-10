@@ -9,7 +9,7 @@ use App\Modelos\ClientesModelo;
 class ClientesControlador extends BaseControlador
 {
     public function __construct(
-        private ClientesModelo $modelo
+        private ClientesModelo $modelo,
     ) {}
 
     public function index(): string
@@ -26,7 +26,7 @@ class ClientesControlador extends BaseControlador
     public function getClientes(): string
     {
         $clientes = $this->modelo->getAll();
-        return $this->jsonResponse($clientes);
+        return $this->response->json($clientes);
     }
 
     public function findCliente(array $vars): ?string
@@ -34,10 +34,10 @@ class ClientesControlador extends BaseControlador
         $cliente = $this->modelo->findByCedula($vars['cedula']);
 
         if (!$cliente) {
-            return $this->emptyBodyResponse(404);
+            return $this->response->empty(404);
         }
 
-        return $this->jsonResponse($cliente);
+        return $this->response->json($cliente);
     }
 
     /**
@@ -45,21 +45,21 @@ class ClientesControlador extends BaseControlador
      */
     public function insertCliente(): string
     {
-        $body = $this->getParsedBody();
+        $body = $this->response->getParsedBody();
 
         // Valida el POST
         $cliente = $this->mapper->map(Cliente::class, $body);
 
         // Verificar que el cliente no exista
         if ($this->modelo->findByCedula($cliente->cedula)) {
-            return $this->jsonResponse(['message' => 'El cliente ya existe'], 400);
+            return $this->response->json(['message' => 'El cliente ya existe'], 400);
         }
 
         // Crea el cliente
         $cliente = $this->modelo->insertCliente($cliente);
 
         // Enviar JSON
-        return $this->jsonResponse($cliente, 201);
+        return $this->response->json($cliente, 201);
     }
 
     /**
@@ -69,17 +69,17 @@ class ClientesControlador extends BaseControlador
     {
         $cedula = $vars['cedula'];
 
-        $body = $this->getParsedBody();
+        $body = $this->response->getParsedBody();
         $body['cedula'] = $cedula;
 
         $cliente = $this->mapper->map(Cliente::class, $body);
 
         if (!$this->modelo->findByCedula($cedula)) {
-            return $this->jsonResponse(['message' => 'El cliente no existe'], 400);
+            return $this->response->json(['message' => 'El cliente no existe'], 400);
         }
 
         $cliente = $this->modelo->updateCliente($cliente);
-        return $this->jsonResponse($cliente, 201);
+        return $this->response->json($cliente, 201);
     }
 
     /**
@@ -90,11 +90,11 @@ class ClientesControlador extends BaseControlador
         $cedula = $vars['cedula'];
 
         if (!$this->modelo->findByCedula($cedula)) {
-            return $this->jsonResponse(['message' => 'El cliente no existe'], 404);
+            return $this->response->json(['message' => 'El cliente no existe'], 404);
         }
 
         $this->modelo->deleteByCedula($cedula);
 
-        return $this->emptyBodyResponse(204);
+        return $this->response->empty(204);
     }
 }

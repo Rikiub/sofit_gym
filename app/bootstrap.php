@@ -21,34 +21,33 @@ $builder = new ContainerBuilder();
 $builder->addDefinitions(CONTAINER_FILE)->useAttributes(true);
 $container = $builder->build();
 
+$response = new Response(null);
 $rutaInfo = $dispatcher->dispatch($httpMethod, $uri);
 
 switch ($rutaInfo[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:
-        if (Response::isJson()) {
-            echo Response::toJson([
+        if ($response->isJson()) {
+            echo $response->json([
                 'error' => 'Not Found',
                 'message' => "Route {$uri} not founded",
                 'uri' => $uri,
             ], 404);
         } else {
             // Si no se encuentra la ruta, redirigir a pagina de error.
-            http_response_code(404);
-            header('Location: /error?code=404');
+            $response->redirect('/error?status=404', 404);
         }
         break;
 
     case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
-        if (Response::isJson()) {
-            echo Response::toJson([
+        if ($response->isJson()) {
+            echo $response->json([
                 'error' => 'Not Allowed',
                 'message' => "Route {$uri} not allowed",
                 'uri' => $uri,
             ], 404);
         } else {
             // Si el metodo no se permite, redirigir a pagina de error.
-            http_response_code(405);
-            header('Location: /error?code=405');
+            $response->redirect('/error?status=405', 405);
         }
         break;
 
@@ -83,13 +82,13 @@ switch ($rutaInfo[0]) {
                 ]);
             }
 
-            echo Response::toJson([
+            echo $response->json([
                 'error' => 'Validation Error',
                 'message' => 'The request contains invalid data',
                 'errors' => $errors
             ], 400);
         } catch (Throwable $error) {
-            echo Response::toJson([
+            echo $response->json([
                 'error' => 'Internal Server Error',
                 'message' => $error->getMessage()
             ], 500);

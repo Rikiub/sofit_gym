@@ -20,7 +20,7 @@ export async function fetchApi(params = "", options = {}) {
         ? { "Content-Type": "application/json" }
         : {};
 
-    const res = await fetch(`/api${params}`, {
+    const res = await fetch(`${API_PREFIX}${params}`, {
         headers: headers,
         ...options,
     });

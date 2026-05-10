@@ -2,10 +2,20 @@
 
 namespace App\Core;
 
+use CuyZ\Valinor\Normalizer\Normalizer;
 use Exception;
 
 class Response
 {
+    public function __construct(
+        public ?Normalizer $normalizer
+    ) {}
+
+    public static function getQueryParams(): array
+    {
+        return $_GET;
+    }
+
     /**
      * Intentar obtener los datos desde el POST o JSON
      */
@@ -27,22 +37,36 @@ class Response
         return $_POST;
     }
 
-    protected function toEmptyBody(int $code = 200): null
+    public static function empty(int $status = 204): null
     {
-        http_response_code($code);
+        http_response_code($status);
         return null;
     }
 
-    public static function toJson(mixed $data, int $code = 200): string
+    public static function redirect(string $url, int $status = 302): void
     {
-        Response::setJsonHeaders($code);
-        return json_encode($data);
+        http_response_code($status);
+        header("Location: $url");
     }
 
-    public static function setJsonHeaders(int $code)
+    /**
+     * Codifica los datos en una JSON string. Si no se proporciono un normalizador, fallback a jscon_encode.
+     */
+    public function json(mixed $data, int $status = 200): string
+    {
+        Response::setJsonHeaders($status);
+
+        if ($this->normalizer) {
+            return $this->normalizer->normalize($data);
+        } else {
+            return json_encode($data);
+        }
+    }
+
+    public static function setJsonHeaders(int $status)
     {
         header('Content-Type: application/json');
-        http_response_code($code);
+        http_response_code($status);
     }
 
     public static function isJson(): bool
