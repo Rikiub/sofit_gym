@@ -1,5 +1,6 @@
 <?php
 
+use App\Core\Response;
 use CuyZ\Valinor\Mapper\MappingError;
 use DI\ContainerBuilder;
 
@@ -24,8 +25,8 @@ $rutaInfo = $dispatcher->dispatch($httpMethod, $uri);
 
 switch ($rutaInfo[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:
-        if (isJson()) {
-            echo jsonResponse([
+        if (Response::isJson()) {
+            echo Response::toJson([
                 'error' => 'Not Found',
                 'message' => "Route {$uri} not founded",
                 'uri' => $uri,
@@ -38,8 +39,8 @@ switch ($rutaInfo[0]) {
         break;
 
     case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
-        if (isJson()) {
-            echo jsonResponse([
+        if (Response::isJson()) {
+            echo Response::toJson([
                 'error' => 'Not Allowed',
                 'message' => "Route {$uri} not allowed",
                 'uri' => $uri,
@@ -82,29 +83,17 @@ switch ($rutaInfo[0]) {
                 ]);
             }
 
-            echo jsonResponse([
+            echo Response::toJson([
                 'error' => 'Validation Error',
                 'message' => 'The request contains invalid data',
                 'errors' => $errors
             ], 400);
         } catch (Throwable $error) {
-            echo jsonResponse([
+            echo Response::toJson([
                 'error' => 'Internal Server Error',
                 'message' => $error->getMessage()
             ], 500);
         }
 
         break;
-}
-
-function jsonResponse(mixed $data, int $code = 200): string
-{
-    header('Content-Type: application/json');
-    http_response_code($code);
-    return json_encode($data);
-}
-
-function isJson(): bool
-{
-    return $_SERVER['CONTENT_TYPE'] == 'application/json';
 }

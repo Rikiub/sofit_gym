@@ -6,7 +6,6 @@ use CuyZ\Valinor\Mapper\TreeMapper;
 use CuyZ\Valinor\Normalizer\Normalizer;
 use DI\Attribute\Inject;
 use League\Plates\Engine;
-use Exception;
 
 abstract class BaseControlador
 {
@@ -19,41 +18,31 @@ abstract class BaseControlador
     #[Inject]
     private Normalizer $normalizer;
 
-    public function render(string $vista, array $datos = []): string
+    protected function render(string $vista, array $datos = []): string
     {
         return $this->templates->render($vista, $datos);
     }
 
     /**
-     * Convertir los datos en una JSON string y setear los headers
+     * Intentar obtener los datos desde el POST o JSON
      */
-    function jsonResponse(mixed $data, int $code = 200): string
+    protected function getParsedBody()
     {
-        header('Content-Type: application/json');
-        http_response_code($code);
-        return $this->normalizer->normalize($data);
+        return Response::getParsedBody();
     }
 
     /**
-     * Intentar obtener los datos desde el POST o JSON
+     * Convertir los datos en una JSON string y setear los headers
      */
-    function getParsedBody(): array
+    protected function jsonResponse(mixed $data, int $code = 200): string
     {
-        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+        Response::setJsonHeaders($code);
+        return $this->normalizer->normalize($data);
+    }
 
-        // Si el contenido es JSON, entonces decodificarlo.
-        if (stripos($contentType, 'application/json') !== false) {
-            $rawInput = file_get_contents('php://input');
-            $data = json_decode($rawInput, true);
-
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new Exception('JSON invalido');
-            }
-
-            return $data;
-        }
-
-        // Si el contenido es form POST, entonces devolver directamente
-        return $_POST;
+    protected function emptyBodyResponse(int $code = 200): null
+    {
+        http_response_code($code);
+        return null;
     }
 }

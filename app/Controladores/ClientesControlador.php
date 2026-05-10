@@ -5,8 +5,6 @@ namespace App\Controladores;
 use App\Core\BaseControlador;
 use App\Modelos\Cliente;
 use App\Modelos\ClientesModelo;
-use DateTimeImmutable;
-use Throwable;
 
 class ClientesControlador extends BaseControlador
 {
@@ -36,8 +34,7 @@ class ClientesControlador extends BaseControlador
         $cliente = $this->modelo->findByCedula($vars['cedula']);
 
         if (!$cliente) {
-            http_response_code(404);
-            return null;
+            return $this->emptyBodyResponse(404);
         }
 
         return $this->jsonResponse($cliente);
@@ -98,7 +95,6 @@ class ClientesControlador extends BaseControlador
 
         $this->modelo->deleteByCedula($cedula);
 
-        http_response_code(204);
-        return null;
+        return $this->emptyBodyResponse(204);
     }
 }
