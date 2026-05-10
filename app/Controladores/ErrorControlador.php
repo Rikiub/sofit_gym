@@ -8,7 +8,7 @@ class ErrorControlador extends BaseControlador
 {
     public function index(): string
     {
-        $status = $this->response->getQueryParams()['status'];
+        $status = $this->response->getQueryParams()['status'] ?? '';
         $mensaje = '';
 
         if ($status == '404') {
