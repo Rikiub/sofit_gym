@@ -4,70 +4,88 @@
  * @var array $tipos
  * @var array $estados
  */
-?>
+$tiposOptions = '';
+foreach ($tipos as $item) {
+    $tiposOptions .= <<<HTML
+            <option value="{$item['id_tipo']}">
+                {$item['nombre']}
+            </option>
+        HTML;
+}
 
-<?php $this->layout('layout', ['titulo' => 'Clientes']) ?>
+$estadosOptions = '';
+foreach ($estados as $item) {
+    $estadosOptions .= <<<HTML
+            <option value="{$item['id_estado']}">
+                {$item['nombre']}
+            </option>
+        HTML;
+}
+?>
 
 <?php
-$this->pushCss('/assets/paginas/clientes/clientes.css');
+$this->layout('layout', ['titulo' => 'Clientes']);
 $this->pushJs('/assets/paginas/clientes/clientes.js');
+$this->pushCss('/assets/paginas/clientes/clientes.css');
 ?>
 
-<div x-data="crud">
-    <dialog x-ref="modal" x-id="['form']">
-        <article>
-            <header>
-                <button
-                    aria-label="Cerrar"
-                    rel="prev"
-                    @click="$refs.modal.close()"
-                ></button>
+<h1 class="title">Clientes</h1>
 
-                <h3 x-show="method == 'POST'">Crear</h3>
-                <h3 x-show="method == 'PUT'">Editar</h3>
-                <h3 x-show="method == 'DELETE'">Eliminar</h3>
-            </header>
-
-            <p x-show="method == 'DELETE'">
-                ¿Seguro que quieres eliminarlo?
-            </p>
-
-            <form
-                x-show="method !== 'DELETE'" x-ref="form"
-                @submit.prevent="handleSubmit"
-                :id="$id('form')"
-            >
+<? $this->insert('parciales/crud-table', [
+    'alpineComponent' => 'crudClientes',
+    'formHtml' => <<<HTML
                 <fieldset class="grid">
                     <label>Cédula
-                        <input required name="cedula" type="text" placeholder="29135792">
+                        <input 
+                            required
+                            name="cedula"
+                            type="text"
+                            pattern="^[V]-\d{8}\$"
+                            x-mask="V-99999999"
+                            @input.debounce="validarCedula(\$el)"
+                        >
+                        <small x-text="errors.cedula"></small>
                     </label>
 
                     <label>Nombre
-                        <input required name="nombre" type="text" placeholder="Juan">
+                        <input required name="nombre" type="text" @input.debounce="checkValidity(\$el)">
+                        <small x-text="errors.nombre"></small>
                     </label>
 
                     <label>Apellido
-                        <input required name="apellido" type="text" placeholder="Pérez">
+                        <input required name="apellido" type="text" @input.debounce="checkValidity(\$el)">
+                        <small x-text="errors.apellido"></small>
                     </label>
                 </fieldset>
 
                 <fieldset class="grid">
                     <label>Teléfono
-                        <input name="telefono" type="tel" placeholder="0414-526949">
+                        <input
+                            required
+                            name="telefono"
+                            type="tel"
+                            x-mask="9999-9999999"
+                            pattern="04(12|14|16|24|26)-\d{7}"
+                            @input.debounce="checkValidity(\$el)"
+                        >
+                        <small x-text="errors.telefono"></small>
                     </label>
 
                     <label>Correo
-                        <input name="correo" type="email" placeholder="correo@ejemplo.com">
+                        <input required name="correo" type="email" @input.debounce="checkValidity(\$el)">
+                        <small x-text="errors.correo"></small>
                     </label>
 
                     <label>Dirección
-                        <input name="direccion" type="text" placeholder="Calle Principal #123">
+                        <input name="direccion" type="text" @input.debounce="checkValidity(\$el)">
+                        <small x-text="errors.direccion"></small>
                     </label>
                 </fieldset>
 
                 <fieldset>
                     <label>Fecha de nacimiento
-                        <input name="fecha_nacimiento" type="date">
+                        <input required name="fecha_nacimiento" type="date" @input.debounce="checkValidity(\$el)">
+                        <small x-text="errors.fecha_nacimiento"></small>
                     </label>
                 </fieldset>
 
@@ -75,50 +93,28 @@ $this->pushJs('/assets/paginas/clientes/clientes.js');
 
                 <fieldset class="grid">
                     <label>Tipo de membresia
-                        <select name="membresia[id_tipo]">
-                            <?php foreach ($estados as $item): ?>
-                                <option value="<?= $item['id_tipo'] ?>">
-                                    <?= $item['nombre'] ?>
-                                </option>
-                            <?php endforeach ?>
+                        <select required name="membresia[id_tipo]">
+                            {$tiposOptions}
                         </select>
                     </label>
 
                     <label>Estado de membresia
-                        <select name="membresia[id_estado]">
-                            <?php foreach ($tipos as $item): ?>
-                                <option value="<?= $item['id_estado'] ?>">
-                                    <?= $item['nombre'] ?>
-                                </option>
-                            <?php endforeach ?>
+                        <select required name="membresia[id_estado]">
+                            {$estadosOptions}
                         </select>
                     </label>
                 </fieldset>
 
                 <fieldset class="grid">
                     <label>Fecha de inicio de membresía
-                        <input name="membresia[fecha_inicio]" type="date">
+                        <input required name="membresia[fecha_inicio]" type="date" @input.debounce="checkValidity(\$el)">
+                        <small x-text="errors['membresia[fecha_inicio]']"></small>
                     </label>
             
                     <label>Fecha de fin de membresía
-                        <input name="membresia[fecha_fin]" type="date">
+                        <input required name="membresia[fecha_fin]" type="date" @input.debounce="checkValidity(\$el)">
+                        <small x-text="errors['membresia[fecha_fin]']"></small>
                     </label>
                 </fieldset>
-            </form>
-
-            <footer>
-                <button x-show="method !== 'DELETE'" :form="$id('form')">Enviar</button>
-
-                <div x-show="method == 'DELETE'">
-                    <button class="secondary" @click="$refs.modal.close()">No</button>
-                    <button :form="$id('form')">Si</button>
-                </div>
-            </footer>
-        </article>
-    </dialog>
-
-    <div>
-        <h1 class="title">Clientes</h1>
-        <div class="overflow-auto" x-ref="table"></div>
-    </div>
-</div>
+        HTML,
+]) ?>

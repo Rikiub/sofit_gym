@@ -24,6 +24,7 @@
             }
         }
     </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="/assets/lib/gridjs/mermaid.min.css"> <!-- GridJS -->
     <link rel="stylesheet" href="/assets/lib/picocss/pico.red.min.css"> <!-- PicoCSS -->
     <link rel="stylesheet" href="/assets/lib/picocss/pico.colors.min.css"> <!-- PicoCSS Colors -->

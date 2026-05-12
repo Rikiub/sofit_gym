@@ -16,22 +16,30 @@ export async function fetchApi(params = "", options = {}) {
         options.body = JSON.stringify(options.body);
     }
 
-    const headers = options.method !== "GET"
+    const defaultHeaders = options.method !== "GET"
         ? { "Content-Type": "application/json" }
         : {};
 
-    const res = await fetch(`${API_PREFIX}${params}`, {
-        headers: headers,
+    const response = await fetch(`${API_PREFIX}${params}`, {
+        headers: { ...defaultHeaders, ...options.headers },
         ...options,
     });
 
-    if (res.status === 204) {
-        return {};
-    } else if (res.ok) {
-        return await res.json();
-    } else {
-        let json = await res.json();
-        console.log(json);
-        throw new Error(res.status);
+    if (!response.ok) {
+        let body;
+
+        try {
+            body = await response.clone().json();
+        } catch {
+            body = await response.clone().text();
+        }
+
+        console.error(body);
+        throw new Error(
+            `API error ${response.status}: ${response.statusText}`,
+            { cause: { ...body, status: response.status } }
+        );
     }
+
+    return response.status === 204 ? null : await response.json();
 }

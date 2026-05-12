@@ -216,7 +216,7 @@ class ClientesModelo extends BaseModelo
         return $this->findByCedula($cliente->cedula);
     }
 
-    public function deleteByCedula(int $cedula): int
+    public function deleteByCedula(string $cedula): int
     {
         $stmt = $this->pdo->prepare(
             'DELETE FROM cliente

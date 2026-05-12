@@ -14,8 +14,8 @@ class ClientesControlador extends BaseControlador
 
     public function index(): string
     {
-        $tipos = $this->modelo->getEstadosMembresia();
-        $estados = $this->modelo->getTiposMembresia();
+        $tipos = $this->modelo->getTiposMembresia();
+        $estados = $this->modelo->getEstadosMembresia();
 
         return $this->render('clientes/index', [
             'tipos' => $tipos,
