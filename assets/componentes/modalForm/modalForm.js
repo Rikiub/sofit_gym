@@ -14,7 +14,7 @@ import Alpine from "alpinejs";
  */
 export function modalFormComponent(
     {
-        endpoint,
+        endpoint: baseEndpoint,
         transformEditData = (data) => data,
         editDisableFields = [],
         afterSubmit = () => null,
@@ -25,6 +25,7 @@ export function modalFormComponent(
         currentDataId: null,
         mode: null,
 
+        endpoint: baseEndpoint,
         loading: false,
         errors: {},
 
@@ -65,7 +66,7 @@ export function modalFormComponent(
 
             if (this.mode === "delete" || valid) {
                 let body = null;
-                let url = `/${endpoint}`;
+                let url = `/${this.endpoint}`;
                 this.loading = true;
 
                 if (this.mode == "edit" || this.mode == "delete") {
@@ -109,9 +110,14 @@ export function modalFormComponent(
             this.mode = "edit";
             this.currentDataId = id;
 
-            let data = await fetchApi(`/${endpoint}/${this.currentDataId}`);
+            let data = await fetchApi(
+                `/${this.endpoint}/${this.currentDataId}`,
+            );
             data = transformEditData(data);
-            FormDataJson.fromJson(this.$refs.form, data, { clearOthers: true, includeDisabled: true });
+            FormDataJson.fromJson(this.$refs.form, data, {
+                clearOthers: true,
+                includeDisabled: true,
+            });
 
             for (const inputName of editDisableFields) {
                 if (this.$refs.form[inputName]) {

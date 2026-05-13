@@ -9,7 +9,7 @@
             required
             name="cedula"
             type="text"
-            pattern="^[V]-\d{8}\$"
+            pattern="^[V]-\d{8}$"
             x-mask="V-99999999"
             @input.debounce.500ms="validateCedula($el)"
         >
