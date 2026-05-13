@@ -44,7 +44,7 @@ $this->pushCss('/assets/paginas/clientes/clientes.css');
                                 type="text"
                                 pattern="^[V]-\d{8}\$"
                                 x-mask="V-99999999"
-                                @input.debounce="validarCedula(\$el)"
+                                @input.debounce.500ms="validateCedula(\$el)"
                             >
                             <small x-text="errors.cedula"></small>
                         </label>

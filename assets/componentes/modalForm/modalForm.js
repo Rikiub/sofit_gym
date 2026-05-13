@@ -1,41 +1,42 @@
 import { fetchApi } from "/assets/js/api.js";
+import { extractDate } from "/assets/js/helpers.js";
 import FormDataJson from "form-data-json";
 import Alpine from "alpinejs";
 
-/** @param {{
-     * endpoint: string,
-     * transformEditData: (data: object) => object,
- * }} options
+/**
+ * @param {{
+ * endpoint: string,
+ * transformEditData: (data: object) => object,
+ * id?: string,
+ * }}
  */
-export function modalFormComponent(options = { transformEditData: (data) => data }) {
-    const { endpoint, transformEditData } = options;
-
+export function modalFormComponent(
+    { endpoint, transformEditData = (data) => data, id: componentId = null },
+) {
     return {
-        endpoint: options.endpoint,
-        transformEditData: transformEditData,
-        mode: "add",
-        id: "",
+        currentDataId: null,
+        mode: null,
 
         loading: false,
         errors: {},
 
-        handleEvent(detail) {
-            if (!detail.mode) console.error("A 'mode' must be provided");
+        handleOpenModal({ mode, id = null, dataId = null }) {
+            if (!mode) return console.error("A 'mode' must be provided");
 
-            if (detail.mode === "add") {
-                this.onAdd();
-                return;
+            // On Add
+            if (mode === "add") return this.onAdd();
+
+            // On Edit/Delete
+            if (id !== componentId) return;
+            if (!dataId) {
+                return console.error("A 'dataId' must be provided");
             }
 
-            if (!detail.id) console.error("A 'id' must be provided");
-
-            if (detail.mode === "edit") {
-                this.onEdit(detail.id);
-            } else if (detail.mode === "delete") {
-                this.onDelete(detail.id);
-            } else {
-                console.error("'mode' must be one of: 'add', 'edit', 'delete'");
-            }
+            if (mode === "edit") return this.onEdit(dataId);
+            if (mode === "delete") return this.onDelete(dataId);
+            return console.error(
+                "'mode' must be one of: 'add', 'edit', 'delete'",
+            );
         },
 
         async handleSubmit() {
@@ -56,14 +57,16 @@ export function modalFormComponent(options = { transformEditData: (data) => data
 
             if (this.mode === "delete" || valid) {
                 let body = null;
-                let url = `/${this.endpoint}`;
+                let url = `/${endpoint}`;
                 this.loading = true;
 
                 if (this.mode == "edit" || this.mode == "delete") {
-                    url = `${url}/${this.id}`;
+                    url = `${url}/${this.currentDataId}`;
                 }
                 if (this.mode == "edit" || this.mode == "add") {
-                    body = FormDataJson.toJson(this.$refs.form, { skipEmpty: true });
+                    body = FormDataJson.toJson(this.$refs.form, {
+                        skipEmpty: true,
+                    });
                 }
 
                 const method = {
@@ -76,7 +79,10 @@ export function modalFormComponent(options = { transformEditData: (data) => data
 
                 this.loading = false;
                 this.$refs.modal.close();
-                this.$dispatch("form-success");
+                this.$dispatch("form-success", {
+                    id: componentId,
+                    action: "refresh",
+                });
             } else {
                 console.log("Invalid input, form submit canceled");
             }
@@ -91,20 +97,21 @@ export function modalFormComponent(options = { transformEditData: (data) => data
             this.clearForm();
 
             this.mode = "edit";
-            this.id = id;
+            this.currentDataId = id;
 
-            let data = await fetchApi(`/${this.endpoint}/${this.id}`);
-            data = this.transformEditData(data);
-
+            let data = await fetchApi(`/${endpoint}/${this.currentDataId}`);
+            data = transformEditData(data);
             FormDataJson.fromJson(this.$refs.form, data, { clearOthers: true });
+
             this.$refs.modal.showModal();
         },
         async onDelete(id) {
             this.mode = "delete";
-            this.id = id;
+            this.currentDataId = id;
             this.$refs.modal.showModal();
         },
 
+        /** @param {HTMLInputElement} input */
         checkValidity(input) {
             this.clearInputValidity(input);
 
@@ -120,10 +127,10 @@ export function modalFormComponent(options = { transformEditData: (data) => data
          * @param {string?} message
          */
         setInputValidity(input, valid, message = null) {
-            message = valid
-                ? ""
-                : message ?? input.validationMessage;
-            valid ? input.setCustomValidity("") : input.setCustomValidity(message);
+            message = valid ? "" : message ?? input.validationMessage;
+            valid
+                ? input.setCustomValidity("")
+                : input.setCustomValidity(message);
 
             input.setAttribute("aria-invalid", !valid);
             this.errors[input.name] = message;

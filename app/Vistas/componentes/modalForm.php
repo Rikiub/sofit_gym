@@ -17,7 +17,7 @@ $this->pushJs('/assets/componentes/modalForm/modalForm.js');
     x-ref="modal"
     x-id="['form']"
     :closedby="loading ? 'none' : 'any'"
-    @open-modal.window="handleEvent($event.detail)"
+    @open-modal.window="handleOpenModal($event.detail)"
 >
     <article>
         <header>

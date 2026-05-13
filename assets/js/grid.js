@@ -1,19 +1,23 @@
-import { Grid, PluginPosition, h } from "gridjs";
+import { Grid, h, PluginPosition } from "gridjs";
 
-/** Crea una tabla de datos adaptada para CRUDs */
+/** Crea una tabla de datos adaptada para CRUDs
+ * @param {object} options
+ */
 export function createGrid(options) {
     if (options.crud) {
-        options.columns?.push(crudButtons(options.crud.onEdit, options.crud.onDelete));
+        options.columns?.push(
+            crudButtons(options.crud.onEdit, options.crud.onDelete),
+        );
     }
 
     const grid = new Grid({
         language: {
             search: {
-                placeholder: "Buscar..."
+                placeholder: "Buscar...",
             },
             sort: {
                 sortAsc: "Sortear columna ascendentemente",
-                sortDesc: "Sortear columna descendentemente"
+                sortDesc: "Sortear columna descendentemente",
             },
             pagination: {
                 previous: "Anterior",
@@ -23,11 +27,11 @@ export function createGrid(options) {
                 showing: "Mostrando",
                 results: "Resultados",
                 of: "de",
-                to: "a"
+                to: "a",
             },
             loading: "Cargando...",
             noRecordsFound: "Sin resultados",
-            error: "Un error ha ocurrido mientras se obtenian los datos"
+            error: "Un error ha ocurrido mientras se obtenian los datos",
         },
         sort: true,
         search: true,
@@ -35,7 +39,7 @@ export function createGrid(options) {
             limit: 20,
             summary: true,
         },
-        ...options
+        ...options,
     });
 
     if (options.crud?.onAdd) {
@@ -43,7 +47,7 @@ export function createGrid(options) {
             id: "add",
             component: () => addButton(options.crud.onAdd),
             position: PluginPosition.Header,
-        })
+        });
     }
 
     return grid;
@@ -54,7 +58,7 @@ function addButton(callback) {
         className: "crud-actions-add",
         "data-tooltip": "Crear",
         "data-placement": "left",
-        onClick: callback
+        onClick: callback,
     }, h("i", { className: "fa-solid fa-square-plus" }));
 }
 
@@ -75,8 +79,8 @@ export function crudButtons(onEdit, onDelete) {
                     className: "button-delete",
                     "data-tooltip": "Eliminar",
                     onClick: () => onDelete(row.cells[0].data),
-                }, h("i", { className: "fa-solid fa-trash-can" }))
+                }, h("i", { className: "fa-solid fa-trash-can" })),
             ]);
-        }
-    }
+        },
+    };
 }
