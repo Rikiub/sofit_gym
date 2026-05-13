@@ -6,12 +6,20 @@ import Alpine from "alpinejs";
 /**
  * @param {{
  * endpoint: string,
- * transformEditData: (data: object) => object,
+ * transformEditData?: (data: object) => object,
+ * editDisableFields?: array<string>,
+ * afterSubmit?: (mode: string) => void,
  * id?: string,
  * }}
  */
 export function modalFormComponent(
-    { endpoint, transformEditData = (data) => data, id: componentId = null },
+    {
+        endpoint,
+        transformEditData = (data) => data,
+        editDisableFields = [],
+        afterSubmit = () => null,
+        id: componentId = null,
+    },
 ) {
     return {
         currentDataId: null,
@@ -79,10 +87,12 @@ export function modalFormComponent(
 
                 this.loading = false;
                 this.$refs.modal.close();
+
                 this.$dispatch("form-success", {
                     id: componentId,
                     action: "refresh",
                 });
+                afterSubmit(this.mode);
             } else {
                 console.log("Invalid input, form submit canceled");
             }
@@ -101,7 +111,13 @@ export function modalFormComponent(
 
             let data = await fetchApi(`/${endpoint}/${this.currentDataId}`);
             data = transformEditData(data);
-            FormDataJson.fromJson(this.$refs.form, data, { clearOthers: true });
+            FormDataJson.fromJson(this.$refs.form, data, { clearOthers: true, includeDisabled: true });
+
+            for (const inputName of editDisableFields) {
+                if (this.$refs.form[inputName]) {
+                    this.$refs.form[inputName].disabled = true;
+                }
+            }
 
             this.$refs.modal.showModal();
         },
@@ -143,6 +159,12 @@ export function modalFormComponent(
         },
         clearForm() {
             this.$refs.form.reset();
+
+            for (const inputName of editDisableFields) {
+                if (this.$refs.form[inputName]) {
+                    this.$refs.form[inputName].disabled = false;
+                }
+            }
 
             for (const input of this.$refs.form.elements) {
                 this.clearInputValidity(input);

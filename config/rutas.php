@@ -10,6 +10,7 @@ return function (RouteCollector $r) {
     $r->addRoute('GET', '/error', [ErrorControlador::class, 'index']);
 
     $r->addRoute('GET', '/clientes', [ClientesControlador::class, 'index']);
+    $r->addRoute('GET', '/clientes/{cedula}', [ClientesControlador::class, 'showCliente']);
 
     $r->addGroup('/api', function (RouteCollector $r) {
         $r->addGroup('/clientes', function (RouteCollector $r) {

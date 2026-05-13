@@ -34,7 +34,7 @@ export function crudTableComponent({
                     then: (data) => data.map((item) => fieldMap(item)),
                 },
                 crud: {
-                    onAdd: () => this.$dispatch(modalEvent, { mode: "add" }),
+                    onAdd: () => this.$dispatch(MODAL_EVENT, { mode: "add" }),
                     onEdit: (dataId) => {
                         this.$dispatch(MODAL_EVENT, {
                             id: componentId,

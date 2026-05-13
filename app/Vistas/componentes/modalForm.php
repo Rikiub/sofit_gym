@@ -1,14 +1,6 @@
 <?php
 $formHtml = $formHtml ?? '';
-
-if (!isset($alpineComponent)) {
-    $options = $options ?? '';
-    $options = json_encode($options);
-    $alpineComponent = htmlspecialchars("modalForm($options)", ENT_QUOTES);
-} else {
-    $alpineComponent = $alpineComponent;
-}
-
+$alpineComponent = $alpineComponent ?? 'modalForm';
 $this->pushJs('/assets/componentes/modalForm/modalForm.js');
 ?>
 

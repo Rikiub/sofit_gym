@@ -1,12 +1,5 @@
 <?php
-if (!isset($alpineComponent)) {
-    $options = $options ?? '';
-    $options = json_encode($options);
-    $alpineComponent = htmlspecialchars("crudTable($options)", ENT_QUOTES);
-} else {
-    $alpineComponent = $alpineComponent;
-}
-
+$alpineComponent = $alpineComponent ?? 'crudTable';
 $this->pushJs('/assets/parciales/crudTable/crudTable.js');
 ?>
 

@@ -14,13 +14,32 @@ class ClientesControlador extends BaseControlador
 
     public function index(): string
     {
+        return $this->render('clientes/index', [
+            'formMeta' => $this->formMeta(),
+        ]);
+    }
+
+    public function showCliente(array $params): string
+    {
+        $cliente = $this->modelo->findByCedula($params['cedula']);
+        if (!$cliente) {
+            $this->response->redirect('/error?status=404', 404);
+        }
+
+        return $this->render('clientes/item', [
+            'cliente' => $cliente,
+            'formMeta' => $this->formMeta(),
+        ]);
+    }
+
+    private function formMeta(): array
+    {
         $tipos = $this->modelo->getTiposMembresia();
         $estados = $this->modelo->getEstadosMembresia();
-
-        return $this->render('clientes/index', [
+        return [
             'tipos' => $tipos,
             'estados' => $estados,
-        ]);
+        ];
     }
 
     public function getClientes(): string

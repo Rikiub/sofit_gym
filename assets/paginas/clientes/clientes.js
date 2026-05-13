@@ -3,17 +3,24 @@ import { modalFormComponent } from "/assets/componentes/modalForm/modalForm.js";
 import { extractDate } from "/assets/js/helpers.js";
 import { fetchApi } from "/assets/js/api.js";
 import Alpine from "alpinejs";
+import { h } from "gridjs";
 
 const CLIENTES = {
     endpoint: "clientes",
-    id: crypto.randomUUID(),
+    id: null,
 };
 
-Alpine.data("crudTable", () =>
+Alpine.data("crudTableClientes", () =>
     crudTableComponent({
         ...CLIENTES,
         columns: [
-            "Cedula",
+            {
+                name: "Cedula",
+                formatter: (cell, row) => {
+                    const cedula = row.cells[0].data;
+                    return h("a", { href: `/clientes/${cedula}` }, cedula);
+                },
+            },
             "Nombre",
             "Apellido",
             "Correo",
@@ -28,7 +35,7 @@ Alpine.data("crudTable", () =>
         ],
     }));
 
-Alpine.data("modalForm", () => ({
+Alpine.data("modalFormClientes", (isSinglePage = false) => ({
     ...modalFormComponent({
         ...CLIENTES,
         transformEditData: (data) => {
@@ -38,6 +45,16 @@ Alpine.data("modalForm", () => ({
             );
             data.membresia.fecha_fin = extractDate(data.membresia.fecha_fin);
             return data;
+        },
+        editDisableFields: ["cedula"],
+        afterSubmit: (mode) => {
+            if (isSinglePage) {
+                if (mode === "edit") return location.reload();
+                if (mode === "delete") {
+                    location.href = "/clientes";
+                    return;
+                }
+            }
         },
     }),
 
