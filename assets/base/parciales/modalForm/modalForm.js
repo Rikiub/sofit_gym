@@ -1,42 +1,37 @@
-import { API_PREFIX, fetchApi } from "/assets/js/api.js";
-import { createGrid } from "/assets/js/grid.js";
+import { fetchApi } from "../../../js/api.js";
 import FormDataJson from "form-data-json";
+import Alpine from "alpinejs";
 
 /** @param {{
      * endpoint: string,
-     * columns: array<string>,
-     * dataRowMapper: (item: object) => object,
      * transformEditData: (data: object) => object,
  * }} options
  */
-export function crudTableComponent(options) {
-    const {
-        endpoint,
-        columns,
-        dataRowMapper = (item) => item,
-        transformEditData = (data) => data,
-        serverUrl = `${API_PREFIX}/${endpoint}`,
-    } = options;
+export function modalFormComponent(options) {
+    let transformEditData = options.transformEditData;
+    if (!transformEditData) {
+        transformEditData = (data) => data;
+    };
 
     return {
+        endpoint: options.endpoint,
+        transformEditData: transformEditData,
         method: "POST",
         id: "",
 
         loading: false,
         errors: {},
 
-        init() {
-            this.grid = createGrid({
-                columns,
-                server: {
-                    url: serverUrl,
-                    then: data => data.map(dataRowMapper),
-                },
-                onAdd: this.onAdd.bind(this),
-                onEdit: this.onEdit.bind(this),
-                onDelete: this.onDelete.bind(this),
-            });
-            this.grid.render(this.$refs.table);
+        handleEvent(detail) {
+            if (detail.method === "POST") {
+                this.onAdd();
+            } else if (detail.method === "PUT") {
+                this.onEdit(detail.id);
+            } else if (detail.method === "DELETE") {
+                this.onDelete(detail.id);
+            } else {
+                console.log("A 'method' must be provided");
+            }
         },
 
         async handleSubmit() {
@@ -57,7 +52,7 @@ export function crudTableComponent(options) {
 
             if (this.method === "DELETE" || valid) {
                 let body = null;
-                let url = `/${endpoint}`;
+                let url = `/${this.endpoint}`;
                 this.loading = true;
 
                 if (this.method == "PUT" || this.method == "DELETE") {
@@ -71,7 +66,7 @@ export function crudTableComponent(options) {
 
                 this.loading = false;
                 this.$refs.modal.close();
-                this.grid.forceRender();
+                this.$dispatch("form-success");
             } else {
                 console.log("Invalid input, POST canceled");
             }
@@ -88,8 +83,8 @@ export function crudTableComponent(options) {
             this.method = "PUT";
             this.id = id;
 
-            let data = await fetchApi(`/${endpoint}/${this.id}`);
-            data = transformEditData(data);
+            let data = await fetchApi(`/${this.endpoint}/${this.id}`);
+            data = this.transformEditData(data);
 
             FormDataJson.fromJson(this.$refs.form, data, { clearOthers: true });
             this.$refs.modal.showModal();
@@ -138,3 +133,5 @@ export function crudTableComponent(options) {
         },
     };
 }
+
+Alpine.data("modalForm", modalFormComponent);
