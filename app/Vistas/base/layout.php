@@ -1,5 +1,7 @@
-<?php $this->layout('base', ['titulo' => $titulo ?? null]) ?>
-<?php $this->pushCss('/assets/base/layout/layout.css') ?>
+<?php
+$this->layout('base', ['titulo' => $titulo ?? null]);
+$this->pushCss('/assets/base/layout/layout.css');
+?>
 
 <div class="layout-default">
     <?= $this->insert('parciales/sidebar') ?>
