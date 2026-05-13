@@ -1,6 +1,6 @@
-<?php $this->layout('layout', ['titulo' => 'Inicio']) ?>
-
 <?php
+$this->layout('layout', ['titulo' => 'Inicio']);
+
 // TODO: Esto deberia guardarse como archivos en la carpeta "lib"
 $this->pushJs('https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js', false);
 

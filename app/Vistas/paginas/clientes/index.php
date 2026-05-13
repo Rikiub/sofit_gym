@@ -6,9 +6,9 @@
  */
 ?>
 
-<?php $this->layout('layout', ['titulo' => 'Clientes']) ?>
-
 <?php
+$this->layout('layout', ['titulo' => 'Clientes']);
+
 $this->pushCss('/assets/paginas/clientes/clientes.css');
 $this->pushJs('/assets/paginas/clientes/clientes.js');
 ?>
