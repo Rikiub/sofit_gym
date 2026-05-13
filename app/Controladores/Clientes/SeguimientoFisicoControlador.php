@@ -2,4 +2,9 @@
 
 namespace App\Controladores\Clientes;
 
-class SeguimientoFisicoControlador {}
+use App\Modelos\Clientes\SeguimientoFisicoModelo;
+
+class SeguimientoFisicoControlador
+{
+    public function __construct(SeguimientoFisicoModelo $modelo) {}
+}

@@ -48,9 +48,9 @@ class ClientesControlador extends BaseControlador
         return $this->response->json($clientes);
     }
 
-    public function findCliente(array $vars): ?string
+    public function findCliente(array $params): ?string
     {
-        $cliente = $this->modelo->findByCedula($vars['cedula']);
+        $cliente = $this->modelo->findByCedula($params['cedula']);
 
         if (!$cliente) {
             return $this->response->empty(404);
@@ -84,9 +84,9 @@ class ClientesControlador extends BaseControlador
     /**
      * Modificar
      */
-    public function updateCliente(array $vars): string
+    public function updateCliente(array $params): string
     {
-        $cedula = $vars['cedula'];
+        $cedula = $params['cedula'];
 
         $body = $this->response->getParsedBody();
         $body['cedula'] = $cedula;
@@ -104,9 +104,9 @@ class ClientesControlador extends BaseControlador
     /**
      * Eliminar
      */
-    public function deleteCliente(array $vars): string|null
+    public function deleteCliente(array $params): string|null
     {
-        $cedula = $vars['cedula'];
+        $cedula = $params['cedula'];
 
         if (!$this->modelo->findByCedula($cedula)) {
             return $this->response->json(['message' => 'El cliente no existe'], 404);
