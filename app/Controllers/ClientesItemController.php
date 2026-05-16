@@ -3,22 +3,32 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use App\Models\ClienteDTO;
+use App\Models\ClientesItemModel;
 use App\Models\ClientesModel;
+use App\Models\SeguimientoFisicoDTO;
 use Exception;
 
-class ClientesController extends BaseController
+class ClientesItemController extends BaseController
 {
     public function __construct(
-        private ClientesModel $clientesModelo
+        private ClientesModel $clientesModelo,
+        private ClientesItemModel $segModelo
     ) {}
 
-    // CLIENTES
+    // CLIENTES: Pagina unica
 
     public function index(): string
     {
-        // Cargar vista app/views/clientes/index.php
-        return $this->render('clientes/index', [
+        $cedula = $this->getCedulaParam();
+
+        $cliente = $this->clientesModelo->findByCedula($cedula);
+        if (!$cliente) {
+            $this->redirectToError();
+        }
+
+        // Cargar vista: app/views/clientes/item.php
+        return $this->render('clientes/item', [
+            'cliente' => $cliente,
             'formMeta' => $this->formMeta(),
         ]);
     }
@@ -42,61 +52,57 @@ class ClientesController extends BaseController
         return $cedula;
     }
 
-    public function getClientes(): string
-    {
-        $clientes = $this->clientesModelo->getAll();
-        return $this->response->json($clientes);
-    }
+    // SEGUIMIENTO FISICO: JSON API
 
-    public function findCliente(): ?string
+    public function getSeguimientoByCliente(): ?string
     {
         $cedula = $this->getCedulaParam();
-        $cliente = $this->clientesModelo->findByCedula($cedula);
 
-        if (!$cliente) {
+        if (!$this->clientesModelo->findByCedula($cedula)) {
             return $this->response->empty(404);
         }
 
-        return $this->response->json($cliente);
+        $registros = $this->segModelo->getByCliente($cedula);
+        return $this->response->json($registros);
     }
 
-    public function insertCliente(): string
+    public function insertSeguimiento(): string
     {
         $body = $this->response->getParsedBody();
 
         // Valida el POST
-        $cliente = $this->mapper->map(ClienteDTO::class, $body);
+        $registro = $this->mapper->map(SeguimientoFisicoDTO::class, $body);
 
         // Verificar que el cliente no exista
-        if ($this->clientesModelo->findByCedula($cliente->cedula)) {
+        if ($this->clientesModelo->findByCedula($registro->cedula_cliente)) {
             return $this->response->json(['message' => 'El cliente ya existe'], 400);
         }
 
         // Crea el cliente
-        $cliente = $this->clientesModelo->insertCliente($cliente);
+        $cliente = $this->segModelo->insert($registro);
 
         // Enviar JSON
         return $this->response->json($cliente, 201);
     }
 
-    public function updateCliente(): string
+    public function updateSeguimiento(): string
     {
         $cedula = $this->getCedulaParam();
 
         $body = $this->response->getParsedBody();
-        $body['cedula'] = $cedula;
+        $body['cedula_cliente'] = $cedula;
 
-        $cliente = $this->mapper->map(ClienteDTO::class, $body);
+        $registro = $this->mapper->map(SeguimientoFisicoDTO::class, $body);
 
         if (!$this->clientesModelo->findByCedula($cedula)) {
             return $this->response->json(['message' => 'El cliente no existe'], 400);
         }
 
-        $cliente = $this->clientesModelo->updateCliente($cliente);
-        return $this->response->json($cliente, 201);
+        $registro = $this->segModelo->update($registro);
+        return $this->response->json($registro, 201);
     }
 
-    public function deleteCliente(): string|null
+    public function deleteSeguimiento(): string|null
     {
         $cedula = $this->getCedulaParam();
 
@@ -104,8 +110,7 @@ class ClientesController extends BaseController
             return $this->response->json(['message' => 'El cliente no existe'], 404);
         }
 
-        $this->clientesModelo->deleteByCedula($cedula);
-
+        $this->segModelo->delete($cedula);
         return $this->response->empty(204);
     }
 }

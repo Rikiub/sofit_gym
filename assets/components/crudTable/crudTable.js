@@ -1,5 +1,5 @@
-import { API_PREFIX, fetchApi } from "/assets/js/api.js";
-import { createGrid } from "/assets/js/grid.js";
+import { fetchApi } from "@/js/api.js";
+import { createGrid } from "@/js/grid.js";
 import FormDataJson from "form-data-json";
 import Alpine from "alpinejs";
 
@@ -7,7 +7,8 @@ const MODAL_EVENT = "open-modal";
 
 /**
  * @param {{
- * endpoint: string,
+ * page: string,
+ * action: string,
  * columns: array<string|object>,
  * fieldMap: (item: object) => array<string|int>,
  * gridOptions: object,
@@ -15,7 +16,8 @@ const MODAL_EVENT = "open-modal";
  * }}
  */
 export function crudTableComponent({
-    endpoint,
+    page,
+    action,
     columns,
     fieldMap = (item) => item,
     gridOptions,
@@ -25,12 +27,15 @@ export function crudTableComponent({
         grid: null,
 
         init() {
-            const serverUrl = `${API_PREFIX}/${endpoint}`;
+            const query = new URLSearchParams({
+                page: page,
+                action: action,
+            });
 
             this.grid = createGrid({
                 columns: columns,
                 server: {
-                    url: serverUrl,
+                    url: `?${query.toString()}`,
                     then: (data) => data.map((item) => fieldMap(item)),
                 },
                 crud: {

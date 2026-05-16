@@ -1,17 +1,15 @@
-export const API_PREFIX = "/api";
-
 /**
  * Helper para comunicarse con la API en el backend.
  * Solo acepta y envia JSON.
- * @param string params,
+ * @param {object|URLSearchParams} params,
  * @param {RequestInit} options
  * @returns {Promise<object>}
  */
 export async function fetchApi(params = "", options = {}) {
     if (
-        options.body !== null
-        && typeof options.body === "object"
-        && !Array.isArray(options.body)
+        options.body !== null &&
+        typeof options.body === "object" &&
+        !Array.isArray(options.body)
     ) {
         options.body = JSON.stringify(options.body);
     }
@@ -20,7 +18,9 @@ export async function fetchApi(params = "", options = {}) {
         ? { "Content-Type": "application/json" }
         : {};
 
-    const response = await fetch(`${API_PREFIX}${params}`, {
+    const query = new URLSearchParams(params).toString();
+    const response = await fetch(`?${query}`, {
+        method: "POST",
         headers: { ...defaultHeaders, ...options.headers },
         ...options,
     });
@@ -37,7 +37,7 @@ export async function fetchApi(params = "", options = {}) {
         console.error(body);
         throw new Error(
             `API error ${response.status}: ${response.statusText}`,
-            { cause: { ...body, status: response.status } }
+            { cause: { ...body, status: response.status } },
         );
     }
 

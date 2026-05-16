@@ -5,8 +5,8 @@
  * @var App\Models\ClienteDTO $cliente
  */
 $this->layout('layout', ['title' => 'Cliente']);
-$this->pushJs('/assets/pages/clientes/clientes.js');
-$this->pushCss('/assets/pages/clientes/clientes.css');
+$this->pushJs('pages/clientes/clientes.js');
+$this->pushCss('pages/clientes/clientes.css');
 
 $nombreCompleto = "$cliente->nombre $cliente->apellido"
 ?>
@@ -25,7 +25,7 @@ $nombreCompleto = "$cliente->nombre $cliente->apellido"
         <div class="header-actions">
             <div>
                 <i class="fa-arrow-left fa-solid"></i>
-                <a href="/clientes">Volver</a>
+                <a href="?page=clientes">Volver</a>
             </div>
 
             <h3><?= $nombreCompleto ?></h3>

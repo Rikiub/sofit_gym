@@ -1,11 +1,15 @@
 <?php
+// Cada vista debe empezar con esto:
 $this->layout('layout', ['title' => 'Inicio']);
+// Esto ya incluye las dependencias y la barra lateral.
 
 // TODO: Esto deberia guardarse como archivos en la carpeta "lib"
 $this->pushJs('https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js', false);
 
-$this->pushCss('/assets/pages/inicio/inicio.css');
-$this->pushJs('/assets/pages/inicio/inicio.js');
+// Las dependencias se resuelven automaticamente como:
+// /assets/pages/inicio/inicio.css
+$this->pushCss('pages/inicio/inicio.css');
+$this->pushJs('pages/inicio/inicio.js');
 ?>
 
 <div class="Inicio">

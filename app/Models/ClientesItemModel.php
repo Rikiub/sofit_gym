@@ -58,7 +58,7 @@ readonly class SeguimientoFisicoDTO
     }
 }
 
-class SeguimientoFisicoModel extends BaseModel
+class ClientesItemModel extends BaseModel
 {
     private function sqlSelect(): string
     {

@@ -1,6 +1,6 @@
 <?php
 $alpineComponent = $alpineComponent ?? 'crudTable';
-$this->pushJs('/assets/components/crudTable/crudTable.js');
+$this->pushJs('components/crudTable/crudTable.js');
 ?>
 
 <div

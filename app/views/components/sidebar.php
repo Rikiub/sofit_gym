@@ -1,6 +1,6 @@
 <?php
-$this->pushCss('/assets/components/sidebar/sidebar.css');
-$this->pushJs('/assets/components/sidebar/sidebar.js');
+$this->pushCss('components/sidebar/sidebar.css');
+$this->pushJs('components/sidebar/sidebar.js');
 ?>
 
 <aside class="sidebar" id="sidebar">
@@ -15,7 +15,7 @@ $this->pushJs('/assets/components/sidebar/sidebar.js');
 	</div>
 
 	<nav class="sidebar-nav">
-		<a href="/" class="active"><i class="fas fa-home"></i> <span>Inicio</span></a>
+		<a href="?pagina=clientes" class="active"><i class="fas fa-home"></i> <span>Inicio</span></a>
 
 		<details class="nav-group">
 			<summary class="group-title">

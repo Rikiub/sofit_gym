@@ -10,7 +10,10 @@ const CONTROLLERS_PATH = 'App\Controllers';
 
 $response = new Response(normalizer: null);
 
-// Configurar inyector de dependencias (PHP-DI)
+// Configurar inyector de dependencias (PHP-DI).
+// Dependiendo de las dependencias que tengan en los __contruct de los controladores
+// el inyector las instanciara automaticamente con la configuración definida
+// en el archivo CONTAINER_FILE.
 $builder = new ContainerBuilder();
 $builder->addDefinitions(CONTAINER_FILE)->useAttributes(true);
 $container = $builder->build();

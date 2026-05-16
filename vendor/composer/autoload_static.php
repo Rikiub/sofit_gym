@@ -7,7 +7,6 @@ namespace Composer\Autoload;
 class ComposerStaticInit40e15966626f8150d37f32748b0b834e
 {
     public static $files = array (
-        '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         'b33e3d135e5d9e47d845c576147bda89' => __DIR__ . '/..' . '/php-di/php-di/src/functions.php',
     );
 
@@ -24,10 +23,6 @@ class ComposerStaticInit40e15966626f8150d37f32748b0b834e
         'I' =>
         array (
             'Invoker\\' => 8,
-        ),
-        'F' =>
-        array (
-            'FastRoute\\' => 10,
         ),
         'D' =>
         array (
@@ -59,10 +54,6 @@ class ComposerStaticInit40e15966626f8150d37f32748b0b834e
         'Invoker\\' =>
         array (
             0 => __DIR__ . '/..' . '/php-di/invoker/src',
-        ),
-        'FastRoute\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/nikic/fast-route/src',
         ),
         'DI\\' =>
         array (

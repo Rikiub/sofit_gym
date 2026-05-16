@@ -1,7 +1,7 @@
 <?php
 $formHtml = $formHtml ?? '';
 $alpineComponent = $alpineComponent ?? 'modalForm';
-$this->pushJs('/assets/components/modalForm/modalForm.js');
+$this->pushJs('components/modalForm/modalForm.js');
 ?>
 
 <dialog

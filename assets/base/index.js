@@ -1,1 +1,1 @@
-import "/assets/base/dialog.js";
+import "@/base/dialog.js";

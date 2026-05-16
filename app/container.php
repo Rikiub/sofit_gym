@@ -28,10 +28,10 @@ return [
 
         try {
             return new PDO(
-                $dsn,
-                $username,
-                $password,
-                $options
+                dsn: $dsn,
+                username: $username,
+                password: $password,
+                options: $options
             );
         } catch (PDOException $e) {
             throw new RuntimeException('Failed database connection: ' . $e->getMessage());

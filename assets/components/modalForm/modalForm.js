@@ -1,11 +1,20 @@
-import { fetchApi } from "/assets/js/api.js";
-import { extractDate } from "/assets/js/helpers.js";
+import { fetchApi } from "@/js/api.js";
+import { extractDate } from "@/js/helpers.js";
 import FormDataJson from "form-data-json";
 import Alpine from "alpinejs";
 
 /**
+ * @typedef {Object} Actions
+ * @property {string} onAdd
+ * @property {string} onEditFind
+ * @property {string} onEdit
+ * @property {string} onDelete
+ */
+
+/**
  * @param {{
- * endpoint: string,
+ * page: string,
+ * actions: Actions,
  * transformEditData?: (data: object) => object,
  * editDisableFields?: array<string>,
  * afterSubmit?: (mode: string) => void,
@@ -14,7 +23,8 @@ import Alpine from "alpinejs";
  */
 export function modalFormComponent(
     {
-        endpoint: baseEndpoint,
+        page,
+        actions,
         transformEditData = (data) => data,
         editDisableFields = [],
         afterSubmit = () => null,
@@ -25,7 +35,9 @@ export function modalFormComponent(
         currentDataId: null,
         mode: null,
 
-        endpoint: baseEndpoint,
+        page,
+        actions,
+
         loading: false,
         errors: {},
 
@@ -65,12 +77,20 @@ export function modalFormComponent(
             }
 
             if (this.mode === "delete" || valid) {
-                let body = null;
-                let url = `/${this.endpoint}`;
                 this.loading = true;
+                let body = null;
+                let actionParam = {
+                    "add": this.actions.onAdd,
+                    "edit": this.actions.onEdit,
+                    "delete": this.actions.onDelete,
+                }[this.mode];
+                let params = { action: actionParam };
 
                 if (this.mode == "edit" || this.mode == "delete") {
-                    url = `${url}/${this.currentDataId}`;
+                    params = {
+                        ...params,
+                        id: this.currentDataId,
+                    };
                 }
                 if (this.mode == "edit" || this.mode == "add") {
                     body = FormDataJson.toJson(this.$refs.form, {
@@ -78,13 +98,10 @@ export function modalFormComponent(
                     });
                 }
 
-                const method = {
-                    "add": "POST",
-                    "edit": "PUT",
-                    "delete": "DELETE",
-                }[this.mode];
-
-                await fetchApi(url, { method, body: body });
+                await fetchApi({ page: this.page, ...params }, {
+                    method: "POST",
+                    body: body,
+                });
 
                 this.loading = false;
                 this.$refs.modal.close();
@@ -111,7 +128,11 @@ export function modalFormComponent(
             this.currentDataId = id;
 
             let data = await fetchApi(
-                `/${this.endpoint}/${this.currentDataId}`,
+                {
+                    page: this.page,
+                    action: this.actions.onEditFind,
+                    id: this.currentDataId,
+                },
             );
             data = transformEditData(data);
             FormDataJson.fromJson(this.$refs.form, data, {

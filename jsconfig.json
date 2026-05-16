@@ -5,12 +5,12 @@
         "allowJs": true,
         "checkJs": false,
         "paths": {
-            "/assets/*": [
+            "@/*": [
                 "./assets/*"
             ]
         }
     },
     "include": [
-        "assets/**/*.js"
+        "./assets/**/*.js"
     ]
 }

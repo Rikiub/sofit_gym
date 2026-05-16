@@ -11,8 +11,8 @@ use League\Plates\Engine;
  */
 class AssetExtension implements ExtensionInterface
 {
-    protected $css = [];
-    protected $js = [];
+    protected array $css = [];
+    protected array $js = [];
 
     public function register(Engine $engine)
     {
@@ -25,17 +25,29 @@ class AssetExtension implements ExtensionInterface
         $engine->registerFunction('renderJs', [$this, 'renderJs']);
     }
 
+    private function generatePath(string $path)
+    {
+        $file = $path;
+
+        // Si no empieza con HTTPS, entonces preparar como archivo
+        if (!str_starts_with($path, 'https://')) {
+            $file = ASSETS_DIR . "/" . $file;
+        }
+
+        return $file;
+    }
+
     public function pushCss(string $path)
     {
         if (!isset($this->css[$path])) {
-            $this->css[$path] = true;
+            $this->css[$this->generatePath($path)] = true;
         }
     }
 
     public function pushJs(string $path, bool $isModule = true)
     {
         if (!isset($this->js[$path])) {
-            $this->js[$path] = $isModule;
+            $this->js[$this->generatePath($path)] = $isModule;
         }
     }
 
