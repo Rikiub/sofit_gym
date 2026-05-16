@@ -1,376 +1,1079 @@
--- ======================================================
--- BASE DE DATOS COMPLETA PARA SOFIT GYM
--- Incluye todas las tablas + datos de prueba + cliente moroso V-33333333
--- ======================================================
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 17-05-2026 a las 01:12:39
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
--- Eliminar la base de datos si existe y crearla limpia
-DROP DATABASE IF EXISTS sofit_gym;
-CREATE DATABASE sofit_gym CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE sofit_gym;
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
 
--- ========== 1. TABLAS CATÁLOGO ==========
-CREATE TABLE tipo_rol (
-  id_rol INT(11) NOT NULL PRIMARY KEY,
-  nombre VARCHAR(100)
-);
 
-CREATE TABLE tipo_dificultad (
-  id_dificultad INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(100)
-);
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
-CREATE TABLE tipo_membresia (
-  id_tipo INT(11) NOT NULL PRIMARY KEY COMMENT '1=Mensual,2=Trimestral,3=Anual',
-  nombre VARCHAR(100) NOT NULL,
-  monto DECIMAL(10,2) NOT NULL
-);
+--
+-- Base de datos: `sofit_gym`
+--
 
-CREATE TABLE estado_membresia (
-  id_estado INT(11) NOT NULL PRIMARY KEY,
-  nombre VARCHAR(100)
-);
+-- --------------------------------------------------------
 
-CREATE TABLE tipo_canal (
-  id_tipo INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(100)
-);
+--
+-- Estructura de tabla para la tabla `analisis_energetico`
+--
 
-CREATE TABLE tipo_notificacion (
-  id_tipo INT(11) NOT NULL PRIMARY KEY,
-  nombre VARCHAR(100)
-);
+CREATE TABLE `analisis_energetico` (
+  `id_analisis` int(11) NOT NULL,
+  `cedula_cliente` varchar(15) NOT NULL,
+  `fecha` date NOT NULL,
+  `calorias_consumidas` int(11) DEFAULT NULL,
+  `calorias_gastadas_estimadas` int(11) DEFAULT NULL,
+  `balance` int(11) DEFAULT NULL,
+  `diagnostico` text DEFAULT NULL,
+  `recomendacion` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ========== 2. TABLA PERSONA ==========
-CREATE TABLE persona (
-  cedula_persona VARCHAR(15) NOT NULL PRIMARY KEY,
-  nombre VARCHAR(50) NOT NULL,
-  apellido VARCHAR(50) NOT NULL,
-  correo VARCHAR(100),
-  telefono VARCHAR(20),
-  direccion TEXT,
-  fecha_nacimiento DATE,
-  fecha_registro DATETIME,
-  activo TINYINT(1) NOT NULL DEFAULT 1
-);
+-- --------------------------------------------------------
 
--- ========== 3. TABLA MEMBRESIA ==========
-CREATE TABLE membresia (
-  id_membresia INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  id_tipo INT(11) NOT NULL,
-  id_estado INT(11) NOT NULL DEFAULT 3,
-  fecha_inicio DATE,
-  fecha_fin DATE,
-  FOREIGN KEY (id_tipo) REFERENCES tipo_membresia(id_tipo) ON UPDATE CASCADE,
-  FOREIGN KEY (id_estado) REFERENCES estado_membresia(id_estado) ON UPDATE CASCADE
-);
+--
+-- Estructura de tabla para la tabla `asistencia_clase`
+--
 
--- ========== 4. TABLA CLIENTE ==========
-CREATE TABLE cliente (
-  cedula_cliente VARCHAR(15) NOT NULL PRIMARY KEY,
-  id_membresia INT(11) NOT NULL,
-  FOREIGN KEY (cedula_cliente) REFERENCES persona(cedula_persona) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (id_membresia) REFERENCES membresia(id_membresia) ON DELETE CASCADE ON UPDATE CASCADE
-);
+CREATE TABLE `asistencia_clase` (
+  `id_asistencia` int(11) NOT NULL,
+  `id_clase` int(11) NOT NULL,
+  `cedula_cliente` varchar(15) NOT NULL,
+  `asistio` tinyint(1) DEFAULT 1,
+  `fecha_registro` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ========== 5. TABLA TRABAJADOR ==========
-CREATE TABLE trabajador (
-  cedula_trabajador VARCHAR(15) NOT NULL PRIMARY KEY,
-  id_rol INT(11) NOT NULL,
-  salario DECIMAL(10,2),
-  fecha_contratacion DATE,
-  FOREIGN KEY (cedula_trabajador) REFERENCES persona(cedula_persona) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (id_rol) REFERENCES tipo_rol(id_rol) ON UPDATE CASCADE
-);
+-- --------------------------------------------------------
 
--- ========== 6. TABLA USUARIO ==========
-CREATE TABLE usuario (
-  id_usuario INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  id_rol INT(11) NOT NULL,
-  cedula_persona VARCHAR(15) NOT NULL,
-  usuario VARCHAR(50) NOT NULL UNIQUE,
-  contrasena VARCHAR(255) NOT NULL,
-  ultimo_acceso DATETIME,
-  FOREIGN KEY (cedula_persona) REFERENCES persona(cedula_persona) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (id_rol) REFERENCES tipo_rol(id_rol) ON UPDATE CASCADE
-);
+--
+-- Estructura de tabla para la tabla `asistencia_gimnasio`
+--
 
--- ========== 7. TABLA PAGO ==========
-CREATE TABLE pago (
-  id_pago INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  cedula_cliente VARCHAR(15) NOT NULL,
-  monto DECIMAL(10,2) NOT NULL,
-  metodo_pago VARCHAR(50),
-  comprobante_url VARCHAR(255),
-  estado ENUM('Pagado','Pendiente','Atrasado') DEFAULT 'Pagado',
-  fecha_pago DATE NOT NULL,
-  fecha_vencimiento DATE NOT NULL,
-  FOREIGN KEY (cedula_cliente) REFERENCES cliente(cedula_cliente) ON UPDATE CASCADE
-);
+CREATE TABLE `asistencia_gimnasio` (
+  `id_asistencia` int(11) NOT NULL,
+  `cedula_cliente` varchar(15) NOT NULL,
+  `fecha` datetime NOT NULL,
+  `tipo` enum('Entrada','Salida') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ========== 8. TABLA NOTIFICACION ==========
-CREATE TABLE notificacion (
-  id_notificacion INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  id_tipo_notificacion INT(11) NOT NULL,
-  id_tipo_canal INT(11) NOT NULL,
-  cedula_cliente VARCHAR(15) NOT NULL,
-  mensaje TEXT NOT NULL,
-  estado ENUM('Pendiente','Enviado','Fallido') DEFAULT 'Pendiente',
-  fecha_programada DATETIME,
-  fecha_envio DATETIME,
-  FOREIGN KEY (cedula_cliente) REFERENCES cliente(cedula_cliente) ON DELETE CASCADE,
-  FOREIGN KEY (id_tipo_notificacion) REFERENCES tipo_notificacion(id_tipo),
-  FOREIGN KEY (id_tipo_canal) REFERENCES tipo_canal(id_tipo)
-);
+-- --------------------------------------------------------
 
--- ========== 9. TABLAS DE CLASES Y ASISTENCIA (resumidas) ==========
-CREATE TABLE clase (
-  id_clase INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  cedula_trabajador VARCHAR(15) NOT NULL,
-  nombre VARCHAR(100) NOT NULL,
-  descripcion TEXT,
-  cupos_ocupados INT(11) DEFAULT 0,
-  capacidad_maxima INT(11) NOT NULL,
-  estado ENUM('Programado','En curso','Finalizado','Cancelado') DEFAULT 'Programado',
-  fecha_inicio DATETIME NOT NULL,
-  fecha_fin DATETIME NOT NULL,
-  FOREIGN KEY (cedula_trabajador) REFERENCES trabajador(cedula_trabajador) ON UPDATE CASCADE
-);
+--
+-- Estructura de tabla para la tabla `clase`
+--
 
-CREATE TABLE asistencia_clase (
-  id_asistencia INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  id_clase INT(11) NOT NULL,
-  cedula_cliente VARCHAR(15) NOT NULL,
-  asistio TINYINT(1) DEFAULT 1,
-  fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (id_clase) REFERENCES clase(id_clase) ON DELETE CASCADE,
-  FOREIGN KEY (cedula_cliente) REFERENCES cliente(cedula_cliente) ON UPDATE CASCADE
-);
+CREATE TABLE `clase` (
+  `id_clase` int(11) NOT NULL,
+  `cedula_trabajador` varchar(15) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `cupos_ocupados` int(11) DEFAULT 0,
+  `capacidad_maxima` int(11) NOT NULL,
+  `estado` enum('Programado','En curso','Finalizado','Cancelado') DEFAULT 'Programado',
+  `fecha_inicio` datetime NOT NULL,
+  `fecha_fin` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE inscripcion_clase (
-  id_inscripcion INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  id_clase INT(11) NOT NULL,
-  cedula_cliente VARCHAR(15) NOT NULL,
-  estado ENUM('Activo','Cancelado') DEFAULT 'Activo',
-  fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE KEY uk_cliente_clase (cedula_cliente, id_clase),
-  FOREIGN KEY (id_clase) REFERENCES clase(id_clase) ON DELETE CASCADE,
-  FOREIGN KEY (cedula_cliente) REFERENCES cliente(cedula_cliente) ON UPDATE CASCADE
-);
+--
+-- Volcado de datos para la tabla `clase`
+--
 
-CREATE TABLE asistencia_gimnasio (
-  id_asistencia INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  cedula_cliente VARCHAR(15) NOT NULL,
-  fecha DATETIME NOT NULL,
-  tipo ENUM('Entrada','Salida') NOT NULL,
-  FOREIGN KEY (cedula_cliente) REFERENCES cliente(cedula_cliente) ON UPDATE CASCADE,
-  KEY idx_asistencias_fecha (fecha)
-);
+INSERT INTO `clase` (`id_clase`, `cedula_trabajador`, `nombre`, `descripcion`, `cupos_ocupados`, `capacidad_maxima`, `estado`, `fecha_inicio`, `fecha_fin`) VALUES
+(1, 'T-00000002', 'Yoga', NULL, 0, 20, 'Programado', '2026-04-26 10:00:00', '2026-04-26 11:00:00');
 
--- ========== 10. OTRAS TABLAS (equipos, rutinas, productos, etc.) ==========
-CREATE TABLE equipo (
-  codigo_equipo VARCHAR(20) NOT NULL PRIMARY KEY,
-  nombre VARCHAR(100) NOT NULL,
-  tipo VARCHAR(50),
-  estado ENUM('Operativo','Mantenimiento','Fuera de Servicio') DEFAULT 'Operativo',
-  ubicacion VARCHAR(100),
-  activo TINYINT(1) DEFAULT 1
-);
+-- --------------------------------------------------------
 
-CREATE TABLE mantenimiento_equipo (
-  id_mantenimiento INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  codigo_equipo VARCHAR(20) NOT NULL,
-  fecha DATE NOT NULL,
-  tipo ENUM('Preventivo','Correctivo') NOT NULL,
-  descripcion TEXT,
-  costo DECIMAL(10,2),
-  tecnico VARCHAR(100),
-  FOREIGN KEY (codigo_equipo) REFERENCES equipo(codigo_equipo) ON UPDATE CASCADE
-);
+--
+-- Estructura de tabla para la tabla `cliente`
+--
 
-CREATE TABLE rutina (
-  id_rutina INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  id_dificultad INT(11) NOT NULL,
-  nombre VARCHAR(100) NOT NULL,
-  descripcion TEXT,
-  objetivo TEXT,
-  duracion_semanas INT(11),
-  FOREIGN KEY (id_dificultad) REFERENCES tipo_dificultad(id_dificultad) ON UPDATE CASCADE
-);
+CREATE TABLE `cliente` (
+  `cedula_cliente` varchar(15) NOT NULL,
+  `id_membresia` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE ejercicio (
-  id_ejercicio INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  id_dificultad INT(11),
-  nombre VARCHAR(100),
-  descripcion TEXT,
-  grupo_muscular VARCHAR(100),
-  equipo_requerido TEXT,
-  FOREIGN KEY (id_dificultad) REFERENCES tipo_dificultad(id_dificultad) ON UPDATE CASCADE
-);
+--
+-- Volcado de datos para la tabla `cliente`
+--
 
-CREATE TABLE rutina_asignada (
-  id_asignacion INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  cedula_cliente VARCHAR(15) NOT NULL,
-  id_rutina INT(11) NOT NULL,
-  fecha_asignacion DATE NOT NULL,
-  fecha_inicio DATE,
-  fecha_fin DATE,
-  estado ENUM('Activa','Completada','Cancelada') DEFAULT 'Activa',
-  progreso DECIMAL(5,2) DEFAULT 0.00,
-  FOREIGN KEY (cedula_cliente) REFERENCES cliente(cedula_cliente) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (id_rutina) REFERENCES rutina(id_rutina) ON DELETE CASCADE
-);
-
-CREATE TABLE seguimiento_fisico (
-  id_seguimiento INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  cedula_cliente VARCHAR(15) NOT NULL,
-  fecha DATE,
-  altura_cm DECIMAL(5,2),
-  peso_kg DECIMAL(5,2),
-  cintura_cm DECIMAL(5,2),
-  cadera_cm DECIMAL(5,2),
-  pecho_cm DECIMAL(5,2),
-  muslo_cm DECIMAL(5,2),
-  hombros_cm DECIMAL(5,2),
-  pantorrilla_cm DECIMAL(5,2),
-  FOREIGN KEY (cedula_cliente) REFERENCES cliente(cedula_cliente) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE seguimiento_nutricional (
-  id_seguimiento INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  cedula_cliente VARCHAR(15) NOT NULL,
-  fecha DATE,
-  proteinas_g DECIMAL(5,2),
-  carbohidratos_g DECIMAL(5,2),
-  grasas_g DECIMAL(5,2),
-  calorias_diarias DECIMAL(5,2),
-  FOREIGN KEY (cedula_cliente) REFERENCES cliente(cedula_cliente) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE producto (
-  codigo_producto VARCHAR(20) NOT NULL PRIMARY KEY,
-  nombre VARCHAR(100) NOT NULL,
-  categoria VARCHAR(50),
-  precio_venta DECIMAL(10,2) NOT NULL,
-  stock_minimo INT(11) DEFAULT 0,
-  stock_actual INT(11) NOT NULL DEFAULT 0,
-  unidad_medida VARCHAR(20) DEFAULT 'unidad',
-  activo TINYINT(1) DEFAULT 1
-);
-
-CREATE TABLE venta_producto (
-  id_venta INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  codigo_producto VARCHAR(20) NOT NULL,
-  cedula_cliente VARCHAR(15),
-  cantidad_vendida DECIMAL(10,2),
-  monto_total VARCHAR(100),
-  metodo_pago VARCHAR(50),
-  fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (codigo_producto) REFERENCES producto(codigo_producto) ON UPDATE CASCADE,
-  FOREIGN KEY (cedula_cliente) REFERENCES cliente(cedula_cliente) ON UPDATE CASCADE,
-  KEY idx_ventas_fecha (fecha)
-);
-
-CREATE TABLE analisis_energetico (
-  id_analisis INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  cedula_cliente VARCHAR(15) NOT NULL,
-  fecha DATE NOT NULL,
-  calorias_consumidas INT(11),
-  calorias_gastadas_estimadas INT(11),
-  balance INT(11),
-  diagnostico TEXT,
-  recomendacion TEXT,
-  FOREIGN KEY (cedula_cliente) REFERENCES cliente(cedula_cliente) ON UPDATE CASCADE
-);
-
-CREATE TABLE horario_trabajador (
-  id_horario INT(11) NOT NULL PRIMARY KEY,
-  cedula_trabajador VARCHAR(15) NOT NULL,
-  dia_semana VARCHAR(15),
-  hora_entrada TIME,
-  hora_salida TIME,
-  FOREIGN KEY (cedula_trabajador) REFERENCES trabajador(cedula_trabajador) ON UPDATE CASCADE
-);
-
-CREATE TABLE consulta_asistente (
-  id_consulta INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  id_usuario INT(11),
-  cedula_cliente VARCHAR(15),
-  fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
-  tipo TEXT,
-  pregunta TEXT,
-  respuesta TEXT,
-  FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE,
-  KEY idx_consultas_fecha (fecha)
-);
-
--- ======================================================
--- DATOS DE PRUEBA (incluyendo cliente moroso V-33333333)
--- ======================================================
-
--- Catálogos
-INSERT INTO tipo_rol (id_rol, nombre) VALUES (1, 'Gerente'), (2, 'Entrenador'), (3, 'Recepcionista'), (4, 'Cliente');
-INSERT INTO tipo_dificultad (nombre) VALUES ('Principiante'), ('Intermedio'), ('Avanzado');
-INSERT INTO tipo_membresia (id_tipo, nombre, monto) VALUES (1, 'Mensual', 30.00), (2, 'Trimestral', 80.00), (3, 'Anual', 300.00);
-INSERT INTO estado_membresia (id_estado, nombre) VALUES (1, 'Activo'), (2, 'Vencido'), (3, 'Moroso');
-INSERT INTO tipo_canal (nombre) VALUES ('App'), ('Email'), ('WhatsApp');
-INSERT INTO tipo_notificacion (id_tipo, nombre) VALUES (1, 'Pago vencimiento'), (2, 'Recordatorio clase'), (3, 'Promoción'), (4, 'Otro');
-
--- Personas (clientes y trabajadores)
-INSERT INTO persona (cedula_persona, nombre, apellido, correo, telefono, activo) VALUES
-('V-11111111', 'María', 'Torres', 'maria@example.com', '04121234567', 1),
-('V-22222222', 'Luis', 'Martínez', 'luis@example.com', '04127654321', 1),
-('V-33333333', 'Cliente', 'Moroso', 'moroso@test.com', '04129999999', 1),   -- NUEVO CLIENTE MOROSO
-('T-00000001', 'Carlos', 'Pérez', 'carlos@sofit.com', NULL, 1),
-('T-00000002', 'Ana', 'Gómez', 'ana@sofit.com', NULL, 1);
-
--- Membresías
-INSERT INTO membresia (id_tipo, id_estado, fecha_inicio, fecha_fin) VALUES
-(1, 1, '2026-05-01', '2026-05-31'),   -- Activa (María)
-(2, 2, '2026-03-01', '2026-05-30'),   -- Vencida? pero 2026-05-30 es futuro, no vencida. La dejamos como referencia
-(1, 2, '2026-04-01', '2026-04-30');   -- NUEVO: Membresía vencida para el moroso (fecha_fin anterior a hoy)
-
--- Clientes
-INSERT INTO cliente (cedula_cliente, id_membresia) VALUES
+INSERT INTO `cliente` (`cedula_cliente`, `id_membresia`) VALUES
 ('V-11111111', 1),
 ('V-22222222', 2),
-('V-33333333', 3);   -- Asignamos la membresía vencida
+('V-33333333', 3);
 
--- Trabajadores
-INSERT INTO trabajador (cedula_trabajador, id_rol) VALUES
-('T-00000001', 1),
-('T-00000002', 2);
+-- --------------------------------------------------------
 
--- Usuarios
-INSERT INTO usuario (id_rol, cedula_persona, usuario, contrasena) VALUES
-(2, 'T-00000001', 'carlos.perez', 'admin123'),
-(2, 'T-00000002', 'ana.gomez', 'ana123'),
-(4, 'V-11111111', 'luis.martinez', 'cliente123'),
-(4, 'V-33333333', 'cliente.moroso', 'moroso123');   -- Usuario para el moroso
+--
+-- Estructura de tabla para la tabla `consulta_asistente`
+--
 
--- Pagos de ejemplo
-INSERT INTO pago (cedula_cliente, monto, metodo_pago, estado, fecha_pago, fecha_vencimiento) VALUES
-('V-11111111', 30.00, 'Efectivo', 'Pagado', '2026-05-01', '2026-05-31'),
-('V-22222222', 80.00, 'Transferencia', 'Atrasado', '2026-03-01', '2026-05-30'),
-('V-33333333', 30.00, 'Efectivo', 'Atrasado', '2026-04-01', '2026-04-30');   -- Pago atrasado con vencimiento pasado
+CREATE TABLE `consulta_asistente` (
+  `id_consulta` int(11) NOT NULL,
+  `id_usuario` int(11) DEFAULT NULL,
+  `cedula_cliente` varchar(15) DEFAULT NULL,
+  `fecha` datetime DEFAULT current_timestamp(),
+  `tipo` text DEFAULT NULL,
+  `pregunta` text DEFAULT NULL,
+  `respuesta` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Producto y venta de ejemplo
-INSERT INTO producto (codigo_producto, nombre, precio_venta, stock_actual) VALUES
-('PROT001', 'Proteína Whey', 45.00, 15);
-INSERT INTO venta_producto (codigo_producto, cedula_cliente, cantidad_vendida, metodo_pago, fecha) VALUES
-('PROT001', 'V-11111111', 45.00, 'Efectivo', '2026-04-26 02:55:55');
+-- --------------------------------------------------------
 
--- Clase de ejemplo
-INSERT INTO clase (cedula_trabajador, nombre, capacidad_maxima, fecha_inicio, fecha_fin) VALUES
-('T-00000002', 'Yoga', 20, '2026-04-26 10:00:00', '2026-04-26 11:00:00');
+--
+-- Estructura de tabla para la tabla `ejercicio`
+--
 
--- Inscripción a clase
-INSERT INTO inscripcion_clase (id_clase, cedula_cliente, fecha) VALUES
-(1, 'V-11111111', '2026-04-26 20:03:02');
+CREATE TABLE `ejercicio` (
+  `id_ejercicio` int(11) NOT NULL,
+  `id_dificultad` int(11) DEFAULT NULL,
+  `nombre` varchar(100) DEFAULT NULL,
+  `descripcion` text DEFAULT NULL,
+  `grupo_muscular` varchar(100) DEFAULT NULL,
+  `equipo_requerido` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Equipo y mantenimiento
-INSERT INTO equipo (codigo_equipo, nombre, tipo) VALUES ('EQ-001', 'Cinta de correr', 'Cardio');
-INSERT INTO mantenimiento_equipo (codigo_equipo, fecha, tipo, descripcion) VALUES
-('EQ-001', '2026-03-15', 'Preventivo', 'Lubricación y calibración');
+-- --------------------------------------------------------
 
--- Rutina de ejemplo
-INSERT INTO rutina (id_dificultad, nombre) VALUES (1, 'Fuerza Básica');
+--
+-- Estructura de tabla para la tabla `equipo`
+--
+
+CREATE TABLE `equipo` (
+  `codigo_equipo` varchar(20) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `tipo` varchar(50) DEFAULT NULL,
+  `estado` enum('Operativo','Mantenimiento','Fuera de Servicio') DEFAULT 'Operativo',
+  `ubicacion` varchar(100) DEFAULT NULL,
+  `activo` tinyint(1) DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `equipo`
+--
+
+INSERT INTO `equipo` (`codigo_equipo`, `nombre`, `tipo`, `estado`, `ubicacion`, `activo`) VALUES
+('EQ-001', 'Cinta de correr', 'Cardio', 'Operativo', NULL, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `estado_membresia`
+--
+
+CREATE TABLE `estado_membresia` (
+  `id_estado` int(11) NOT NULL,
+  `nombre` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `estado_membresia`
+--
+
+INSERT INTO `estado_membresia` (`id_estado`, `nombre`) VALUES
+(1, 'Activo'),
+(2, 'Vencido'),
+(3, 'Moroso');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `horario_trabajador`
+--
+
+CREATE TABLE `horario_trabajador` (
+  `id_horario` int(11) NOT NULL,
+  `cedula_trabajador` varchar(15) NOT NULL,
+  `dia_semana` varchar(15) DEFAULT NULL,
+  `hora_entrada` time DEFAULT NULL,
+  `hora_salida` time DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `inscripcion_clase`
+--
+
+CREATE TABLE `inscripcion_clase` (
+  `id_inscripcion` int(11) NOT NULL,
+  `id_clase` int(11) NOT NULL,
+  `cedula_cliente` varchar(15) NOT NULL,
+  `estado` enum('Activo','Cancelado') DEFAULT 'Activo',
+  `fecha` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `inscripcion_clase`
+--
+
+INSERT INTO `inscripcion_clase` (`id_inscripcion`, `id_clase`, `cedula_cliente`, `estado`, `fecha`) VALUES
+(1, 1, 'V-11111111', 'Activo', '2026-04-26 20:03:02');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `mantenimiento_equipo`
+--
+
+CREATE TABLE `mantenimiento_equipo` (
+  `id_mantenimiento` int(11) NOT NULL,
+  `codigo_equipo` varchar(20) NOT NULL,
+  `fecha` date NOT NULL,
+  `tipo` enum('Preventivo','Correctivo') NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `costo` decimal(10,2) DEFAULT NULL,
+  `tecnico` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `mantenimiento_equipo`
+--
+
+INSERT INTO `mantenimiento_equipo` (`id_mantenimiento`, `codigo_equipo`, `fecha`, `tipo`, `descripcion`, `costo`, `tecnico`) VALUES
+(1, 'EQ-001', '2026-03-15', 'Preventivo', 'Lubricación y calibración', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `membresia`
+--
+
+CREATE TABLE `membresia` (
+  `id_membresia` int(11) NOT NULL,
+  `id_tipo` int(11) NOT NULL,
+  `id_estado` int(11) NOT NULL DEFAULT 3,
+  `fecha_inicio` date DEFAULT NULL,
+  `fecha_fin` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `membresia`
+--
+
+INSERT INTO `membresia` (`id_membresia`, `id_tipo`, `id_estado`, `fecha_inicio`, `fecha_fin`) VALUES
+(1, 1, 1, '2026-05-01', '2026-05-31'),
+(2, 2, 2, '2026-03-01', '2026-05-30'),
+(3, 1, 2, '2026-04-01', '2026-04-30'),
+(4, 1, 1, '2026-05-24', '2026-05-30'),
+(5, 1, 1, '2026-05-17', '2026-05-30');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `notificacion`
+--
+
+CREATE TABLE `notificacion` (
+  `id_notificacion` int(11) NOT NULL,
+  `id_tipo_notificacion` int(11) NOT NULL,
+  `id_tipo_canal` int(11) NOT NULL,
+  `cedula_cliente` varchar(15) NOT NULL,
+  `mensaje` text NOT NULL,
+  `estado` enum('Pendiente','Enviado','Fallido') DEFAULT 'Pendiente',
+  `fecha_programada` datetime DEFAULT NULL,
+  `fecha_envio` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `pago`
+--
+
+CREATE TABLE `pago` (
+  `id_pago` int(11) NOT NULL,
+  `cedula_cliente` varchar(15) NOT NULL,
+  `monto` decimal(10,2) NOT NULL,
+  `metodo_pago` varchar(50) DEFAULT NULL,
+  `comprobante_url` varchar(255) DEFAULT NULL,
+  `estado` enum('Pagado','Pendiente','Atrasado') DEFAULT 'Pagado',
+  `fecha_pago` date NOT NULL,
+  `fecha_vencimiento` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `pago`
+--
+
+INSERT INTO `pago` (`id_pago`, `cedula_cliente`, `monto`, `metodo_pago`, `comprobante_url`, `estado`, `fecha_pago`, `fecha_vencimiento`) VALUES
+(1, 'V-11111111', 30.00, 'Efectivo', NULL, 'Pagado', '2026-05-01', '2026-05-31'),
+(2, 'V-22222222', 80.00, 'Transferencia', NULL, 'Atrasado', '2026-03-01', '2026-05-30'),
+(3, 'V-33333333', 30.00, 'Efectivo', NULL, 'Atrasado', '2026-04-01', '2026-04-30');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `persona`
+--
+
+CREATE TABLE `persona` (
+  `cedula_persona` varchar(15) NOT NULL,
+  `nombre` varchar(50) NOT NULL,
+  `apellido` varchar(50) NOT NULL,
+  `correo` varchar(100) DEFAULT NULL,
+  `telefono` varchar(20) DEFAULT NULL,
+  `direccion` text DEFAULT NULL,
+  `fecha_nacimiento` date DEFAULT NULL,
+  `fecha_registro` datetime DEFAULT NULL,
+  `activo` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `persona`
+--
+
+INSERT INTO `persona` (`cedula_persona`, `nombre`, `apellido`, `correo`, `telefono`, `direccion`, `fecha_nacimiento`, `fecha_registro`, `activo`) VALUES
+('T-00000001', 'Carlos', 'Pérez', 'carlos@sofit.com', NULL, NULL, NULL, NULL, 1),
+('T-00000002', 'Ana', 'Gómez', 'ana@sofit.com', NULL, NULL, NULL, NULL, 1),
+('V-11111111', 'María', 'Torres', 'maria@example.com', '0412-1234567', NULL, '2026-05-17', '2026-05-17 01:11:43', 1),
+('V-22222222', 'Luis', 'Martínez', 'luis@example.com', '0412-7654321', NULL, '2026-05-17', '2026-05-17 01:11:52', 1),
+('V-25125152', 'afas', 'saf', 'gasgsaas@gmail.com', '0412-2152152', 'asfa', '2026-05-22', '2026-05-17 00:53:17', 1),
+('V-33333333', 'Cliente', 'Moroso', 'moroso@test.com', '0412-4471891', NULL, '2026-05-15', '2026-05-17 01:03:55', 1),
+('V-93682363', 'Pan', 'Waos', 'gasgsaas@gmail.com', '0412-2521512', 'asfas', '2026-05-17', '2026-05-17 00:52:10', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `producto`
+--
+
+CREATE TABLE `producto` (
+  `codigo_producto` varchar(20) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `categoria` varchar(50) DEFAULT NULL,
+  `precio_venta` decimal(10,2) NOT NULL,
+  `stock_minimo` int(11) DEFAULT 0,
+  `stock_actual` int(11) NOT NULL DEFAULT 0,
+  `unidad_medida` varchar(20) DEFAULT 'unidad',
+  `activo` tinyint(1) DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `producto`
+--
+
+INSERT INTO `producto` (`codigo_producto`, `nombre`, `categoria`, `precio_venta`, `stock_minimo`, `stock_actual`, `unidad_medida`, `activo`) VALUES
+('PROT001', 'Proteína Whey', NULL, 45.00, 0, 15, 'unidad', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `rutina`
+--
+
+CREATE TABLE `rutina` (
+  `id_rutina` int(11) NOT NULL,
+  `id_dificultad` int(11) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `objetivo` text DEFAULT NULL,
+  `duracion_semanas` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `rutina`
+--
+
+INSERT INTO `rutina` (`id_rutina`, `id_dificultad`, `nombre`, `descripcion`, `objetivo`, `duracion_semanas`) VALUES
+(1, 1, 'Fuerza Básica', NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `rutina_asignada`
+--
+
+CREATE TABLE `rutina_asignada` (
+  `id_asignacion` int(11) NOT NULL,
+  `cedula_cliente` varchar(15) NOT NULL,
+  `id_rutina` int(11) NOT NULL,
+  `fecha_asignacion` date NOT NULL,
+  `fecha_inicio` date DEFAULT NULL,
+  `fecha_fin` date DEFAULT NULL,
+  `estado` enum('Activa','Completada','Cancelada') DEFAULT 'Activa',
+  `progreso` decimal(5,2) DEFAULT 0.00
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `seguimiento_fisico`
+--
+
+CREATE TABLE `seguimiento_fisico` (
+  `id_seguimiento` int(11) NOT NULL,
+  `cedula_cliente` varchar(15) NOT NULL,
+  `fecha` date DEFAULT NULL,
+  `altura_cm` decimal(5,2) DEFAULT NULL,
+  `peso_kg` decimal(5,2) DEFAULT NULL,
+  `cintura_cm` decimal(5,2) DEFAULT NULL,
+  `cadera_cm` decimal(5,2) DEFAULT NULL,
+  `pecho_cm` decimal(5,2) DEFAULT NULL,
+  `muslo_cm` decimal(5,2) DEFAULT NULL,
+  `hombros_cm` decimal(5,2) DEFAULT NULL,
+  `pantorrilla_cm` decimal(5,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `seguimiento_nutricional`
+--
+
+CREATE TABLE `seguimiento_nutricional` (
+  `id_seguimiento` int(11) NOT NULL,
+  `cedula_cliente` varchar(15) NOT NULL,
+  `fecha` date DEFAULT NULL,
+  `proteinas_g` decimal(5,2) DEFAULT NULL,
+  `carbohidratos_g` decimal(5,2) DEFAULT NULL,
+  `grasas_g` decimal(5,2) DEFAULT NULL,
+  `calorias_diarias` decimal(5,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipo_canal`
+--
+
+CREATE TABLE `tipo_canal` (
+  `id_tipo` int(11) NOT NULL,
+  `nombre` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_canal`
+--
+
+INSERT INTO `tipo_canal` (`id_tipo`, `nombre`) VALUES
+(1, 'App'),
+(2, 'Email'),
+(3, 'WhatsApp');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipo_dificultad`
+--
+
+CREATE TABLE `tipo_dificultad` (
+  `id_dificultad` int(11) NOT NULL,
+  `nombre` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_dificultad`
+--
+
+INSERT INTO `tipo_dificultad` (`id_dificultad`, `nombre`) VALUES
+(1, 'Principiante'),
+(2, 'Intermedio'),
+(3, 'Avanzado');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipo_membresia`
+--
+
+CREATE TABLE `tipo_membresia` (
+  `id_tipo` int(11) NOT NULL COMMENT '1=Mensual,2=Trimestral,3=Anual',
+  `nombre` varchar(100) NOT NULL,
+  `monto` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_membresia`
+--
+
+INSERT INTO `tipo_membresia` (`id_tipo`, `nombre`, `monto`) VALUES
+(1, 'Mensual', 30.00),
+(2, 'Trimestral', 80.00),
+(3, 'Anual', 300.00);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipo_notificacion`
+--
+
+CREATE TABLE `tipo_notificacion` (
+  `id_tipo` int(11) NOT NULL,
+  `nombre` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_notificacion`
+--
+
+INSERT INTO `tipo_notificacion` (`id_tipo`, `nombre`) VALUES
+(1, 'Pago vencimiento'),
+(2, 'Recordatorio clase'),
+(3, 'Promoción'),
+(4, 'Otro');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipo_rol`
+--
+
+CREATE TABLE `tipo_rol` (
+  `id_rol` int(11) NOT NULL,
+  `nombre` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_rol`
+--
+
+INSERT INTO `tipo_rol` (`id_rol`, `nombre`) VALUES
+(1, 'Gerente'),
+(2, 'Entrenador'),
+(3, 'Recepcionista'),
+(4, 'Cliente');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `trabajador`
+--
+
+CREATE TABLE `trabajador` (
+  `cedula_trabajador` varchar(15) NOT NULL,
+  `id_rol` int(11) NOT NULL,
+  `salario` decimal(10,2) DEFAULT NULL,
+  `fecha_contratacion` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `trabajador`
+--
+
+INSERT INTO `trabajador` (`cedula_trabajador`, `id_rol`, `salario`, `fecha_contratacion`) VALUES
+('T-00000001', 1, NULL, NULL),
+('T-00000002', 2, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuario`
+--
+
+CREATE TABLE `usuario` (
+  `id_usuario` int(11) NOT NULL,
+  `id_rol` int(11) NOT NULL,
+  `cedula_persona` varchar(15) NOT NULL,
+  `usuario` varchar(50) NOT NULL,
+  `contrasena` varchar(255) NOT NULL,
+  `ultimo_acceso` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `usuario`
+--
+
+INSERT INTO `usuario` (`id_usuario`, `id_rol`, `cedula_persona`, `usuario`, `contrasena`, `ultimo_acceso`) VALUES
+(1, 2, 'T-00000001', 'carlos.perez', 'admin123', NULL),
+(2, 2, 'T-00000002', 'ana.gomez', 'ana123', NULL),
+(3, 4, 'V-11111111', 'luis.martinez', 'cliente123', NULL),
+(4, 4, 'V-33333333', 'cliente.moroso', 'moroso123', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `venta_producto`
+--
+
+CREATE TABLE `venta_producto` (
+  `id_venta` int(11) NOT NULL,
+  `codigo_producto` varchar(20) NOT NULL,
+  `cedula_cliente` varchar(15) DEFAULT NULL,
+  `cantidad_vendida` decimal(10,2) DEFAULT NULL,
+  `monto_total` varchar(100) DEFAULT NULL,
+  `metodo_pago` varchar(50) DEFAULT NULL,
+  `fecha` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `venta_producto`
+--
+
+INSERT INTO `venta_producto` (`id_venta`, `codigo_producto`, `cedula_cliente`, `cantidad_vendida`, `monto_total`, `metodo_pago`, `fecha`) VALUES
+(1, 'PROT001', 'V-11111111', 45.00, NULL, 'Efectivo', '2026-04-26 02:55:55');
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `analisis_energetico`
+--
+ALTER TABLE `analisis_energetico`
+  ADD PRIMARY KEY (`id_analisis`),
+  ADD KEY `cedula_cliente` (`cedula_cliente`);
+
+--
+-- Indices de la tabla `asistencia_clase`
+--
+ALTER TABLE `asistencia_clase`
+  ADD PRIMARY KEY (`id_asistencia`),
+  ADD KEY `id_clase` (`id_clase`),
+  ADD KEY `cedula_cliente` (`cedula_cliente`);
+
+--
+-- Indices de la tabla `asistencia_gimnasio`
+--
+ALTER TABLE `asistencia_gimnasio`
+  ADD PRIMARY KEY (`id_asistencia`),
+  ADD KEY `cedula_cliente` (`cedula_cliente`),
+  ADD KEY `idx_asistencias_fecha` (`fecha`);
+
+--
+-- Indices de la tabla `clase`
+--
+ALTER TABLE `clase`
+  ADD PRIMARY KEY (`id_clase`),
+  ADD KEY `cedula_trabajador` (`cedula_trabajador`);
+
+--
+-- Indices de la tabla `cliente`
+--
+ALTER TABLE `cliente`
+  ADD PRIMARY KEY (`cedula_cliente`),
+  ADD KEY `id_membresia` (`id_membresia`);
+
+--
+-- Indices de la tabla `consulta_asistente`
+--
+ALTER TABLE `consulta_asistente`
+  ADD PRIMARY KEY (`id_consulta`),
+  ADD KEY `id_usuario` (`id_usuario`),
+  ADD KEY `idx_consultas_fecha` (`fecha`);
+
+--
+-- Indices de la tabla `ejercicio`
+--
+ALTER TABLE `ejercicio`
+  ADD PRIMARY KEY (`id_ejercicio`),
+  ADD KEY `id_dificultad` (`id_dificultad`);
+
+--
+-- Indices de la tabla `equipo`
+--
+ALTER TABLE `equipo`
+  ADD PRIMARY KEY (`codigo_equipo`);
+
+--
+-- Indices de la tabla `estado_membresia`
+--
+ALTER TABLE `estado_membresia`
+  ADD PRIMARY KEY (`id_estado`);
+
+--
+-- Indices de la tabla `horario_trabajador`
+--
+ALTER TABLE `horario_trabajador`
+  ADD PRIMARY KEY (`id_horario`),
+  ADD KEY `cedula_trabajador` (`cedula_trabajador`);
+
+--
+-- Indices de la tabla `inscripcion_clase`
+--
+ALTER TABLE `inscripcion_clase`
+  ADD PRIMARY KEY (`id_inscripcion`),
+  ADD UNIQUE KEY `uk_cliente_clase` (`cedula_cliente`,`id_clase`),
+  ADD KEY `id_clase` (`id_clase`);
+
+--
+-- Indices de la tabla `mantenimiento_equipo`
+--
+ALTER TABLE `mantenimiento_equipo`
+  ADD PRIMARY KEY (`id_mantenimiento`),
+  ADD KEY `codigo_equipo` (`codigo_equipo`);
+
+--
+-- Indices de la tabla `membresia`
+--
+ALTER TABLE `membresia`
+  ADD PRIMARY KEY (`id_membresia`),
+  ADD KEY `id_tipo` (`id_tipo`),
+  ADD KEY `id_estado` (`id_estado`);
+
+--
+-- Indices de la tabla `notificacion`
+--
+ALTER TABLE `notificacion`
+  ADD PRIMARY KEY (`id_notificacion`),
+  ADD KEY `cedula_cliente` (`cedula_cliente`),
+  ADD KEY `id_tipo_notificacion` (`id_tipo_notificacion`),
+  ADD KEY `id_tipo_canal` (`id_tipo_canal`);
+
+--
+-- Indices de la tabla `pago`
+--
+ALTER TABLE `pago`
+  ADD PRIMARY KEY (`id_pago`),
+  ADD KEY `cedula_cliente` (`cedula_cliente`);
+
+--
+-- Indices de la tabla `persona`
+--
+ALTER TABLE `persona`
+  ADD PRIMARY KEY (`cedula_persona`);
+
+--
+-- Indices de la tabla `producto`
+--
+ALTER TABLE `producto`
+  ADD PRIMARY KEY (`codigo_producto`);
+
+--
+-- Indices de la tabla `rutina`
+--
+ALTER TABLE `rutina`
+  ADD PRIMARY KEY (`id_rutina`),
+  ADD KEY `id_dificultad` (`id_dificultad`);
+
+--
+-- Indices de la tabla `rutina_asignada`
+--
+ALTER TABLE `rutina_asignada`
+  ADD PRIMARY KEY (`id_asignacion`),
+  ADD KEY `cedula_cliente` (`cedula_cliente`),
+  ADD KEY `id_rutina` (`id_rutina`);
+
+--
+-- Indices de la tabla `seguimiento_fisico`
+--
+ALTER TABLE `seguimiento_fisico`
+  ADD PRIMARY KEY (`id_seguimiento`),
+  ADD KEY `cedula_cliente` (`cedula_cliente`);
+
+--
+-- Indices de la tabla `seguimiento_nutricional`
+--
+ALTER TABLE `seguimiento_nutricional`
+  ADD PRIMARY KEY (`id_seguimiento`),
+  ADD KEY `cedula_cliente` (`cedula_cliente`);
+
+--
+-- Indices de la tabla `tipo_canal`
+--
+ALTER TABLE `tipo_canal`
+  ADD PRIMARY KEY (`id_tipo`);
+
+--
+-- Indices de la tabla `tipo_dificultad`
+--
+ALTER TABLE `tipo_dificultad`
+  ADD PRIMARY KEY (`id_dificultad`);
+
+--
+-- Indices de la tabla `tipo_membresia`
+--
+ALTER TABLE `tipo_membresia`
+  ADD PRIMARY KEY (`id_tipo`);
+
+--
+-- Indices de la tabla `tipo_notificacion`
+--
+ALTER TABLE `tipo_notificacion`
+  ADD PRIMARY KEY (`id_tipo`);
+
+--
+-- Indices de la tabla `tipo_rol`
+--
+ALTER TABLE `tipo_rol`
+  ADD PRIMARY KEY (`id_rol`);
+
+--
+-- Indices de la tabla `trabajador`
+--
+ALTER TABLE `trabajador`
+  ADD PRIMARY KEY (`cedula_trabajador`),
+  ADD KEY `id_rol` (`id_rol`);
+
+--
+-- Indices de la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  ADD PRIMARY KEY (`id_usuario`),
+  ADD UNIQUE KEY `usuario` (`usuario`),
+  ADD KEY `cedula_persona` (`cedula_persona`),
+  ADD KEY `id_rol` (`id_rol`);
+
+--
+-- Indices de la tabla `venta_producto`
+--
+ALTER TABLE `venta_producto`
+  ADD PRIMARY KEY (`id_venta`),
+  ADD KEY `codigo_producto` (`codigo_producto`),
+  ADD KEY `cedula_cliente` (`cedula_cliente`),
+  ADD KEY `idx_ventas_fecha` (`fecha`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `analisis_energetico`
+--
+ALTER TABLE `analisis_energetico`
+  MODIFY `id_analisis` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `asistencia_clase`
+--
+ALTER TABLE `asistencia_clase`
+  MODIFY `id_asistencia` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `asistencia_gimnasio`
+--
+ALTER TABLE `asistencia_gimnasio`
+  MODIFY `id_asistencia` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `clase`
+--
+ALTER TABLE `clase`
+  MODIFY `id_clase` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `consulta_asistente`
+--
+ALTER TABLE `consulta_asistente`
+  MODIFY `id_consulta` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `ejercicio`
+--
+ALTER TABLE `ejercicio`
+  MODIFY `id_ejercicio` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `inscripcion_clase`
+--
+ALTER TABLE `inscripcion_clase`
+  MODIFY `id_inscripcion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `mantenimiento_equipo`
+--
+ALTER TABLE `mantenimiento_equipo`
+  MODIFY `id_mantenimiento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `membresia`
+--
+ALTER TABLE `membresia`
+  MODIFY `id_membresia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT de la tabla `notificacion`
+--
+ALTER TABLE `notificacion`
+  MODIFY `id_notificacion` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `pago`
+--
+ALTER TABLE `pago`
+  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `rutina`
+--
+ALTER TABLE `rutina`
+  MODIFY `id_rutina` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `rutina_asignada`
+--
+ALTER TABLE `rutina_asignada`
+  MODIFY `id_asignacion` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `seguimiento_fisico`
+--
+ALTER TABLE `seguimiento_fisico`
+  MODIFY `id_seguimiento` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `seguimiento_nutricional`
+--
+ALTER TABLE `seguimiento_nutricional`
+  MODIFY `id_seguimiento` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `tipo_canal`
+--
+ALTER TABLE `tipo_canal`
+  MODIFY `id_tipo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `tipo_dificultad`
+--
+ALTER TABLE `tipo_dificultad`
+  MODIFY `id_dificultad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de la tabla `venta_producto`
+--
+ALTER TABLE `venta_producto`
+  MODIFY `id_venta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `analisis_energetico`
+--
+ALTER TABLE `analisis_energetico`
+  ADD CONSTRAINT `analisis_energetico_ibfk_1` FOREIGN KEY (`cedula_cliente`) REFERENCES `cliente` (`cedula_cliente`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `asistencia_clase`
+--
+ALTER TABLE `asistencia_clase`
+  ADD CONSTRAINT `asistencia_clase_ibfk_1` FOREIGN KEY (`id_clase`) REFERENCES `clase` (`id_clase`) ON DELETE CASCADE,
+  ADD CONSTRAINT `asistencia_clase_ibfk_2` FOREIGN KEY (`cedula_cliente`) REFERENCES `cliente` (`cedula_cliente`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `asistencia_gimnasio`
+--
+ALTER TABLE `asistencia_gimnasio`
+  ADD CONSTRAINT `asistencia_gimnasio_ibfk_1` FOREIGN KEY (`cedula_cliente`) REFERENCES `cliente` (`cedula_cliente`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `clase`
+--
+ALTER TABLE `clase`
+  ADD CONSTRAINT `clase_ibfk_1` FOREIGN KEY (`cedula_trabajador`) REFERENCES `trabajador` (`cedula_trabajador`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `cliente`
+--
+ALTER TABLE `cliente`
+  ADD CONSTRAINT `cliente_ibfk_1` FOREIGN KEY (`cedula_cliente`) REFERENCES `persona` (`cedula_persona`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `cliente_ibfk_2` FOREIGN KEY (`id_membresia`) REFERENCES `membresia` (`id_membresia`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `consulta_asistente`
+--
+ALTER TABLE `consulta_asistente`
+  ADD CONSTRAINT `consulta_asistente_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `ejercicio`
+--
+ALTER TABLE `ejercicio`
+  ADD CONSTRAINT `ejercicio_ibfk_1` FOREIGN KEY (`id_dificultad`) REFERENCES `tipo_dificultad` (`id_dificultad`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `horario_trabajador`
+--
+ALTER TABLE `horario_trabajador`
+  ADD CONSTRAINT `horario_trabajador_ibfk_1` FOREIGN KEY (`cedula_trabajador`) REFERENCES `trabajador` (`cedula_trabajador`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `inscripcion_clase`
+--
+ALTER TABLE `inscripcion_clase`
+  ADD CONSTRAINT `inscripcion_clase_ibfk_1` FOREIGN KEY (`id_clase`) REFERENCES `clase` (`id_clase`) ON DELETE CASCADE,
+  ADD CONSTRAINT `inscripcion_clase_ibfk_2` FOREIGN KEY (`cedula_cliente`) REFERENCES `cliente` (`cedula_cliente`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `mantenimiento_equipo`
+--
+ALTER TABLE `mantenimiento_equipo`
+  ADD CONSTRAINT `mantenimiento_equipo_ibfk_1` FOREIGN KEY (`codigo_equipo`) REFERENCES `equipo` (`codigo_equipo`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `membresia`
+--
+ALTER TABLE `membresia`
+  ADD CONSTRAINT `membresia_ibfk_1` FOREIGN KEY (`id_tipo`) REFERENCES `tipo_membresia` (`id_tipo`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `membresia_ibfk_2` FOREIGN KEY (`id_estado`) REFERENCES `estado_membresia` (`id_estado`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `notificacion`
+--
+ALTER TABLE `notificacion`
+  ADD CONSTRAINT `notificacion_ibfk_1` FOREIGN KEY (`cedula_cliente`) REFERENCES `cliente` (`cedula_cliente`) ON DELETE CASCADE,
+  ADD CONSTRAINT `notificacion_ibfk_2` FOREIGN KEY (`id_tipo_notificacion`) REFERENCES `tipo_notificacion` (`id_tipo`),
+  ADD CONSTRAINT `notificacion_ibfk_3` FOREIGN KEY (`id_tipo_canal`) REFERENCES `tipo_canal` (`id_tipo`);
+
+--
+-- Filtros para la tabla `pago`
+--
+ALTER TABLE `pago`
+  ADD CONSTRAINT `pago_ibfk_1` FOREIGN KEY (`cedula_cliente`) REFERENCES `cliente` (`cedula_cliente`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `rutina`
+--
+ALTER TABLE `rutina`
+  ADD CONSTRAINT `rutina_ibfk_1` FOREIGN KEY (`id_dificultad`) REFERENCES `tipo_dificultad` (`id_dificultad`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `rutina_asignada`
+--
+ALTER TABLE `rutina_asignada`
+  ADD CONSTRAINT `rutina_asignada_ibfk_1` FOREIGN KEY (`cedula_cliente`) REFERENCES `cliente` (`cedula_cliente`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `rutina_asignada_ibfk_2` FOREIGN KEY (`id_rutina`) REFERENCES `rutina` (`id_rutina`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `seguimiento_fisico`
+--
+ALTER TABLE `seguimiento_fisico`
+  ADD CONSTRAINT `seguimiento_fisico_ibfk_1` FOREIGN KEY (`cedula_cliente`) REFERENCES `cliente` (`cedula_cliente`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `seguimiento_nutricional`
+--
+ALTER TABLE `seguimiento_nutricional`
+  ADD CONSTRAINT `seguimiento_nutricional_ibfk_1` FOREIGN KEY (`cedula_cliente`) REFERENCES `cliente` (`cedula_cliente`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `trabajador`
+--
+ALTER TABLE `trabajador`
+  ADD CONSTRAINT `trabajador_ibfk_1` FOREIGN KEY (`cedula_trabajador`) REFERENCES `persona` (`cedula_persona`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `trabajador_ibfk_2` FOREIGN KEY (`id_rol`) REFERENCES `tipo_rol` (`id_rol`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  ADD CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`cedula_persona`) REFERENCES `persona` (`cedula_persona`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `usuario_ibfk_2` FOREIGN KEY (`id_rol`) REFERENCES `tipo_rol` (`id_rol`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `venta_producto`
+--
+ALTER TABLE `venta_producto`
+  ADD CONSTRAINT `venta_producto_ibfk_1` FOREIGN KEY (`codigo_producto`) REFERENCES `producto` (`codigo_producto`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `venta_producto_ibfk_2` FOREIGN KEY (`cedula_cliente`) REFERENCES `cliente` (`cedula_cliente`) ON UPDATE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
