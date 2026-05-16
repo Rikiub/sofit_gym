@@ -1,22 +1,22 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controllers;
 
-use App\Controllers\BaseControlador;
+use App\Controllers\BaseController;
 
-class ErrorControlador extends BaseControlador
+class ErrorController extends BaseController
 {
     public function index(): string
     {
-        $status = $this->response->getQueryParams()['status'] ?? '';
-        $mensaje = '';
+        $status = $_GET['status'] ?? '';
+        $message = '';
 
         if ($status == '404') {
-            $mensaje = '404: Pagina no encontrada';
+            $message = '404: Pagina no encontrada';
         } else if ($status == '405') {
-            $mensaje = '405: Metodo no soportado';
+            $message = '405: Metodo no soportado';
         }
 
-        return $this->render('error/index', ['mensaje' => $mensaje]);
+        return $this->render('error', ['message' => $message]);
     }
 }

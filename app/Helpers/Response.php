@@ -5,17 +5,33 @@ namespace App\Helpers;
 use CuyZ\Valinor\Normalizer\Normalizer;
 use Exception;
 
+/**
+ * Helper para manejar peticiones globales
+ */
 class Response
 {
     public const CONTENT_JSON = 'application/json';
 
     public function __construct(
-        public ?Normalizer $normalizer = null
+        private ?Normalizer $normalizer
     ) {}
 
+    /**
+     * Obtiene los datos del $_GET.
+     * Este metodo existe solo en caso de que en el futuro
+     * se implemente mayor funcionalidad
+     */
     public static function getQueryParams(): array
     {
         return $_GET;
+    }
+
+    /**
+     * Convierte un array en una URL query como: ?page=inicio&action=index
+     */
+    public static function buildQueryParams(array $data): string
+    {
+        return http_build_query($data);
     }
 
     /**
@@ -45,10 +61,13 @@ class Response
         return null;
     }
 
-    public static function redirect(string $url, int $status = 302): void
+    /**
+     * Redirigir a una pagina segun los query params
+     */
+    public static function redirect(array $queryParams, int $status = 302): void
     {
         http_response_code($status);
-        header("Location: $url");
+        header('Location: ?' . Response::buildQueryParams($queryParams));
     }
 
     /**

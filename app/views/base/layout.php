@@ -1,5 +1,13 @@
 <?php
-$this->layout('base', ['titulo' => $titulo ?? null]);
+
+/**
+ * Layout principal que incorpora la barra lateral.
+ * Es el que se utiliza en la mayoria de vistas.
+ *
+ * Para utilizarlo, escribe $this->layout('layout')
+ * En cualquier vista.
+ */
+$this->layout('base', ['title' => $titulo ?? null]);
 $this->pushCss('/assets/base/layout/layout.css');
 ?>
 

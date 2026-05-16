@@ -2,17 +2,15 @@
 
 namespace App\Models;
 
-use App\Configs\Database;
+use CuyZ\Valinor\Mapper\TreeMapper;
 use PDO;
 
 abstract class BaseModel
 {
-    protected PDO $pdo;
-
-    public function __construct()
-    {
-        $this->pdo = Database::getConnection();
-    }
+    public function __construct(
+        protected PDO $pdo,
+        protected TreeMapper $mapper,
+    ) {}
 
     /**
      * Inserta una fila en una tabla.

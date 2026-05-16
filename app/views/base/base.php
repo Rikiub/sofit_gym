@@ -58,7 +58,7 @@
         }
     </style>
 
-    <title><?= $this->e($titulo ?? 'Sofit Gym') ?></title>
+    <title><?= $this->e($title ?? 'Sofit Gym') ?></title>
 </head>
 
 <body>

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controllers;
 
-use App\Controllers\BaseControlador;
+use App\Controllers\BaseController;
 
-class InicioControlador extends BaseControlador
+class InicioController extends BaseController
 {
     public function index(): string
     {
-        return $this->render('inicio/index');
+        return $this->render('inicio');
     }
 }

@@ -1,16 +1,21 @@
 <?php
 
-namespace App\Controller\Clientes;
+namespace App\Controllers;
 
-use App\Controllers\BaseControlador;
-use App\Model\Clientes\ClienteDTO;
-use App\Model\Clientes\ClientesModelo;
+use App\Controllers\BaseController;
+use App\Models\ClienteDTO;
+use App\Models\ClientesModel;
+use App\Models\SeguimientoFisicoDTO;
+use App\Models\SeguimientoFisicoModel;
 
-class ClientesControlador extends BaseControlador
+class ClientesController extends BaseController
 {
     public function __construct(
-        private $modelo = new ClientesModelo(),
+        private ClientesModel $clientesModelo,
+        private SeguimientoFisicoModel $segModelo
     ) {}
+
+    // CLIENTES
 
     public function index(): string
     {
@@ -19,11 +24,15 @@ class ClientesControlador extends BaseControlador
         ]);
     }
 
-    public function showCliente(array $params): string
+    // CLIENTES: JSON API
+
+    public function showCliente(): string
     {
-        $cliente = $this->modelo->findByCedula($params['cedula']);
+        $cedula = $_GET['cedula'] ?? null;
+
+        $cliente = $this->clientesModelo->findByCedula($cedula);
         if (!$cliente) {
-            $this->response->redirect('/error?status=404', 404);
+            $this->redirectToError();
         }
 
         return $this->render('clientes/item', [
@@ -34,8 +43,8 @@ class ClientesControlador extends BaseControlador
 
     private function formMeta(): array
     {
-        $tipos = $this->modelo->getTiposMembresia();
-        $estados = $this->modelo->getEstadosMembresia();
+        $tipos = $this->clientesModelo->getTiposMembresia();
+        $estados = $this->clientesModelo->getEstadosMembresia();
         return [
             'tipos' => $tipos,
             'estados' => $estados,
@@ -44,13 +53,14 @@ class ClientesControlador extends BaseControlador
 
     public function getClientes(): string
     {
-        $clientes = $this->modelo->getAll();
+        $clientes = $this->clientesModelo->getAll();
         return $this->response->json($clientes);
     }
 
-    public function findCliente(array $params): ?string
+    public function findCliente(): ?string
     {
-        $cliente = $this->modelo->findByCedula($params['cedula']);
+        $cedula = $_GET['cedula'] ?? null;
+        $cliente = $this->clientesModelo->findByCedula($cedula);
 
         if (!$cliente) {
             return $this->response->empty(404);
@@ -59,9 +69,6 @@ class ClientesControlador extends BaseControlador
         return $this->response->json($cliente);
     }
 
-    /**
-     * Crear
-     */
     public function insertCliente(): string
     {
         $body = $this->response->getParsedBody();
@@ -70,20 +77,17 @@ class ClientesControlador extends BaseControlador
         $cliente = $this->mapper->map(ClienteDTO::class, $body);
 
         // Verificar que el cliente no exista
-        if ($this->modelo->findByCedula($cliente->cedula)) {
+        if ($this->clientesModelo->findByCedula($cliente->cedula)) {
             return $this->response->json(['message' => 'El cliente ya existe'], 400);
         }
 
         // Crea el cliente
-        $cliente = $this->modelo->insertCliente($cliente);
+        $cliente = $this->clientesModelo->insertCliente($cliente);
 
         // Enviar JSON
         return $this->response->json($cliente, 201);
     }
 
-    /**
-     * Modificar
-     */
     public function updateCliente(array $params): string
     {
         $cedula = $params['cedula'];
@@ -93,27 +97,86 @@ class ClientesControlador extends BaseControlador
 
         $cliente = $this->mapper->map(ClienteDTO::class, $body);
 
-        if (!$this->modelo->findByCedula($cedula)) {
+        if (!$this->clientesModelo->findByCedula($cedula)) {
             return $this->response->json(['message' => 'El cliente no existe'], 400);
         }
 
-        $cliente = $this->modelo->updateCliente($cliente);
+        $cliente = $this->clientesModelo->updateCliente($cliente);
         return $this->response->json($cliente, 201);
     }
 
-    /**
-     * Eliminar
-     */
     public function deleteCliente(array $params): string|null
     {
         $cedula = $params['cedula'];
 
-        if (!$this->modelo->findByCedula($cedula)) {
+        if (!$this->clientesModelo->findByCedula($cedula)) {
             return $this->response->json(['message' => 'El cliente no existe'], 404);
         }
 
-        $this->modelo->deleteByCedula($cedula);
+        $this->clientesModelo->deleteByCedula($cedula);
 
+        return $this->response->empty(204);
+    }
+
+    // SEGUIMIENTO FISICO: JSON API
+
+    public function getSeguimientoByCliente(array $params): ?string
+    {
+        $cedula = $params['cedula'];
+
+        if (!$this->clientesModelo->findByCedula($cedula)) {
+            return $this->response->empty(404);
+        }
+
+        $registros = $this->segModelo->getByCliente($cedula);
+        return $this->response->json($registros);
+    }
+
+    public function insertSeguimiento(): string
+    {
+        $body = $this->response->getParsedBody();
+
+        // Valida el POST
+        $registro = $this->mapper->map(SeguimientoFisicoDTO::class, $body);
+
+        // Verificar que el cliente no exista
+        if ($this->clientesModelo->findByCedula($registro->cedula_cliente)) {
+            return $this->response->json(['message' => 'El cliente ya existe'], 400);
+        }
+
+        // Crea el cliente
+        $cliente = $this->segModelo->insert($registro);
+
+        // Enviar JSON
+        return $this->response->json($cliente, 201);
+    }
+
+    public function updateSeguimiento(array $params): string
+    {
+        $cedula = $params['cedula'];
+
+        $body = $this->response->getParsedBody();
+        $body['cedula_cliente'] = $cedula;
+
+        $registro = $this->mapper->map(SeguimientoFisicoDTO::class, $body);
+
+        if (!$this->clientesModelo->findByCedula($cedula)) {
+            return $this->response->json(['message' => 'El cliente no existe'], 400);
+        }
+
+        $registro = $this->segModelo->update($registro);
+        return $this->response->json($registro, 201);
+    }
+
+    public function deleteSeguimiento(array $params): string|null
+    {
+        $cedula = $params['cedula'];
+
+        if (!$this->clientesModelo->findByCedula($cedula)) {
+            return $this->response->json(['message' => 'El cliente no existe'], 404);
+        }
+
+        $this->segModelo->delete($cedula);
         return $this->response->empty(204);
     }
 }

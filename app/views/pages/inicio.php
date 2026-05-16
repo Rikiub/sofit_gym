@@ -1,11 +1,11 @@
 <?php
-$this->layout('layout', ['titulo' => 'Inicio']);
+$this->layout('layout', ['title' => 'Inicio']);
 
 // TODO: Esto deberia guardarse como archivos en la carpeta "lib"
 $this->pushJs('https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js', false);
 
-$this->pushCss('/assets/paginas/inicio/inicio.css');
-$this->pushJs('/assets/paginas/inicio/inicio.js');
+$this->pushCss('/assets/pages/inicio/inicio.css');
+$this->pushJs('/assets/pages/inicio/inicio.js');
 ?>
 
 <div class="Inicio">

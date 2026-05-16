@@ -2,47 +2,40 @@
 
 namespace App\Controllers;
 
-use App\Helpers\AssetExtension;
 use App\Helpers\Response;
 use CuyZ\Valinor\Mapper\TreeMapper;
-use CuyZ\Valinor\Normalizer\Format;
-use CuyZ\Valinor\MapperBuilder;
-use CuyZ\Valinor\NormalizerBuilder;
-use League\Plates\Template\Theme;
+use DI\Attribute\Inject;
 use League\Plates\Engine;
-use DateTimeInterface;
 
-abstract class BaseControlador
+abstract class BaseController
 {
+    #[Inject]
     protected Response $response;
+
+    #[Inject]
     protected Engine $templates;
+
+    #[Inject]
     protected TreeMapper $mapper;
 
-    public function __construct()
+    /**
+     * Deben pasar el nombre de un archivo en la carpeta views/
+     * y los datos a utilizar en un array.
+     */
+    protected function render(string $view, array $data = []): string
     {
-        $this->templates = Engine::fromTheme(Theme::hierarchy([
-            Theme::new('app/Vistas/base', 'Base'),
-            Theme::new('app/Vistas/componentes', 'Componentes'),
-            Theme::new('app/Vistas/paginas', 'Pagina'),
-        ]))
-            ->loadExtension(new AssetExtension());
-        $this->mapper = new MapperBuilder()
-            ->allowScalarValueCasting()
-            ->allowSuperfluousKeys()
-            ->allowUndefinedValues()
-            ->supportDateFormats(
-                DateTimeInterface::ATOM,
-                'Y-m-d H:i:s',
-                'Y-m-d',
-            )
-            ->mapper();
-        $this->response = new Response(normalizer: new NormalizerBuilder()
-            ->registerTransformer(fn(DateTimeInterface $date) => $date->format(DateTimeInterface::ATOM))
-            ->normalizer(Format::json()));
+        return $this->templates->render($view, $data);
     }
 
-    protected function render(string $vista, array $datos = []): string
+    protected function redirectToError($message = '', int $status = 404)
     {
-        return $this->templates->render($vista, $datos);
+        $this->response->redirect(
+            [
+                'page' => 'error',
+                'message' => $message,
+                'status' => $status,
+            ],
+            404
+        );
     }
 }

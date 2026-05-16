@@ -1,9 +1,9 @@
 <?php
 
 /** @var array $formMeta */
-$this->layout('layout', ['titulo' => 'Clientes']);
-$this->pushJs('/assets/paginas/clientes/clientes.js');
-$this->pushCss('/assets/paginas/clientes/clientes.css');
+$this->layout('layout', ['title' => 'Clientes']);
+$this->pushJs('/assets/pages/clientes/clientes.js');
+$this->pushCss('/assets/pages/clientes/clientes.css');
 ?>
 
 <h1 class="title">Clientes</h1>

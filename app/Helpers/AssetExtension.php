@@ -5,6 +5,10 @@ namespace App\Helpers;
 use League\Plates\Extension\ExtensionInterface;
 use League\Plates\Engine;
 
+/**
+ * Extension para la libreria Plates para poder agregar JS y CSS al \<head\>
+ * desde cualquier vista o componente directamente.
+ */
 class AssetExtension implements ExtensionInterface
 {
     protected $css = [];

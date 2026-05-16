@@ -1,5 +1,5 @@
-<? $this->layout('base', ['titulo' => 'Error']) ?>
+<? $this->layout('base', ['title' => 'Error']) ?>
 
 <h1>Error</h1>
 
-<p><?= $this->e($mensaje) ?></p>
+<p><?= $this->e($message) ?></p>

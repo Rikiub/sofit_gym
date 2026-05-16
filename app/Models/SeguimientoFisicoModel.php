@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model\Clientes;
+namespace App\Models;
 
 use App\Helpers\Validator;
 use App\Models\BaseModel;
@@ -58,7 +58,7 @@ readonly class SeguimientoFisicoDTO
     }
 }
 
-class SeguimientoFisicoModelo extends BaseModel
+class SeguimientoFisicoModel extends BaseModel
 {
     private function sqlSelect(): string
     {

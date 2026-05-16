@@ -34,19 +34,21 @@ return [
                 $options
             );
         } catch (PDOException $e) {
-            throw new RuntimeException('Conexion a base de datos fallida: ' . $e->getMessage());
+            throw new RuntimeException('Failed database connection: ' . $e->getMessage());
         }
     },
     // Directorio donde cargar vistas/plantillas
     Engine::class => function () {
         return Engine::fromTheme(Theme::hierarchy([
-            Theme::new('app/Vistas/base', 'Base'),
-            Theme::new('app/Vistas/componentes', 'Componentes'),
-            Theme::new('app/Vistas/paginas', 'Pagina'),
+            Theme::new('app/views/base', 'Base'),
+            Theme::new('app/views/components', 'Components'),
+            Theme::new('app/views/pages', 'Page'),
         ]))
             ->loadExtension(new AssetExtension());
     },
-    // Validador
+    // Valinor: Mapper
+    // Utilizado para convertir arrays en DTOs
+    // y validarlos en el proceso
     TreeMapper::class => function () {
         return new MapperBuilder()
             ->allowScalarValueCasting()
@@ -59,7 +61,9 @@ return [
             )
             ->mapper();
     },
-    // Normalizador
+    // Valinor: Normalizer
+    // Utilizado para convertir arrays en JSON
+    // y convertir tipos como DateTime en texto
     Normalizer::class => function () {
         return new NormalizerBuilder()
             ->registerTransformer(fn(DateTimeInterface $date) => $date->format(DateTimeInterface::ATOM))

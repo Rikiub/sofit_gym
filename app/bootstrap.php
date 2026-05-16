@@ -5,97 +5,83 @@ use CuyZ\Valinor\Mapper\MappingError;
 use DI\ContainerBuilder;
 
 // Constantes
-const CONTAINER_FILE = 'config/container.php';
-const RUTAS_FILE = 'config/rutas.php';
+const CONTAINER_FILE = 'app/container.php';
+const CONTROLLERS_PATH = 'App\Controllers';
 
-$response = new Response();
+$response = new Response(normalizer: null);
 
 // Configurar inyector de dependencias (PHP-DI)
 $builder = new ContainerBuilder();
 $builder->addDefinitions(CONTAINER_FILE)->useAttributes(true);
 $container = $builder->build();
 
-// Configurar rutas
-$dispatcher = FastRoute\simpleDispatcher(require RUTAS_FILE);
+// FRONT CONTROLLER
+try {
+    // Verificar si esta pidiendo JSON
+    $wantsJson = $_GET['format'] ?? '' == 'json' ?? $response->isJson();
 
-// Obtener metodo y URI
-$httpMethod = $_SERVER['REQUEST_METHOD'];
-$uri = $_SERVER['REQUEST_URI'];
-$uri = rawurldecode(parse_url($uri, PHP_URL_PATH));
+    // Obtener query params
+    $page = $_GET['page'] ?? 'inicio';
+    $action = $_GET['action'] ?? 'index';
 
-// Verificar ruta actual
-$isApi = strpos($uri, '/api') === 0;
+    // Construir clase a partir de los query params
+    $className = ucfirst($page) . 'Controller';
+    $classPath = '\\' . CONTROLLERS_PATH . "\\$className";
 
-$rutaInfo = $dispatcher->dispatch($httpMethod, $uri);
-switch ($rutaInfo[0]) {
-    case FastRoute\Dispatcher::NOT_FOUND:
-        if ($isApi) {
+    if (!class_exists($classPath)) {
+        if ($wantsJson) {
+            // Si no se encuentra la pagina, devolver error como JSON
             echo $response->json([
                 'error' => 'Not Found',
-                'message' => "Route {$uri} not founded",
-                'uri' => $uri,
+                'message' => "Controller {$className} not founded",
+                'controller' => $classPath,
             ], 404);
         } else {
-            // Si no se encuentra la ruta, redirigir a pagina de error.
-            $response->redirect('/error?status=404', 404);
+            // Si no se encuentra la pagina, redirigir a pagina de error.
+            $response->redirect([
+                'page' => 'error',
+                'status' => 404,
+            ]);
         }
-        break;
+        exit;
+    }
 
-    case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
-        if ($isApi) {
-            echo $response->json([
-                'error' => 'Not Allowed',
-                'message' => "Route {$uri} not allowed",
-                'uri' => $uri,
-            ], 404);
-        } else {
-            // Si el metodo no se permite, redirigir a pagina de error.
-            $response->redirect('/error?status=405', 405);
-        }
-        break;
+    // Instanciar controlador e inyectar sus dependencias automaticamente
+    $controller = $container->get($classPath);
 
-    case FastRoute\Dispatcher::FOUND:
-        $handler = $rutaInfo[1];
-        $vars = $rutaInfo[2];
+    if (!method_exists($controller, $action)) {
+        throw new Exception("Method '$action' not founded in controller '$className'");
+    }
 
-        [$clase, $metodo] = $handler;
+    // Ejecutar controlador junto a su metodo.
+    $respuesta = $controller->$action();
 
-        try {
-            if (!class_exists($clase))
-                throw new Exception("Clase-controlador '$clase' no encontrado");
+    // Mostrar respuesta como string
+    // Si es HTML, el navegador lo renderizara.
+    echo $respuesta;
+} catch (MappingError $error) {
+    // Capturar errores de Valinor
 
-            // Obtener controlador e inyectar sus dependencias
-            $controlador = $container->get($clase);
+    $messages = $error->messages();
+    $errors = [];
 
-            // Ejecutar controlador junto a su metodo.
-            $respuesta = $controlador->$metodo($vars);
+    foreach ($messages as $m) {
+        array_push($errors, [
+            'name' => $m->name(),
+            'source' => $m->sourceValue(),
+            'expected' => $m->expectedSignature(),
+        ]);
+    }
 
-            // Mostrar respuesta como string
-            // Si es HTML, el navegador lo renderizara.
-            echo $respuesta;
-        } catch (MappingError $error) {
-            $messages = $error->messages();
-            $errors = [];
-
-            foreach ($messages as $m) {
-                array_push($errors, [
-                    'name' => $m->name(),
-                    'source' => $m->sourceValue(),
-                    'expected' => $m->expectedSignature(),
-                ]);
-            }
-
-            echo $response->json([
-                'error' => 'Validation Error',
-                'message' => 'The request contains invalid data',
-                'errors' => $errors
-            ], 400);
-        } catch (Throwable $error) {
-            echo $response->json([
-                'error' => 'Internal Server Error',
-                'message' => $error->getMessage()
-            ], 500);
-        }
-
-        break;
+    echo $response->json([
+        'error' => 'Validation Error',
+        'message' => 'The request contains invalid data',
+        'errors' => $errors
+    ], 400);
+} catch (Throwable $error) {
+    // Capturar todos los errores y convertirlos en JSON
+    echo $response->json([
+        'error' => 'Internal Server Error',
+        'message' => $error->getMessage(),
+    ], 500);
 }

@@ -1,5 +1,5 @@
-import { crudTableComponent } from "/assets/componentes/crudTable/crudTable.js";
-import { modalFormComponent } from "/assets/componentes/modalForm/modalForm.js";
+import { crudTableComponent } from "/assets/components/crudTable/crudTable.js";
+import { modalFormComponent } from "/assets/components/modalForm/modalForm.js";
 import { extractDate } from "/assets/js/helpers.js";
 import { fetchApi } from "/assets/js/api.js";
 import Alpine from "alpinejs";

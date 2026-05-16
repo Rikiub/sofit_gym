@@ -1,6 +1,6 @@
 <?php
-$this->pushCss('/assets/componentes/sidebar/sidebar.css');
-$this->pushJs('/assets/componentes/sidebar/sidebar.js');
+$this->pushCss('/assets/components/sidebar/sidebar.css');
+$this->pushJs('/assets/components/sidebar/sidebar.js');
 ?>
 
 <aside class="sidebar" id="sidebar">
@@ -22,7 +22,7 @@ $this->pushJs('/assets/componentes/sidebar/sidebar.js');
 				<i class="fas fa-id-card"></i> <span>Gestionar Clientes e Inscripciones</span>
 			</summary>
 			<div class="group-items">
-				<a href="/clientes"><i class="fas fa-user-plus"></i> <span>Registro de clientes</span></a>
+				<a href="?page=clientes"><i class="fas fa-user-plus"></i> <span>Registro de clientes</span></a>
 				<a href="clientes_estado.php"><i class="fas fa-tag"></i> <span>Estado de inscripción</span></a>
 				<a href="clientes_historial_pagos.php"><i class="fas fa-history"></i> <span>Historial de pagos</span></a>
 				<a href="clientes_medidas.php"><i class="fas fa-chart-line"></i> <span>Medidas biométricas y nutrición</span></a>

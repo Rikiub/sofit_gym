@@ -2,11 +2,11 @@
 
 /**
  * @var array $formMeta
- * @var App\Modelos\Clientes\ClienteDTO $cliente
+ * @var App\Models\ClienteDTO $cliente
  */
-$this->layout('layout');
-$this->pushJs('/assets/paginas/clientes/clientes.js');
-$this->pushCss('/assets/paginas/clientes/clientes.css');
+$this->layout('layout', ['title' => 'Cliente']);
+$this->pushJs('/assets/pages/clientes/clientes.js');
+$this->pushCss('/assets/pages/clientes/clientes.css');
 
 $nombreCompleto = "$cliente->nombre $cliente->apellido"
 ?>
