@@ -2,14 +2,14 @@
 
 namespace App\Controller\Clientes;
 
-use App\Core\BaseControlador;
+use App\Controllers\BaseControlador;
 use App\Model\Clientes\ClienteDTO;
 use App\Model\Clientes\ClientesModelo;
 
 class ClientesControlador extends BaseControlador
 {
     public function __construct(
-        private ClientesModelo $modelo,
+        private $modelo = new ClientesModelo(),
     ) {}
 
     public function index(): string

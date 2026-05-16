@@ -2,8 +2,9 @@
 
 namespace App\Model\Clientes;
 
-use App\Core\BaseModelo;
+use App\Configs\Dependencies;
 use App\Helpers\Validator;
+use App\Models\BaseModel;
 use DateTimeImmutable;
 use InvalidArgumentException;
 
@@ -49,7 +50,7 @@ readonly class ClienteDTO
     }
 }
 
-class ClientesModelo extends BaseModelo
+class ClientesModelo extends BaseModel
 {
     private function sqlSelect(): string
     {
@@ -84,7 +85,8 @@ class ClientesModelo extends BaseModelo
     private function mapToCliente(array $row): ClienteDTO
     {
         $row['membresia'] = json_decode($row['membresia'], true);
-        return $this->mapper->map(ClienteDTO::class, $row);
+        return Dependencies::getValinorMapper()
+            ->map(ClienteDTO::class, $row);
     }
 
     /**

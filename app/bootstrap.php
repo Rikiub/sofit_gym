@@ -1,6 +1,6 @@
 <?php
 
-use App\Core\Response;
+use App\Helpers\Response;
 use CuyZ\Valinor\Mapper\MappingError;
 use DI\ContainerBuilder;
 
@@ -8,7 +8,7 @@ use DI\ContainerBuilder;
 const CONTAINER_FILE = 'config/container.php';
 const RUTAS_FILE = 'config/rutas.php';
 
-$response = new Response(null);
+$response = new Response();
 
 // Configurar inyector de dependencias (PHP-DI)
 $builder = new ContainerBuilder();

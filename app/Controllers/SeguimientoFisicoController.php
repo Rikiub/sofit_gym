@@ -2,7 +2,7 @@
 
 namespace App\Controller\Clientes;
 
-use App\Core\BaseControlador;
+use App\Controllers\BaseControlador;
 use App\Model\Clientes\ClientesModelo;
 use App\Model\Clientes\SeguimientoFisicoDTO;
 use App\Model\Clientes\SeguimientoFisicoModelo;

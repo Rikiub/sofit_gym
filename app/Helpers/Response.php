@@ -10,7 +10,7 @@ class Response
     public const CONTENT_JSON = 'application/json';
 
     public function __construct(
-        public ?Normalizer $normalizer
+        public ?Normalizer $normalizer = null
     ) {}
 
     public static function getQueryParams(): array

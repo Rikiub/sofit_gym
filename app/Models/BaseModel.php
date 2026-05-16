@@ -1,16 +1,18 @@
 <?php
 
-namespace App\Core;
+namespace App\Models;
 
-use CuyZ\Valinor\Mapper\TreeMapper;
+use App\Configs\Database;
 use PDO;
 
-abstract class BaseModelo
+abstract class BaseModel
 {
-    public function __construct(
-        protected PDO $pdo,
-        protected TreeMapper $mapper,
-    ) {}
+    protected PDO $pdo;
+
+    public function __construct()
+    {
+        $this->pdo = Database::getConnection();
+    }
 
     /**
      * Inserta una fila en una tabla.

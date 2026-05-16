@@ -1,6 +1,6 @@
 <?php
 
-use App\Core\AssetExtension;
+use App\Helpers\AssetExtension;
 use CuyZ\Valinor\Mapper\TreeMapper;
 use CuyZ\Valinor\Normalizer\Format;
 use CuyZ\Valinor\Normalizer\Normalizer;

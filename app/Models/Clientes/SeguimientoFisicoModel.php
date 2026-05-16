@@ -2,8 +2,8 @@
 
 namespace App\Model\Clientes;
 
-use App\Core\BaseModelo;
 use App\Helpers\Validator;
+use App\Models\BaseModel;
 use DateTimeImmutable;
 use InvalidArgumentException;
 
@@ -58,7 +58,7 @@ readonly class SeguimientoFisicoDTO
     }
 }
 
-class SeguimientoFisicoModelo extends BaseModelo
+class SeguimientoFisicoModelo extends BaseModel
 {
     private function sqlSelect(): string
     {
