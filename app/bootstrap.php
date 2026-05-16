@@ -86,5 +86,7 @@ try {
     echo $response->json([
         'error' => 'Internal Server Error',
         'message' => $error->getMessage(),
+		"file" => $error->getFile(),
+		"line" => $error->getLine(),
     ], 500);
 }

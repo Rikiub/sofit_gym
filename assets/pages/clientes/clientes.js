@@ -59,7 +59,7 @@ Alpine.data("modalFormClientes", (isSinglePage = false) => ({
             if (isSinglePage) {
                 if (mode === "edit") return location.reload();
                 if (mode === "delete") {
-                    location.href = `?pagina=${CLIENTES_PAGE}`;
+                    location.href = `?page=${CLIENTES_PAGE}`;
                     return;
                 }
             }

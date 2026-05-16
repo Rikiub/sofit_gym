@@ -76,12 +76,12 @@ $nombreCompleto = "$cliente->nombre $cliente->apellido"
             <div class="grid">
                 <hgroup>
                     <h5>Fecha de nacimiento</h5>
-                    <p><?= $cliente->fecha_nacimiento->format('d/m/Y') ?? 'Desconocida' ?></p>
+                    <p><?= isset($cliente->fecha_nacimiento) ? $cliente->fecha_nacimiento->format('d/m/Y') : 'Desconocida' ?></p>
                 </hgroup>
 
                 <hgroup>
                     <h5>Fecha de registro</h5>
-                    <p><?= $cliente->fecha_registro->format('d/m/Y') ?? 'Desconocida' ?></p>
+                    <p><?= isset($cliente->fecha_registro) ? $cliente->fecha_registro->format('d/m/Y') : 'Desconocida' ?></p>
                 </hgroup>
             </div>
         </article>
@@ -94,12 +94,12 @@ $nombreCompleto = "$cliente->nombre $cliente->apellido"
             <div class="grid">
                 <hgroup>
                     <h5>Fecha de inicio</h5>
-                    <p><?= $cliente->membresia->fecha_inicio->format('d/m/Y') ?? 'Desconocida' ?></p>
+                    <p><?= isset($cliente->membresia->fecha_inicio) ? $cliente->membresia->fecha_inicio->format('d/m/Y') : 'Desconocida' ?></p>
                 </hgroup>
 
                 <hgroup>
                     <h5>Fecha de vencimiento</h5>
-                    <p><?= $cliente->membresia->fecha_fin->format('d/m/Y') ?? 'Desconocida' ?></p>
+                    <p><?= isset($cliente->membresia->fecha_fin) ? $cliente->membresia->fecha_fin->format('d/m/Y') : 'Desconocida' ?></p>
                 </hgroup>
             </div>
 

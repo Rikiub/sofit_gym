@@ -50,7 +50,7 @@ return [
     // Utilizado para convertir arrays en DTOs
     // y validarlos en el proceso
     TreeMapper::class => function () {
-        return new MapperBuilder()
+        return (new MapperBuilder())
             ->allowScalarValueCasting()
             ->allowSuperfluousKeys()
             ->allowUndefinedValues()
@@ -65,7 +65,7 @@ return [
     // Utilizado para convertir arrays en JSON
     // y convertir tipos como DateTime en texto
     Normalizer::class => function () {
-        return new NormalizerBuilder()
+        return (new NormalizerBuilder())
             ->registerTransformer(fn(DateTimeInterface $date) => $date->format(DateTimeInterface::ATOM))
             ->normalizer(Format::json());
     },
