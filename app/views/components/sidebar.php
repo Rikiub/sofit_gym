@@ -23,9 +23,6 @@ $this->pushJs('components/sidebar/sidebar.js');
 			</summary>
 			<div class="group-items">
 				<a href="?page=clientes"><i class="fas fa-user-plus"></i> <span>Registro de clientes</span></a>
-				<a href="clientes_estado.php"><i class="fas fa-tag"></i> <span>Estado de inscripción</span></a>
-				<a href="clientes_historial_pagos.php"><i class="fas fa-history"></i> <span>Historial de pagos</span></a>
-				<a href="clientes_medidas.php"><i class="fas fa-chart-line"></i> <span>Medidas biométricas y nutrición</span></a>
 			</div>
 		</details>
 
@@ -45,10 +42,7 @@ $this->pushJs('components/sidebar/sidebar.js');
 				<i class="fas fa-coins"></i> <span>Gestionar Facturación y Control de Pagos</span>
 			</summary>
 			<div class="group-items">
-				<a href="facturacion_automatica.php"><i class="fas fa-calculator"></i> <span>Automatización de vencimiento y recibos</span></a>
-				<a href="facturacion_panel.php"><i class="fas fa-chart-pie"></i> <span>Panel de ingresos y morosidad</span></a>
-				<a href="facturacion_notificaciones.php"><i class="fas fa-bell"></i> <span>Notificaciones (WhatsApp/Email)</span></a>
-			</div>
+				<a href="?page=facturacion"><i class="fas fa-calculator"></i> <span>Automatización de vencimiento y recibos</span></a>
 		</details>
 
 		<details class="nav-group">
@@ -56,8 +50,7 @@ $this->pushJs('components/sidebar/sidebar.js');
 				<i class="fas fa-fingerprint"></i> <span>Controlar Asistencia</span>
 			</summary>
 			<div class="group-items">
-				<a href="asistencia_registrar.php"><i class="fas fa-edit"></i> <span>Registro entrada/salida</span></a>
-				<a href="asistencia_metricas.php"><i class="fas fa-chart-line"></i> <span>Métricas de ocupación</span></a>
+				<a href="?page=asistencia"><i class="fas fa-edit"></i> <span>Registro entrada/salida</span></a>
 			</div>
 		</details>
 

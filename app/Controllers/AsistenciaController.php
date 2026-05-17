@@ -1,46 +1,32 @@
 <?php
+
+namespace App\Controllers;
+
+use App\Controllers\BaseController;
+use App\Models\AsistenciaModel;
+
 session_start();
-require_once __DIR__ . '/../models/AsistenciaModel.php';
 
-class AsistenciaController
+class AsistenciaController extends BaseController
 {
-    private $model;
-    private $pdo;
-
-    public function __construct()
-    {
-        // Forzar zona horaria de PHP para que coincida con MySQL
-        date_default_timezone_set('America/Caracas'); // Cambia a tu zona horaria
-        $host = 'localhost';
-        $dbname = 'sofit_gym';
-        $user = 'root';
-        $pass = '';
-        try {
-            $this->pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $user, $pass);
-            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            // Sincronizar zona horaria de MySQL con PHP
-            $offset = (new DateTime())->getOffset() / 3600;
-            $this->pdo->exec("SET time_zone = '$offset:00'");
-        } catch (PDOException $e) {
-            die("Error de conexión: " . $e->getMessage());
-        }
-        $this->model = new AsistenciaModel($this->pdo);
-    }
+    public function __construct(private AsistenciaModel $model) {}
 
     public function index()
     {
-        $entradasHoy = $this->model->obtenerEntradasHoy();
         $fechaSeleccionada = $_GET['fecha'] ?? date('Y-m-d');
-        $ocupacion = $this->model->obtenerOcupacionPorFranjas($fechaSeleccionada);
-        $detalleEntradas = $this->model->obtenerEntradasPorFecha($fechaSeleccionada);
-        $mensaje = $_SESSION['mensaje'] ?? '';
-        $tipoMensaje = $_SESSION['tipo_mensaje'] ?? '';
         unset($_SESSION['mensaje'], $_SESSION['tipo_mensaje']);
 
-        require_once __DIR__ . '/../view/Asistenciavista.php';
+        return $this->render("asistencia", [
+            "entradasHoy" => $this->model->obtenerEntradasHoy(),
+            "fechaSeleccionada" => $fechaSeleccionada,
+            "ocupacion" => $this->model->obtenerOcupacionPorFranjas($fechaSeleccionada),
+            "detalleEntradas" => $this->model->obtenerEntradasPorFecha($fechaSeleccionada),
+            "mensaje" => $_SESSION['mensaje'] ?? '',
+            "tipoMensaje" => $_SESSION['tipo_mensaje'] ?? '',
+        ]);
     }
 
-    public function buscarClientesAjax()
+    public function buscar_clientes_ajax()
     {
         if (!isset($_GET['ajax']) || $_GET['ajax'] !== 'buscar_clientes') return;
         $termino = $_GET['termino'] ?? '';
@@ -50,7 +36,7 @@ class AsistenciaController
         exit;
     }
 
-    public function registrarEntrada()
+    public function registrar()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
@@ -67,7 +53,7 @@ class AsistenciaController
         echo json_encode($resultado);
     }
 
-    public function buscarEntradasAjax()
+    public function buscar_entradas_ajax()
     {
         if (!isset($_GET['ajax']) || $_GET['ajax'] !== 'buscar_entradas') return;
         $termino = $_GET['termino'] ?? '';
@@ -77,7 +63,7 @@ class AsistenciaController
         exit;
     }
 
-    public function editarEntrada()
+    public function editar()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
@@ -94,7 +80,7 @@ class AsistenciaController
         echo json_encode(['success' => $ok]);
     }
 
-    public function eliminarEntrada()
+    public function eliminar()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
@@ -106,17 +92,3 @@ class AsistenciaController
         echo json_encode(['success' => $ok]);
     }
 }
-
-// Enrutamiento
-$controller = new AsistenciaController();
-$action = $_GET['action'] ?? 'index';
-
-switch ($action) {
-    case 'buscar_clientes_ajax': $controller->buscarClientesAjax(); break;
-    case 'registrar': $controller->registrarEntrada(); break;
-    case 'buscar_entradas_ajax': $controller->buscarEntradasAjax(); break;
-    case 'editar': $controller->editarEntrada(); break;
-    case 'eliminar': $controller->eliminarEntrada(); break;
-    default: $controller->index(); break;
-}
-?>

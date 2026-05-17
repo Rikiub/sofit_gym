@@ -6,7 +6,7 @@ document.addEventListener('click', (e) => {
     if (!dialog || !dialog.open) return;
     const article = dialog.querySelector(':scope > article');    // PicoCSS espera <article>
 
-    // Cerrar si se clicea fuera de <article> (o en cualquier momento)
+    // Cerrar si se cliquea fuera de <article> (o en cualquier momento)
     if (dialog.closedBy === "none") return;
 
     if (!article || !article.contains(e.target)) {

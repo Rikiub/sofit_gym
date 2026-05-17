@@ -1,14 +1,9 @@
 <?php
 
-class AsistenciaModel
+namespace App\Models;
+
+class AsistenciaModel extends BaseModel
 {
-    private $db;
-
-    public function __construct(PDO $pdo)
-    {
-        $this->db = $pdo;
-    }
-
     /**
      * Buscar clientes por cédula o nombre (solo primer nombre)
      */
@@ -29,9 +24,9 @@ class AsistenciaModel
                   AND m.id_estado = 1
                 ORDER BY p.nombre
                 LIMIT 50";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$termino, $termino]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll();
     }
 
     /**
@@ -40,13 +35,13 @@ class AsistenciaModel
     public function registrarEntrada(string $cedula, ?string $hora = null): array
     {
         // Verificar cliente y membresía activa
-        $stmt = $this->db->prepare("SELECT p.cedula_persona, CONCAT(p.nombre, ' ', p.apellido) as nombre
+        $stmt = $this->pdo->prepare("SELECT p.cedula_persona, CONCAT(p.nombre, ' ', p.apellido) as nombre
                                     FROM persona p
                                     JOIN cliente c ON p.cedula_persona = c.cedula_cliente
                                     JOIN membresia m ON c.id_membresia = m.id_membresia
                                     WHERE p.cedula_persona = ? AND m.fecha_fin >= CURDATE() AND m.id_estado = 1");
         $stmt->execute([$cedula]);
-        $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
+        $cliente = $stmt->fetch();
         if (!$cliente) {
             return ['success' => false, 'message' => 'Cliente no encontrado o membresía inactiva/vencida.'];
         }
@@ -55,19 +50,19 @@ class AsistenciaModel
             // Hora personalizada: se combina con la fecha actual de MySQL
             $sql = "INSERT INTO asistencia_gimnasio (cedula_cliente, fecha, tipo) 
                     VALUES (?, CONCAT(CURDATE(), ' ', ?), 'Entrada')";
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->pdo->prepare($sql);
             $stmt->execute([$cedula, $hora]);
             $fechaHora = date('Y-m-d') . ' ' . $hora; // solo para respuesta
         } else {
             // Usar NOW() de MySQL
             $sql = "INSERT INTO asistencia_gimnasio (cedula_cliente, fecha, tipo) 
                     VALUES (?, NOW(), 'Entrada')";
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->pdo->prepare($sql);
             $stmt->execute([$cedula]);
             // Obtener la fecha real insertada (con zona horaria de MySQL)
-            $fechaHora = $this->db->lastInsertId() ? date('Y-m-d H:i:s') : '';
+            $fechaHora = $this->pdo->lastInsertId() ? date('Y-m-d H:i:s') : '';
         }
-        $id = $this->db->lastInsertId();
+        $id = $this->pdo->lastInsertId();
 
         return [
             'success' => true,
@@ -90,9 +85,9 @@ class AsistenciaModel
                 JOIN persona p ON c.cedula_cliente = p.cedula_persona
                 WHERE DATE(a.fecha) = CURDATE() AND a.tipo = 'Entrada'
                 ORDER BY a.fecha DESC";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll();
     }
 
     /**
@@ -109,9 +104,9 @@ class AsistenciaModel
                 WHERE DATE(a.fecha) = CURDATE() AND a.tipo = 'Entrada'
                   AND (TIME(a.fecha) LIKE ? OR a.cedula_cliente LIKE ? OR p.nombre LIKE ? OR p.apellido LIKE ?)
                 ORDER BY a.fecha DESC";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$termino, $termino, $termino, $termino]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll();
     }
 
     /**
@@ -120,7 +115,7 @@ class AsistenciaModel
     public function actualizarEntrada(int $id, string $nuevaHora): bool
     {
         $fecha = date('Y-m-d') . ' ' . $nuevaHora;
-        $stmt = $this->db->prepare("UPDATE asistencia_gimnasio SET fecha = ? WHERE id_asistencia = ?");
+        $stmt = $this->pdo->prepare("UPDATE asistencia_gimnasio SET fecha = ? WHERE id_asistencia = ?");
         return $stmt->execute([$fecha, $id]);
     }
 
@@ -129,7 +124,7 @@ class AsistenciaModel
      */
     public function eliminarEntrada(int $id): bool
     {
-        $stmt = $this->db->prepare("DELETE FROM asistencia_gimnasio WHERE id_asistencia = ?");
+        $stmt = $this->pdo->prepare("DELETE FROM asistencia_gimnasio WHERE id_asistencia = ?");
         return $stmt->execute([$id]);
     }
 
@@ -150,7 +145,7 @@ class AsistenciaModel
                       AND TIME(fecha) >= ?
                       AND TIME(fecha) < ?
                       AND tipo = 'Entrada'";
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->pdo->prepare($sql);
             $stmt->execute([$fecha, $franja['inicio'], $franja['fin']]);
             $total = (int)$stmt->fetchColumn();
             $resultado[] = [
@@ -172,8 +167,8 @@ class AsistenciaModel
                 JOIN persona p ON c.cedula_cliente = p.cedula_persona
                 WHERE DATE(a.fecha) = ? AND a.tipo = 'Entrada'
                 ORDER BY a.fecha ASC";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$fecha]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll();
     }
 }

@@ -1,208 +1,13 @@
 <?php
+$this->pushJs("https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js");
+$this->pushCss("https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css");
+
+$this->pushJs("pages/asistencia/asistencia.js");
+
+$this->layout("layout", ["title" => "Control de asistencia"]);
 // Recibe $entradasHoy, $mensaje, $tipoMensaje
 ?>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Sofit Gym - Control de Asistencia</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f0f0;
-            padding: 2rem;
-        }
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 28px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-            overflow: hidden;
-        }
-        .header {
-            background: #C62828;
-            color: white;
-            padding: 1.2rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .header h1 { font-size: 1.6rem; font-weight: 600; margin: 0; }
-        .header .badge { background: #8B0000; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.8rem; }
-        .card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03), 0 4px 12px rgba(0,0,0,0.05);
-            margin-bottom: 1.8rem;
-            border: 1px solid #edf2f7;
-        }
-        .card-header {
-            background: #fafbfc;
-            padding: 1rem 1.5rem;
-            font-weight: 700;
-            font-size: 1.1rem;
-            border-bottom: 1px solid #edf2f7;
-            color: #1e2a3a;
-        }
-        .card-body { padding: 1.5rem; }
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1rem;
-            align-items: flex-end;
-        }
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-        }
-        label {
-            font-weight: 600;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #5a6e7a;
-        }
-        input, select, button {
-            padding: 0.7rem 1rem;
-            border-radius: 14px;
-            border: 1px solid #cfdfe8;
-            font-size: 0.9rem;
-            width: 100%;
-        }
-        button {
-            background: #C62828;
-            color: white;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover { background: #b71c1c; transform: translateY(-1px); }
-        .btn-sm {
-            padding: 0.2rem 0.6rem !important;
-            font-size: 0.7rem !important;
-            border-radius: 20px !important;
-            width: auto;
-        }
-        .btn-secondary { background: #6c757d; }
-        .btn-warning { background: #ffc107; color: #1e2a3a; }
-        .btn-danger { background: #dc3545; }
-        .acciones-botones {
-            display: flex;
-            gap: 0.3rem;
-            flex-wrap: nowrap;
-            justify-content: flex-start;
-        }
-        .table-responsive {
-            overflow-x: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-        }
-        th, td {
-            padding: 0.6rem 0.5rem;
-            text-align: left;
-            border-bottom: 1px solid #eef2f6;
-            vertical-align: middle;
-        }
-        th {
-            background: #f8fafc;
-            font-weight: 600;
-        }
-        /* Ancho fijo para la columna de acciones */
-        td:last-child, th:last-child {
-            width: 120px;
-            white-space: nowrap;
-        }
-        .alert {
-            padding: 0.9rem 1.2rem;
-            border-radius: 16px;
-            margin-bottom: 1.5rem;
-        }
-        .alert-success { background: #e6f4ea; border-left: 5px solid #2e7d32; color: #1e4620; }
-        .alert-danger { background: #fce8e6; border-left: 5px solid #c62828; color: #8b1e1e; }
-        footer { text-align: center; padding: 1rem; background: #fafbfc; color: #7f8c8d; font-size: 0.75rem; }
-        /* Buscador con botón pequeño (igual que facturación) */
-        .buscador {
-            margin-bottom: 1rem;
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-        }
-        .buscador input {
-            flex: 1;
-            width: auto;
-        }
-        .buscador button {
-            width: auto;
-            background: #6c757d;
-            padding: 0.5rem 1rem;
-            font-size: 0.85rem;
-        }
-        .buscador button:hover {
-            background: #5a6268;
-        }
-        .modal-select-btn {
-            background: white;
-            border: 1px solid #cfdfe8;
-            padding: 0.7rem 1rem;
-            border-radius: 14px;
-            text-align: left;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: 0.2s;
-            width: 100%;
-        }
-        .modal-select-btn:hover {
-            border-color: #C62828;
-            background: #fef2f2;
-        }
-        .btn-select-client {
-            background: #6c757d !important;
-            color: white !important;
-            border: none !important;
-            padding: 0.3rem 0.8rem !important;
-            border-radius: 30px !important;
-            font-size: 0.7rem !important;
-            font-weight: 600 !important;
-            cursor: pointer !important;
-            width: auto;
-        }
-        .search-client { margin-bottom: 1rem; padding: 0.5rem; border-radius: 12px; border: 1px solid #cfdfe8; width: 100%; }
-        #toastMessage {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #323232;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            z-index: 9999;
-            display: none;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-        #toastMessage.success { background: #2ecc71; }
-        #toastMessage.error { background: #e74c3c; }
-        .modal-header.bg-danger {
-            background-color: #C62828 !important;
-        }
-        .modal-body .form-control {
-            width: 100%;
-        }
-        @media (max-width: 768px) { body { padding: 1rem; } td:last-child, th:last-child { width: auto; white-space: normal; } }
-    </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
+
 <div class="container">
     <div class="header">
         <h1><i class="fas fa-door-open"></i> Control de Asistencia</h1>
@@ -267,20 +72,22 @@
                     </thead>
                     <tbody id="tablaEntradasBody">
                         <?php foreach ($entradasHoy as $e): ?>
-                        <tr data-id="<?= $e['id_asistencia'] ?>">
-                            <td><?= date('H:i:s', strtotime($e['fecha'])) ?></td>
-                            <td><?= htmlspecialchars($e['cedula_cliente']) ?></td>
-                            <td><?= htmlspecialchars($e['nombre_cliente']) ?></td>
-                            <td>
-                                <div class="acciones-botones">
-                                    <button class="btn btn-sm btn-warning editar-btn" data-id="<?= $e['id_asistencia'] ?>" data-hora="<?= date('H:i:s', strtotime($e['fecha'])) ?>" data-cedula="<?= htmlspecialchars($e['cedula_cliente']) ?>" data-nombre="<?= htmlspecialchars($e['nombre_cliente']) ?>"><i class="fas fa-edit"></i> Editar</button>
-                                    <button class="btn btn-sm btn-danger eliminar-btn" data-id="<?= $e['id_asistencia'] ?>" data-hora="<?= date('H:i:s', strtotime($e['fecha'])) ?>" data-cedula="<?= htmlspecialchars($e['cedula_cliente']) ?>" data-nombre="<?= htmlspecialchars($e['nombre_cliente']) ?>"><i class="fas fa-trash-alt"></i> Eliminar</button>
-                                </div>
-                            </td>
-                        </tr>
+                            <tr data-id="<?= $e['id_asistencia'] ?>">
+                                <td><?= date('H:i:s', strtotime($e['fecha'])) ?></td>
+                                <td><?= htmlspecialchars($e['cedula_cliente']) ?></td>
+                                <td><?= htmlspecialchars($e['nombre_cliente']) ?></td>
+                                <td>
+                                    <div class="acciones-botones">
+                                        <button class="btn btn-sm btn-warning editar-btn" data-id="<?= $e['id_asistencia'] ?>" data-hora="<?= date('H:i:s', strtotime($e['fecha'])) ?>" data-cedula="<?= htmlspecialchars($e['cedula_cliente']) ?>" data-nombre="<?= htmlspecialchars($e['nombre_cliente']) ?>"><i class="fas fa-edit"></i> Editar</button>
+                                        <button class="btn btn-sm btn-danger eliminar-btn" data-id="<?= $e['id_asistencia'] ?>" data-hora="<?= date('H:i:s', strtotime($e['fecha'])) ?>" data-cedula="<?= htmlspecialchars($e['cedula_cliente']) ?>" data-nombre="<?= htmlspecialchars($e['nombre_cliente']) ?>"><i class="fas fa-trash-alt"></i> Eliminar</button>
+                                    </div>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                         <?php if (empty($entradasHoy)): ?>
-                        <tr><td colspan="4" class="text-center">No hay entradas registradas hoy.<?php echo "<!-- debug: entradas vacío -->"; ?></td></tr>
+                            <tr>
+                                <td colspan="4" class="text-center">No hay entradas registradas hoy.<?php echo "<!-- debug: entradas vacío -->"; ?></td>
+                            </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
@@ -303,7 +110,15 @@
                 <input type="text" id="searchClient" class="search-client" placeholder="Seleccionar Cliente (buscar por cédula, nombre, correo o teléfono)">
                 <div class="table-responsive">
                     <table class="table table-hover" id="clientesTabla">
-                        <thead><tr><th>Cédula</th><th>Nombre</th><th>Correo</th><th>Teléfono</th><th>Acción</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th>Cédula</th>
+                                <th>Nombre</th>
+                                <th>Correo</th>
+                                <th>Teléfono</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
                         <tbody></tbody>
                     </table>
                 </div>
@@ -369,8 +184,288 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="http://localhost/FacturacionPagosModel/js/asistencia.js"></script>
-</body>
-</html>
+<style>
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 28px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
 
+    .header {
+        background: #C62828;
+        color: white;
+        padding: 1.2rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .header h1 {
+        font-size: 1.6rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .header .badge {
+        background: #8B0000;
+        padding: 0.3rem 1rem;
+        border-radius: 40px;
+        font-size: 0.8rem;
+    }
+
+    .card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03), 0 4px 12px rgba(0, 0, 0, 0.05);
+        margin-bottom: 1.8rem;
+        border: 1px solid #edf2f7;
+    }
+
+    .card-header {
+        background: #fafbfc;
+        padding: 1rem 1.5rem;
+        font-weight: 700;
+        font-size: 1.1rem;
+        border-bottom: 1px solid #edf2f7;
+        color: #1e2a3a;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1rem;
+        align-items: flex-end;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+
+    label {
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #5a6e7a;
+    }
+
+    input,
+    select,
+    button {
+        padding: 0.7rem 1rem;
+        border-radius: 14px;
+        border: 1px solid #cfdfe8;
+        font-size: 0.9rem;
+        width: 100%;
+    }
+
+    button {
+        background: #C62828;
+        color: white;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #b71c1c;
+        transform: translateY(-1px);
+    }
+
+    .btn-sm {
+        padding: 0.2rem 0.6rem !important;
+        font-size: 0.7rem !important;
+        border-radius: 20px !important;
+        width: auto;
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+    }
+
+    .btn-warning {
+        background: #ffc107;
+        color: #1e2a3a;
+    }
+
+    .btn-danger {
+        background: #dc3545;
+    }
+
+    .acciones-botones {
+        display: flex;
+        gap: 0.3rem;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+    }
+
+    th,
+    td {
+        padding: 0.6rem 0.5rem;
+        text-align: left;
+        border-bottom: 1px solid #eef2f6;
+        vertical-align: middle;
+    }
+
+    th {
+        background: #f8fafc;
+        font-weight: 600;
+    }
+
+    /* Ancho fijo para la columna de acciones */
+    td:last-child,
+    th:last-child {
+        width: 120px;
+        white-space: nowrap;
+    }
+
+    .alert {
+        padding: 0.9rem 1.2rem;
+        border-radius: 16px;
+        margin-bottom: 1.5rem;
+    }
+
+    .alert-success {
+        background: #e6f4ea;
+        border-left: 5px solid #2e7d32;
+        color: #1e4620;
+    }
+
+    .alert-danger {
+        background: #fce8e6;
+        border-left: 5px solid #c62828;
+        color: #8b1e1e;
+    }
+
+    footer {
+        text-align: center;
+        padding: 1rem;
+        background: #fafbfc;
+        color: #7f8c8d;
+        font-size: 0.75rem;
+    }
+
+    /* Buscador con botón pequeño (igual que facturación) */
+    .buscador {
+        margin-bottom: 1rem;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .buscador input {
+        flex: 1;
+        width: auto;
+    }
+
+    .buscador button {
+        width: auto;
+        background: #6c757d;
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .buscador button:hover {
+        background: #5a6268;
+    }
+
+    .modal-select-btn {
+        background: white;
+        border: 1px solid #cfdfe8;
+        padding: 0.7rem 1rem;
+        border-radius: 14px;
+        text-align: left;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        transition: 0.2s;
+        width: 100%;
+    }
+
+    .modal-select-btn:hover {
+        border-color: #C62828;
+        background: #fef2f2;
+    }
+
+    .btn-select-client {
+        background: #6c757d !important;
+        color: white !important;
+        border: none !important;
+        padding: 0.3rem 0.8rem !important;
+        border-radius: 30px !important;
+        font-size: 0.7rem !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        width: auto;
+    }
+
+    .search-client {
+        margin-bottom: 1rem;
+        padding: 0.5rem;
+        border-radius: 12px;
+        border: 1px solid #cfdfe8;
+        width: 100%;
+    }
+
+    #toastMessage {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #323232;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        z-index: 9999;
+        display: none;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    #toastMessage.success {
+        background: #2ecc71;
+    }
+
+    #toastMessage.error {
+        background: #e74c3c;
+    }
+
+    .modal-header.bg-danger {
+        background-color: #C62828 !important;
+    }
+
+    .modal-body .form-control {
+        width: 100%;
+    }
+
+    @media (max-width: 768px) {
+        body {
+            padding: 1rem;
+        }
+
+        td:last-child,
+        th:last-child {
+            width: auto;
+            white-space: normal;
+        }
+    }
+</style>

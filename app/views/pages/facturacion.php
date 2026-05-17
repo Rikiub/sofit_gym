@@ -3,11 +3,8 @@
 $this->pushJs("https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js");
 $this->pushCss("https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css");
 
-// Font Awesome
-$this->pushCss("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css");
-
 // Page JS
-$this->pushJs("pages/facturacion/facturacion.js", false);
+$this->pushJs("pages/facturacion/facturacion.js");
 
 // Layout principal
 $this->layout("layout", ["title" => "facturacion"]);
