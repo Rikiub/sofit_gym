@@ -9,12 +9,16 @@ $this->pushCss('pages/clientes/clientes.css');
 <h1 class="title">Clientes</h1>
 
 <div>
-    <?= $this->insert('crudTable', ['alpineComponent' => 'crudTableClientes']) ?>
-    
+    <?= $this->insert('crudTable', ['alpineComponent' => 'crudClientes']) ?>
+
     <?= $this->insert('modalForm', [
-        'alpineComponent' => 'modalFormClientes',
+        'alpineComponent' => 'modalClientes',
         'formHtml' => $this->fetch('clientes/forms/cliente', [
             'formMeta' => $formMeta,
         ]),
     ]) ?>
 </div>
+
+<script>
+    let xd = "";
+</script>

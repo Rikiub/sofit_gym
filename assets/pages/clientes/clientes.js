@@ -9,7 +9,7 @@ import { h } from "gridjs";
 const CLIENTES_PAGE = "clientes";
 const clientesId = "clientes";
 
-Alpine.data("crudTableClientes", () =>
+Alpine.data("crudClientes", () =>
     crudTableComponent({
         id: clientesId,
         params: {
@@ -43,7 +43,7 @@ Alpine.data("crudTableClientes", () =>
         ],
     }));
 
-Alpine.data("modalFormClientes", (isSinglePage = false) => ({
+Alpine.data("modalClientes", (isSinglePage = false) => ({
     ...modalFormComponent({
         id: clientesId,
         page: CLIENTES_PAGE,

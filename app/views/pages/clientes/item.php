@@ -13,7 +13,7 @@ $nombreCompleto = "$cliente->nombre $cliente->apellido"
 
 <?= $this->insert('modalForm', [
     'alpineComponent' => <<<JS
-            modalFormClientes({ isSinglePage: true })
+            modalClientes({ isSinglePage: true })
         JS,
     'formHtml' => $this->fetch('clientes/forms/cliente', [
         'formMeta' => $formMeta,
