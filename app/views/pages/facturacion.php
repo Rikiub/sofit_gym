@@ -3,7 +3,7 @@
 $this->pushJs("pages/facturacion/facturacion.js");
 
 // Layout principal
-$this->layout("layout", ["title" => "facturacion"]);
+$this->layout("layout", ["title" => "Facturacion"]);
 ?>
 
 <div class="container">
