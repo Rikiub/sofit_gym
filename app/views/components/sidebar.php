@@ -69,7 +69,7 @@ $this->pushJs('components/sidebar/sidebar.js');
 				<i class="fas fa-boxes"></i> <span>Gestionar Productos</span>
 			</summary>
 			<div class="group-items">
-				<a href="productos_stock.php"><i class="fas fa-boxes"></i> <span>Control de stock y demanda</span></a>
+				<a href="?page=productos"><i class="fas fa-boxes"></i> <span>Control de stock y demanda</span></a>
 			</div>
 		</details>
 
