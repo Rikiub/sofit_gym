@@ -35,7 +35,7 @@ readonly class ClienteDTO
         public ?MembresiaDTO $membresia = null,
     ) {}
 
-    public function validarInsert()
+    public function validateInsert()
     {
         if (!$this->cedula) {
             throw new InvalidArgumentException('Debe tener una cedula');
@@ -104,7 +104,7 @@ class ClientesModel extends BaseModel
         return $data;
     }
 
-    public function findByCedula(string $cedula): ClienteDTO|false
+    public function find(string $cedula): ClienteDTO|false
     {
         // Cliente
         $stmt = $this->pdo->prepare(
@@ -140,9 +140,9 @@ class ClientesModel extends BaseModel
         return $rows;
     }
 
-    public function insertCliente(ClienteDTO $cliente): ClienteDTO
+    public function insert(ClienteDTO $cliente): ClienteDTO
     {
-        $cliente->validarInsert();
+        $cliente->validateInsert();
         $this->pdo->beginTransaction();
 
         $this->pdoInsert('persona', [
@@ -172,16 +172,17 @@ class ClientesModel extends BaseModel
         ]);
 
         $this->pdo->commit();
-        return $this->findByCedula($cliente->cedula);
+        return $this->find($cliente->cedula);
     }
 
-    public function updateCliente(ClienteDTO $cliente): ClienteDTO
+    public function update(ClienteDTO $cliente): ClienteDTO
     {
-        $cliente->validarInsert();
+        $cliente->validateInsert();
         $this->pdo->beginTransaction();
 
         $this->pdoUpdate(
-            'persona', [
+            'persona',
+            [
                 'nombre' => $cliente->nombre,
                 'apellido' => $cliente->apellido,
                 'correo' => $cliente->correo,
@@ -213,7 +214,7 @@ class ClientesModel extends BaseModel
         }
 
         $this->pdo->commit();
-        return $this->findByCedula($cliente->cedula);
+        return $this->find($cliente->cedula);
     }
 
     public function deleteByCedula(string $cedula): int

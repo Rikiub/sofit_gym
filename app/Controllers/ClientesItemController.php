@@ -24,7 +24,7 @@ class ClientesItemController extends BaseController
     {
         $cedula = $this->getCedulaParam();
 
-        $cliente = $this->clientesModel->findByCedula($cedula);
+        $cliente = $this->clientesModel->find($cedula);
         if (!$cliente) {
             $this->redirectToError();
         }
@@ -61,7 +61,7 @@ class ClientesItemController extends BaseController
     {
         $cedula = $this->getCedulaParam();
 
-        if (!$this->clientesModel->findByCedula($cedula)) {
+        if (!$this->clientesModel->find($cedula)) {
             return $this->response->empty(404);
         }
 
@@ -77,7 +77,7 @@ class ClientesItemController extends BaseController
         $registro = $this->mapper->map(SeguimientoFisicoDTO::class, $body);
 
         // Verificar que el cliente exista
-        if (!$this->clientesModel->findByCedula($registro->cedula_cliente)) {
+        if (!$this->clientesModel->find($registro->cedula_cliente)) {
             return $this->response->json(['message' => 'El cliente no existe'], 404);
         }
 
@@ -97,7 +97,7 @@ class ClientesItemController extends BaseController
 
         $registro = $this->mapper->map(SeguimientoFisicoDTO::class, $body);
 
-        if (!$this->clientesModel->findByCedula($cedula)) {
+        if (!$this->clientesModel->find($cedula)) {
             return $this->response->json(['message' => 'El cliente no existe'], 400);
         }
 
@@ -109,7 +109,7 @@ class ClientesItemController extends BaseController
     {
         $idSeguimiento = isset($_GET["id"]) ? intval($_GET["id"]) : null;
 
-        if (!$this->fisicoModel->findById($idSeguimiento)) {
+        if (!$this->fisicoModel->find($idSeguimiento)) {
             return $this->response->json(['message' => 'Seguimiento no existe'], 404);
         }
 
@@ -123,7 +123,7 @@ class ClientesItemController extends BaseController
     {
         $cedula = $this->getCedulaParam();
 
-        if (!$this->clientesModel->findByCedula($cedula)) {
+        if (!$this->clientesModel->find($cedula)) {
             return $this->response->empty(404);
         }
 
@@ -139,7 +139,7 @@ class ClientesItemController extends BaseController
         $registro = $this->mapper->map(SeguimientoNutricionalDTO::class, $body);
 
         // Verificar que el cliente exista
-        if (!$this->clientesModel->findByCedula($registro->cedula_cliente)) {
+        if (!$this->clientesModel->find($registro->cedula_cliente)) {
             return $this->response->json(['message' => 'El cliente no existe'], 404);
         }
 
@@ -159,7 +159,7 @@ class ClientesItemController extends BaseController
 
         $registro = $this->mapper->map(SeguimientoNutricionalDTO::class, $body);
 
-        if (!$this->clientesModel->findByCedula($cedula)) {
+        if (!$this->clientesModel->find($cedula)) {
             return $this->response->json(['message' => 'El cliente no existe'], 400);
         }
 
@@ -171,7 +171,7 @@ class ClientesItemController extends BaseController
     {
         $idSeguimiento = isset($_GET["id"]) ? intval($_GET["id"]) : null;
 
-        if (!$this->nutricionalModel->findById($idSeguimiento)) {
+        if (!$this->nutricionalModel->find($idSeguimiento)) {
             return $this->response->json(['message' => 'Seguimiento no existe'], 404);
         }
 

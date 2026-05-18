@@ -23,7 +23,7 @@ readonly class SeguimientoFisicoDTO
         public ?float $pantorrilla_cm = null,
     ) {}
 
-    public function validarInsert(): void
+    public function validateInsert(): void
     {
         if (!$this->cedula_cliente) {
             throw new InvalidArgumentException('Debe tener una cédula de cliente');
@@ -60,9 +60,14 @@ readonly class SeguimientoFisicoDTO
 
 class SegumientoFisicoModel extends BaseModel
 {
+    private string $table = "seguimiento_fisico";
+    private string $primaryKey = "id_seguimiento";
+
     private function sqlSelect(): string
     {
-        return 'SELECT * FROM seguimiento_fisico';
+        return <<<SQL
+            SELECT * FROM {$this->table}
+        SQL;
     }
 
     private function mapRow(array $row): SeguimientoFisicoDTO
@@ -92,12 +97,12 @@ class SegumientoFisicoModel extends BaseModel
     /**
      * Busca un seguimiento por su ID.
      */
-    public function findById(int $id): SeguimientoFisicoDTO|false
+    public function find(int $id): SeguimientoFisicoDTO|false
     {
         $stmt = $this->pdo->prepare(
             <<<SQL
                 {$this->sqlSelect()} 
-                WHERE id_seguimiento = ?
+                WHERE {$this->primaryKey} = ?
             SQL
         );
         $stmt->execute([$id]);
@@ -115,9 +120,9 @@ class SegumientoFisicoModel extends BaseModel
      */
     public function insert(SeguimientoFisicoDTO $seguimiento): SeguimientoFisicoDTO
     {
-        $seguimiento->validarInsert();
+        $seguimiento->validateInsert();
 
-        $this->pdoInsert('seguimiento_fisico', [
+        $this->pdoInsert($this->table, [
             'cedula_cliente' => $seguimiento->cedula_cliente,
             'fecha' => Validator::dateToString($seguimiento->fecha),
             'altura_cm' => $seguimiento->altura_cm,
@@ -131,7 +136,7 @@ class SegumientoFisicoModel extends BaseModel
         ]);
 
         $id = $this->pdo->lastInsertId();
-        return $this->findById($id);
+        return $this->find($id);
     }
 
     /**
@@ -143,9 +148,9 @@ class SegumientoFisicoModel extends BaseModel
             throw new InvalidArgumentException('Se requiere id_seguimiento para actualizar');
         }
 
-        $seguimiento->validarInsert();  // al menos una medida
+        $seguimiento->validateInsert();  // al menos una medida
 
-        $this->pdoUpdate('seguimiento_fisico', [
+        $this->pdoUpdate($this->table, [
             'cedula_cliente' => $seguimiento->cedula_cliente,
             'fecha' => Validator::dateToString($seguimiento->fecha),
             'altura_cm' => $seguimiento->altura_cm,
@@ -156,9 +161,9 @@ class SegumientoFisicoModel extends BaseModel
             'muslo_cm' => $seguimiento->muslo_cm,
             'hombros_cm' => $seguimiento->hombros_cm,
             'pantorrilla_cm' => $seguimiento->pantorrilla_cm,
-        ], ['id_seguimiento' => $seguimiento->id_seguimiento]);
+        ], [$this->primaryKey => $seguimiento->id_seguimiento]);
 
-        return $this->findById($seguimiento->id_seguimiento);
+        return $this->find($seguimiento->id_seguimiento);
     }
 
     /**
@@ -167,7 +172,10 @@ class SegumientoFisicoModel extends BaseModel
     public function delete(int $id): int
     {
         $stmt = $this->pdo->prepare(
-            'DELETE FROM seguimiento_fisico WHERE id_seguimiento = ?'
+            <<<SQL
+                DELETE FROM {$this->table}  
+                WHERE {$this->primaryKey} = ?
+            SQL
         );
         $stmt->execute([$id]);
         return $stmt->rowCount();

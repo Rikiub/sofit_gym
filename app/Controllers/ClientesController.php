@@ -51,7 +51,7 @@ class ClientesController extends BaseController
     public function findCliente(): ?string
     {
         $cedula = $this->getCedulaParam();
-        $cliente = $this->clientesModelo->findByCedula($cedula);
+        $cliente = $this->clientesModelo->find($cedula);
 
         if (!$cliente) {
             return $this->response->empty(404);
@@ -68,12 +68,12 @@ class ClientesController extends BaseController
         $cliente = $this->mapper->map(ClienteDTO::class, $body);
 
         // Verificar que el cliente no exista
-        if ($this->clientesModelo->findByCedula($cliente->cedula)) {
+        if ($this->clientesModelo->find($cliente->cedula)) {
             return $this->response->json(['message' => 'El cliente ya existe'], 400);
         }
 
         // Crea el cliente
-        $cliente = $this->clientesModelo->insertCliente($cliente);
+        $cliente = $this->clientesModelo->insert($cliente);
 
         // Enviar JSON
         return $this->response->json($cliente, 201);
@@ -88,11 +88,11 @@ class ClientesController extends BaseController
 
         $cliente = $this->mapper->map(ClienteDTO::class, $body);
 
-        if (!$this->clientesModelo->findByCedula($cedula)) {
+        if (!$this->clientesModelo->find($cedula)) {
             return $this->response->json(['message' => 'El cliente no existe'], 400);
         }
 
-        $cliente = $this->clientesModelo->updateCliente($cliente);
+        $cliente = $this->clientesModelo->update($cliente);
         return $this->response->json($cliente, 201);
     }
 
@@ -100,7 +100,7 @@ class ClientesController extends BaseController
     {
         $cedula = $this->getCedulaParam();
 
-        if (!$this->clientesModelo->findByCedula($cedula)) {
+        if (!$this->clientesModelo->find($cedula)) {
             return $this->response->json(['message' => 'El cliente no existe'], 404);
         }
 
