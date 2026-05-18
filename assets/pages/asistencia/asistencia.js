@@ -260,8 +260,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function activateTab(tabId) {
         tabs.forEach(btn => btn.classList.remove('active'));
         contents.forEach(c => c.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
+        document.getElementById(tabId)?.classList.add('active');
+        document.querySelector(`.tab-btn[data-tab="${tabId}"]`)?.classList.add('active');
         if (tabId === 'tab-metricas') {
             setTimeout(loadChart, 100);
         }
