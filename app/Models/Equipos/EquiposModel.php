@@ -15,7 +15,7 @@ enum EstadoEquipo: string
 readonly class EquipoDTO
 {
     public function __construct(
-        public ?string $codigo_equipo = null,
+        public ?string $codigo = null,
         public ?string $nombre = null,
         public ?string $tipo = null,
         public ?EstadoEquipo $estado = null,
@@ -25,7 +25,7 @@ readonly class EquipoDTO
 
     public function validateInsert(): void
     {
-        if (empty($this->codigo_equipo)) {
+        if (empty($this->codigo)) {
             throw new InvalidArgumentException('El código del equipo es obligatorio');
         }
         if (empty($this->nombre)) {
@@ -38,7 +38,7 @@ readonly class EquipoDTO
 
     public function validateUpdate(): void
     {
-        if (empty($equipo->codigo_equipo)) {
+        if (empty($this->codigo)) {
             throw new InvalidArgumentException('El código del equipo es necesario para actualizar');
         }
     }
@@ -53,7 +53,7 @@ class EquiposModel extends BaseModel
     {
         return <<<SQL
             SELECT
-                codigo_equipo,
+                codigo_equipo AS `codigo`,
                 nombre,
                 tipo,
                 estado,
@@ -80,7 +80,7 @@ class EquiposModel extends BaseModel
         return $data;
     }
 
-    public function find(string $codigoEquipo): ?EquipoDTO
+    public function find(string $codigo): ?EquipoDTO
     {
         $stmt = $this->pdo->prepare(
             <<<SQL
@@ -88,7 +88,7 @@ class EquiposModel extends BaseModel
                 WHERE {$this->primaryKey} = ?
             SQL
         );
-        $stmt->execute([$codigoEquipo]);
+        $stmt->execute([$codigo]);
         $row = $stmt->fetch();
 
         if (!$row) {
@@ -103,7 +103,7 @@ class EquiposModel extends BaseModel
         $equipo->validateInsert();
 
         $this->pdoInsert($this->table, [
-            'codigo_equipo' => $equipo->codigo_equipo,
+            'codigo_equipo' => $equipo->codigo,
             'nombre' => $equipo->nombre,
             'tipo' => $equipo->tipo,
             'estado' => $equipo->estado->value,
@@ -111,7 +111,7 @@ class EquiposModel extends BaseModel
             'activo' => $equipo->activo,
         ]);
 
-        return $this->find($equipo->codigo_equipo);
+        return $this->find($equipo->codigo);
     }
 
     public function update(EquipoDTO $equipo): EquipoDTO
@@ -127,21 +127,14 @@ class EquiposModel extends BaseModel
                 'ubicacion' => $equipo->ubicacion,
                 'activo' => $equipo->activo,
             ],
-            [$this->primaryKey => $equipo->codigo_equipo]
+            [$this->primaryKey => $equipo->codigo]
         );
 
-        return $this->find($equipo->codigo_equipo);
+        return $this->find($equipo->codigo);
     }
 
-    public function delete(string $codigoEquipo): int
+    public function delete(string $codigo): int
     {
-        $stmt = $this->pdo->prepare(
-            <<<SQL
-                DELETE FROM {$this->table} 
-                WHERE {$this->primaryKey} = ?
-            SQL
-        );
-        $stmt->execute([$codigoEquipo]);
-        return $stmt->rowCount();
+        return $this->pdoDelete($this->table, $this->primaryKey, $codigo);
     }
 }

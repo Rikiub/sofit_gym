@@ -106,7 +106,7 @@ class MantenimientoEquipoModel extends BaseModel
         return $data;
     }
 
-    public function find(int $idMantenimiento): ?MantenimientoEquipoDTO
+    public function find(int $id): ?MantenimientoEquipoDTO
     {
         $stmt = $this->pdo->prepare(
             <<<SQL
@@ -114,7 +114,7 @@ class MantenimientoEquipoModel extends BaseModel
                 WHERE {$this->primaryKey} = ?
             SQL
         );
-        $stmt->execute([$idMantenimiento]);
+        $stmt->execute([$id]);
         $row = $stmt->fetch();
 
         if (!$row) {
@@ -175,15 +175,8 @@ class MantenimientoEquipoModel extends BaseModel
         return $this->find($mantenimiento->id_mantenimiento);
     }
 
-    public function delete(int $idMantenimiento): int
+    public function delete(int $id): int
     {
-        $stmt = $this->pdo->prepare(
-            <<<SQL
-                DELETE FROM {$this->table} 
-                WHERE {$this->primaryKey} = ?
-            SQL
-        );
-        $stmt->execute([$idMantenimiento]);
-        return $stmt->rowCount();
+        return $this->pdoDelete($this->table, $this->primaryKey, $id);
     }
 }
