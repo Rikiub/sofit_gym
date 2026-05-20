@@ -67,13 +67,13 @@ abstract class BaseModel
         return $stmt->rowCount();
     }
 
-    protected function pdoDelete(string $table, string $column, int|string $id)
+    protected function pdoDelete(string $table, string $primaryKey, int|string $id)
     {
         $sql = sprintf(
             'DELETE FROM %s
             WHERE %s = ?',
             $table,
-            $column
+            $primaryKey
         );
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$id]);

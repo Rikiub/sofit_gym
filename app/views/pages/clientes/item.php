@@ -2,12 +2,9 @@
 
 /**
  * @var array $formMeta
- * @var App\Models\Clientes\ClienteDTO $cliente
  */
 
-$nombreCompleto = "$cliente->nombre $cliente->apellido";
-
-$this->layout('layout', ['title' => "Cliente: " . $nombreCompleto]);
+$this->layout('layout');
 
 $this->pushJs('pages/clientes/clientes.js');
 $this->pushCss('pages/clientes/clientes.css');
@@ -22,7 +19,11 @@ $this->pushCss('pages/clientes/clientes.css');
     ]),
 ]) ?>
 
-<article x-data class="pagina-cliente">
+<article
+    x-data="clienteInfo"
+    x-effect="document.title = `Cliente: ${nombreCompleto()}`" ,
+    @form-success.window="handleFormSuccess($event.detail)"
+    class="pagina-cliente">
     <header>
         <div class="header-actions">
             <div>
@@ -30,21 +31,21 @@ $this->pushCss('pages/clientes/clientes.css');
                 <a href="?page=clientes">Volver</a>
             </div>
 
-            <h3><?= $nombreCompleto ?></h3>
+            <h3 x-text="nombreCompleto"></h3>
         </div>
 
         <div>
             <button
                 data-tooltip="Editar"
                 data-placement="bottom"
-                @click="$dispatch('open-modal', { mode: 'edit', dataId: '<?= $cliente->cedula ?>', id: 'clientes' })">
+                @click="$dispatch('open-modal', { mode: 'edit', dataId: cliente.cedula, id: 'clientes' })">
                 <i class="fa-pen-to-square fa-solid"></i>
             </button>
 
             <button
                 data-tooltip="Eliminar"
                 data-placement="bottom"
-                @click="$dispatch('open-modal', { mode: 'delete', dataId: '<?= $cliente->cedula ?>', id: 'clientes' })">
+                @click="$dispatch('open-modal', { mode: 'delete', dataId: cliente.cedula, id: 'clientes' })">
                 <i class="fa-solid fa-trash-can"></i>
             </button>
         </div>
@@ -60,36 +61,36 @@ $this->pushCss('pages/clientes/clientes.css');
             <div class="grid">
                 <hgroup>
                     <h5>Cédula</h5>
-                    <p><?= $cliente->cedula ?></p>
+                    <p x-text="setText(cliente.cedula)"></p>
                 </hgroup>
 
                 <hgroup>
                     <h5>Telefono</h5>
-                    <p><?= $cliente->telefono ?></p>
+                    <p x-text="setText(cliente.telefono)"></p>
                 </hgroup>
             </div>
 
             <div class="grid">
                 <hgroup>
                     <h5>Correo</h5>
-                    <p><?= $cliente->correo ?></p>
+                    <p x-text="setText(cliente.correo)"></p>
                 </hgroup>
 
                 <hgroup>
                     <h5>Dirección</h5>
-                    <p><?= $cliente->direccion ?? 'Desconocida' ?></p>
+                    <p x-text="setText(cliente.direccion)"></p>
                 </hgroup>
             </div>
 
             <div class="grid">
                 <hgroup>
                     <h5>Fecha de nacimiento</h5>
-                    <p><?= isset($cliente->fecha_nacimiento) ? $cliente->fecha_nacimiento->format('d/m/Y') : 'Desconocida' ?></p>
+                    <p x-text="setText(onlyDate(cliente.fecha_nacimiento))"></p>
                 </hgroup>
 
                 <hgroup>
                     <h5>Fecha de registro</h5>
-                    <p><?= isset($cliente->fecha_registro) ? $cliente->fecha_registro->format('d/m/Y') : 'Desconocida' ?></p>
+                    <p x-text="setText(onlyDate(cliente.fecha_registro))"></p>
                 </hgroup>
             </div>
         </article>
@@ -102,24 +103,24 @@ $this->pushCss('pages/clientes/clientes.css');
             <div class="grid">
                 <hgroup>
                     <h5>Fecha de inicio</h5>
-                    <p><?= isset($cliente->membresia->fecha_inicio) ? $cliente->membresia->fecha_inicio->format('d/m/Y') : 'Desconocida' ?></p>
+                    <p x-text="setText(onlyDate(cliente.membresia?.fecha_inicio))"></p>
                 </hgroup>
 
                 <hgroup>
                     <h5>Fecha de vencimiento</h5>
-                    <p><?= isset($cliente->membresia->fecha_fin) ? $cliente->membresia->fecha_fin->format('d/m/Y') : 'Desconocida' ?></p>
+                    <p x-text="setText(onlyDate(cliente.membresia?.fecha_fin))"></p>
                 </hgroup>
             </div>
 
             <div class="grid">
                 <hgroup>
                     <h5>Tipo</h5>
-                    <p><?= $cliente->membresia->tipo ?></p>
+                    <p x-text="setText(cliente.membresia?.tipo)"></p>
                 </hgroup>
 
                 <hgroup>
                     <h5>Estado</h5>
-                    <p><?= $cliente->membresia->estado ?></p>
+                    <p x-text="setText(cliente.membresia?.estado)"></p>
                 </hgroup>
             </div>
         </article>

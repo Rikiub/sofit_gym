@@ -24,14 +24,12 @@ class ClientesItemController extends BaseController
     {
         $cedula = $this->getCedulaParam();
 
-        $cliente = $this->clientesModel->find($cedula);
-        if (!$cliente) {
+        if (!$this->clientesModel->find($cedula)) {
             $this->redirectToError();
         }
 
         // Cargar vista: app/views/clientes/item.php
         return $this->render('clientes/item', [
-            'cliente' => $cliente,
             'formMeta' => $this->formMeta(),
         ]);
     }

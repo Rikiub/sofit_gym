@@ -63,8 +63,6 @@ class ClientesController extends BaseController
     public function insertCliente(): string
     {
         $body = $this->response->getParsedBody();
-
-        // Valida el POST
         $cliente = $this->mapper->map(ClienteDTO::class, $body);
 
         // Verificar que el cliente no exista
@@ -72,23 +70,16 @@ class ClientesController extends BaseController
             return $this->response->json(['message' => 'El cliente ya existe'], 400);
         }
 
-        // Crea el cliente
         $cliente = $this->clientesModelo->insert($cliente);
-
-        // Enviar JSON
         return $this->response->json($cliente, 201);
     }
 
     public function updateCliente(): string
     {
-        $cedula = $this->getCedulaParam();
-
         $body = $this->response->getParsedBody();
-        $body['cedula'] = $cedula;
-
         $cliente = $this->mapper->map(ClienteDTO::class, $body);
 
-        if (!$this->clientesModelo->find($cedula)) {
+        if (!$this->clientesModelo->find($cliente->cedula)) {
             return $this->response->json(['message' => 'El cliente no existe'], 400);
         }
 
@@ -104,8 +95,7 @@ class ClientesController extends BaseController
             return $this->response->json(['message' => 'El cliente no existe'], 404);
         }
 
-        $this->clientesModelo->deleteByCedula($cedula);
-
+        $this->clientesModelo->delete($cedula);
         return $this->response->empty(204);
     }
 }

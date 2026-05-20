@@ -135,13 +135,6 @@ class SegumientoNutricionalModel extends BaseModel
      */
     public function delete(int $id): int
     {
-        $stmt = $this->pdo->prepare(
-            <<<SQL
-                DELETE FROM {$this->table}
-                WHERE {$this->primaryKey} = ?
-            SQL
-        );
-        $stmt->execute([$id]);
-        return $stmt->rowCount();
+        return $this->pdoDelete($this->table, $this->primaryKey, $id);
     }
 }

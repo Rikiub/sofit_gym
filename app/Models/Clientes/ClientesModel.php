@@ -217,13 +217,8 @@ class ClientesModel extends BaseModel
         return $this->find($cliente->cedula);
     }
 
-    public function deleteByCedula(string $cedula): int
+    public function delete(string $cedula): int
     {
-        $stmt = $this->pdo->prepare(
-            'DELETE FROM cliente
-            WHERE cedula_cliente = ?'
-        );
-        $stmt->execute([$cedula]);
-        return $stmt->rowCount();
+        return $this->pdoDelete("cliente", "cedula_cliente", $cedula);
     }
 }

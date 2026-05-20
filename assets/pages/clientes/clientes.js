@@ -64,7 +64,6 @@ Alpine.data("modalClientes", (isSinglePage = false) => ({
         editDisableFields: ["cedula"],
         afterSubmit: (mode) => {
             if (isSinglePage) {
-                if (mode === "edit") return location.reload();
                 if (mode === "delete") {
                     location.href = `?page=${CLIENTES_PAGE}`;
                     return;
@@ -95,7 +94,47 @@ Alpine.data("modalClientes", (isSinglePage = false) => ({
     },
 }));
 
+// CLIENTES ITEM
 const clientesItemPage = "ClientesItem";
+
+Alpine.data("clienteInfo", () => ({
+    id: clientesId,
+    cliente: null,
+
+    async init() {
+        await this.refresh();
+    },
+
+    async handleFormSuccess({ id }) {
+        if (id === this.id) {
+            await this.refresh();
+        }
+    },
+
+    async refresh() {
+        this.cliente = await fetchApi({
+            page: CLIENTES_PAGE,
+            action: "findCliente",
+            id: new URLSearchParams(location.search).get("id"),
+        });
+    },
+
+    nombreCompleto() {
+        if (!this.cliente) return "Cargando...";
+        return `${this.cliente.nombre} ${this.cliente.apellido}`;
+    },
+
+    setText(value) {
+        return value ?? "Desconocido";
+    },
+
+    onlyDate(value) {
+        if (!value) return value;
+
+        const date = new Date(value);
+        return date.toLocaleDateString("en-US");
+    }
+}));
 
 // SEGUIMIENTO FISICO
 const idSegFisico = "seg_fisico";

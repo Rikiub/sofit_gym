@@ -97,7 +97,7 @@ class SegumientoFisicoModel extends BaseModel
     /**
      * Busca un seguimiento por su ID.
      */
-    public function find(int $id): SeguimientoFisicoDTO|false
+    public function find(int $id): ?SeguimientoFisicoDTO
     {
         $stmt = $this->pdo->prepare(
             <<<SQL
@@ -109,7 +109,7 @@ class SegumientoFisicoModel extends BaseModel
         $row = $stmt->fetch();
 
         if (!$row) {
-            return false;
+            return null;
         }
 
         return $this->mapRow($row);
@@ -171,13 +171,6 @@ class SegumientoFisicoModel extends BaseModel
      */
     public function delete(int $id): int
     {
-        $stmt = $this->pdo->prepare(
-            <<<SQL
-                DELETE FROM {$this->table}  
-                WHERE {$this->primaryKey} = ?
-            SQL
-        );
-        $stmt->execute([$id]);
-        return $stmt->rowCount();
+        return $this->pdoDelete($this->table, $this->primaryKey, $id);
     }
 }

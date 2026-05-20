@@ -5,14 +5,13 @@
 
 <fieldset class="grid">
     <label>Cédula
-        <input 
+        <input
             required
             name="cedula"
             type="text"
             pattern="^[V]-\d{8}$"
             x-mask="V-99999999"
-            @input.debounce.500ms="validateCedula($el)"
-        >
+            @input.debounce.500ms="validateCedula($el)">
         <small x-text="errors.cedula"></small>
     </label>
 
@@ -35,8 +34,7 @@
             type="tel"
             x-mask="9999-9999999"
             pattern="04(12|14|16|24|26)-\d{7}"
-            @input.debounce="checkValidity($el)"
-        >
+            @input.debounce="checkValidity($el)">
         <small x-text="errors.telefono"></small>
     </label>
 
