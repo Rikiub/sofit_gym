@@ -78,8 +78,8 @@ $this->pushJs('components/sidebar/sidebar.js');
 				<i class="fas fa-dumbbell"></i> <span>Gestionar Rutinas de Entrenamiento</span>
 			</summary>
 			<div class="group-items">
-				<a href="rutinas_disenar.php"><i class="fas fa-pen-ruler"></i> <span>Diseñar planes de entrenamiento</span></a>
-				<a href="rutinas_asignar.php"><i class="fas fa-user-check"></i> <span>Asignar rutinas a clientes</span></a>
+				<a href="?page=rutinas&action=index"><i class="fas fa-pen-ruler"></i> <span>Diseñar planes de entrenamiento</span></a>
+				<a href="?page=rutinas&action=asignadas"><i class="fas fa-user-check"></i> <span>Asignar rutinas a clientes</span></a>
 			</div>
 		</details>
 
