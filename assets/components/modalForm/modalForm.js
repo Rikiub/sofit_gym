@@ -97,16 +97,20 @@ export function modalFormComponent(
                 if (this.mode == "edit" || this.mode == "add") {
                     body = FormDataJson.toJson(this.$refs.form, {
                         skipEmpty: true,
+                        includeDisabled: true,
                     });
                     body = { ...body, ...extraPostBody };
                 }
 
-                await fetchApi({ page: this.page, ...params }, {
-                    method: "POST",
-                    body: body,
-                });
+                try {
+                    await fetchApi({ page: this.page, ...params }, {
+                        method: "POST",
+                        body: body,
+                    });
+                } finally {
+                    this.loading = false;
+                }
 
-                this.loading = false;
                 this.$refs.modal.close();
 
                 this.$dispatch("form-success", {

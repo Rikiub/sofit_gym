@@ -59,8 +59,8 @@ $this->pushJs('components/sidebar/sidebar.js');
 				<i class="fas fa-microchip"></i> <span>Gestionar Equipos y Maquinaria</span>
 			</summary>
 			<div class="group-items">
-				<a href="equipos_mantenimiento.php"><i class="fas fa-tools"></i> <span>Registro de mantenimiento</span></a>
-				<a href="equipos_historial.php"><i class="fas fa-history"></i> <span>Historial de mantenimiento</span></a>
+				<a href="?page=equipos"><i class="fas fa-tools"></i> <span>Registro de equipos</span></a>
+				<a href="?page=equiposMantenimiento"><i class="fas fa-history"></i> <span>Historial de mantenimientos</span></a>
 			</div>
 		</details>
 
