@@ -46,8 +46,8 @@ readonly class EquipoDTO
 
 class EquiposModel extends BaseModel
 {
-    private const table = "equipo";
-    private const primaryKey = "codigo_equipo";
+    private string $table = "equipo";
+    private string $primaryKey = "codigo_equipo";
 
     private function sqlSelect(): string
     {
@@ -59,7 +59,7 @@ class EquiposModel extends BaseModel
                 estado,
                 ubicacion,
                 activo
-            FROM {$this::table}
+            FROM {$this->table}
             SQL;
     }
 
@@ -85,7 +85,7 @@ class EquiposModel extends BaseModel
         $stmt = $this->pdo->prepare(
             <<<SQL
                 {$this->sqlSelect()} 
-                WHERE {$this::primaryKey} = ?
+                WHERE {$this->primaryKey} = ?
             SQL
         );
         $stmt->execute([$codigoEquipo]);
@@ -102,7 +102,7 @@ class EquiposModel extends BaseModel
     {
         $equipo->validateInsert();
 
-        $this->pdoInsert($this::table, [
+        $this->pdoInsert($this->table, [
             'codigo_equipo' => $equipo->codigo_equipo,
             'nombre' => $equipo->nombre,
             'tipo' => $equipo->tipo,
@@ -119,7 +119,7 @@ class EquiposModel extends BaseModel
         $equipo->validateUpdate();
 
         $this->pdoUpdate(
-            $this::table,
+            $this->table,
             [
                 'nombre' => $equipo->nombre,
                 'tipo' => $equipo->tipo,
@@ -127,7 +127,7 @@ class EquiposModel extends BaseModel
                 'ubicacion' => $equipo->ubicacion,
                 'activo' => $equipo->activo,
             ],
-            [$this::primaryKey => $equipo->codigo_equipo]
+            [$this->primaryKey => $equipo->codigo_equipo]
         );
 
         return $this->find($equipo->codigo_equipo);
@@ -137,8 +137,8 @@ class EquiposModel extends BaseModel
     {
         $stmt = $this->pdo->prepare(
             <<<SQL
-                DELETE FROM {$this::table} 
-                WHERE {$this::primaryKey} = ?
+                DELETE FROM {$this->table} 
+                WHERE {$this->primaryKey} = ?
             SQL
         );
         $stmt->execute([$codigoEquipo]);

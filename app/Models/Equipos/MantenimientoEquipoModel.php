@@ -61,8 +61,8 @@ readonly class MantenimientoEquipoDTO
 
 class MantenimientoEquipoModel extends BaseModel
 {
-    private const table = "mantenimiento_equipo";
-    private const primaryKey = "id_mantenimiento";
+    private string $table = "mantenimiento_equipo";
+    private string $primaryKey = "id_mantenimiento";
 
     #[Inject]
     private EquiposModel $equiposModel;
@@ -78,7 +78,7 @@ class MantenimientoEquipoModel extends BaseModel
                 descripcion,
                 costo,
                 tecnico
-            FROM {$this::table}
+            FROM {$this->table}
             SQL;
     }
 
@@ -111,7 +111,7 @@ class MantenimientoEquipoModel extends BaseModel
         $stmt = $this->pdo->prepare(
             <<<SQL
                 {$this->sqlSelect()} 
-                WHERE {$this::primaryKey} = ?
+                WHERE {$this->primaryKey} = ?
             SQL
         );
         $stmt->execute([$idMantenimiento]);
@@ -135,7 +135,7 @@ class MantenimientoEquipoModel extends BaseModel
             throw new InvalidArgumentException("El equipo con código {$mantenimiento->codigo_equipo} no existe o está inactivo");
         }
 
-        $this->pdoInsert($this::table, [
+        $this->pdoInsert($this->table, [
             'codigo_equipo' => $mantenimiento->codigo_equipo,
             'fecha' => Validator::dateToString($mantenimiento->fecha),
             'tipo' => $mantenimiento->tipo->value,
@@ -160,7 +160,7 @@ class MantenimientoEquipoModel extends BaseModel
         }
 
         $this->pdoUpdate(
-            $this::table,
+            $this->table,
             [
                 'codigo_equipo' => $mantenimiento->codigo_equipo,
                 'fecha' => Validator::dateToString($mantenimiento->fecha),
@@ -169,7 +169,7 @@ class MantenimientoEquipoModel extends BaseModel
                 'costo' => $mantenimiento->costo,
                 'tecnico' => $mantenimiento->tecnico,
             ],
-            [$this::primaryKey => $mantenimiento->id_mantenimiento]
+            [$this->primaryKey => $mantenimiento->id_mantenimiento]
         );
 
         return $this->find($mantenimiento->id_mantenimiento);
@@ -179,8 +179,8 @@ class MantenimientoEquipoModel extends BaseModel
     {
         $stmt = $this->pdo->prepare(
             <<<SQL
-                DELETE FROM {$this::table} 
-                WHERE {$this::primaryKey} = ?
+                DELETE FROM {$this->table} 
+                WHERE {$this->primaryKey} = ?
             SQL
         );
         $stmt->execute([$idMantenimiento]);
