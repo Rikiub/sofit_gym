@@ -4,9 +4,11 @@ namespace App\Models\Equipos;
 
 use App\Helpers\Validator;
 use App\Models\BaseModel;
+use CuyZ\Valinor\Mapper\TreeMapper;
 use DateTimeImmutable;
-use DI\Attribute\Inject;
 use InvalidArgumentException;
+use PDO;
+use Override;
 
 enum TipoMantenimiento: string
 {
@@ -17,7 +19,7 @@ enum TipoMantenimiento: string
 readonly class MantenimientoEquipoDTO
 {
     public function __construct(
-        public ?int $id_mantenimiento = null,
+        public ?int $id = null,
         public ?string $codigo_equipo = null,
         public ?DateTimeImmutable $fecha = null,
         public ?TipoMantenimiento $tipo = null,
@@ -46,7 +48,7 @@ readonly class MantenimientoEquipoDTO
     {
         $this->validateShared();
 
-        if (!$this->id_mantenimiento) {
+        if (!$this->id) {
             throw new InvalidArgumentException('El ID de mantenimiento es necesario para actualizar');
         }
     }
@@ -64,14 +66,18 @@ class MantenimientoEquipoModel extends BaseModel
     private string $table = "mantenimiento_equipo";
     private string $primaryKey = "id_mantenimiento";
 
-    #[Inject]
-    private EquiposModel $equiposModel;
+    #[Override]
+    public function __construct(
+        protected PDO $pdo,
+        protected TreeMapper $mapper,
+        protected EquiposModel $equiposModel
+    ) {}
 
     private function sqlSelect(): string
     {
         return <<<SQL
             SELECT
-                id_mantenimiento,
+                id_mantenimiento AS `id`,
                 codigo_equipo,
                 fecha,
                 tipo,
@@ -169,10 +175,10 @@ class MantenimientoEquipoModel extends BaseModel
                 'costo' => $mantenimiento->costo,
                 'tecnico' => $mantenimiento->tecnico,
             ],
-            [$this->primaryKey => $mantenimiento->id_mantenimiento]
+            [$this->primaryKey => $mantenimiento->id]
         );
 
-        return $this->find($mantenimiento->id_mantenimiento);
+        return $this->find($mantenimiento->id);
     }
 
     public function delete(int $id): int

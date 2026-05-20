@@ -34,13 +34,13 @@ class EquiposController extends BaseController
     public function findEquipo(): ?string
     {
         $id = $this->getIdParam();
-        $cliente = $this->equiposModel->find($id);
+        $equipo = $this->equiposModel->find($id);
 
-        if (!$cliente) {
+        if (!$equipo) {
             return $this->response->empty(404);
         }
 
-        return $this->response->json($cliente);
+        return $this->response->json($equipo);
     }
 
     public function insertEquipo(): string

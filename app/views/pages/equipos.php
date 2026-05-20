@@ -49,11 +49,6 @@ $this->pushJs("pages/equipos/equipos.js");
                         </select>
                         <small x-text="errors.estado"></small>
                     </label>
-
-                    <label class="checkbox-label">
-                        <input type="checkbox" name="activo" value="1" checked>
-                        Activo
-                    </label>
                 </fieldset>
             HTML,
         ]) ?>
