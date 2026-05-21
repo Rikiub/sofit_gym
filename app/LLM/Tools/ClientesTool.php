@@ -2,7 +2,6 @@
 
 namespace App\LLM\Tools;
 
-use App\Models\Clientes\ClienteDTO;
 use App\Models\Clientes\ClientesModel;
 use CuyZ\Valinor\Normalizer\Normalizer;
 

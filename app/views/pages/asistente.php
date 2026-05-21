@@ -5,7 +5,7 @@ $this->layout('layout', ['title' => 'Asistente']);
 
 <!-- Contenido principal del chatbot -->
 <div x-data="chatBot" class="d-flex justify-content-center align-items-center p-3 p-md-4">
-    <div class="card shadow-lg border-0 rounded-4 overflow-hidden" style="max-width: 450px; width: 100%; height: 600px;">
+    <div class="card shadow-lg border-0 rounded-4 overflow-hidden" style="width: 100%; height: 600px;">
 
         <!-- Header -->
         <div class="card-header bg-primary text-white d-flex align-items-center gap-3 px-3 py-2 border-0">

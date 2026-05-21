@@ -40,7 +40,7 @@ return [
     },
     GeminiOpenAIConfig::class => function () {
         $config = new GeminiOpenAIConfig();
-        $config->apiKey = "AIzaSyBy2FUTYcnsDqIeYCLTivlXjgOalr9Mgsc";
+        $config->apiKey = "";
         $config->model = "gemini-2.5-flash-lite";
         return $config;
     },
