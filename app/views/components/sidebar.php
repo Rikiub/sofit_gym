@@ -31,9 +31,9 @@ $this->pushJs('components/sidebar/sidebar.js');
 				<i class="fas fa-chalkboard-user"></i> <span>Gestionar Trabajadores y Clases</span>
 			</summary>
 			<div class="group-items">
-				<a href="trabajadores_registrar.php"><i class="fas fa-user-tie"></i> <span>Registro de trabajadores</span></a>
-				<a href="horarios_clases.php"><i class="fas fa-calendar-week"></i> <span>Horarios, clases grupales y cupos</span></a>
-				<a href="asignar_cliente_clase.php"><i class="fas fa-user-check"></i> <span>Asignación de clientes a clases</span></a>
+				<a href="?page=trabajadores"><i class="fas fa-user-tie"></i> <span>Registro de trabajadores</span></a>
+				<a href="?page=horarios"><i class="fas fa-calendar-week"></i> <span>Horarios, clases grupales y cupos</span></a>
+				<a href="?page=clases"><i class="fas fa-user-check"></i> <span>Asignación de clientes a clases</span></a>
 			</div>
 		</details>
 
@@ -43,6 +43,7 @@ $this->pushJs('components/sidebar/sidebar.js');
 			</summary>
 			<div class="group-items">
 				<a href="?page=facturacion"><i class="fas fa-calculator"></i> <span>Automatización de vencimiento y recibos</span></a>
+			</div>
 		</details>
 
 		<details class="nav-group">

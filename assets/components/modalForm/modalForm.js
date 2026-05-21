@@ -204,6 +204,29 @@ export function modalFormComponent(
                 this.clearInputValidity(input);
             }
         },
+
+        // Validaciones reutilizables
+
+        /** @param {HTMLInputElement} input */
+        async validateCedula(input) {
+            this.checkValidity(input);
+
+            if (this.mode === "add") {
+                let item = null;
+
+                try {
+                    item = await fetchApi({
+                        page: this.page,
+                        action: this.actions.onEditFind,
+                        id: input.value,
+                    });
+                } catch {}
+
+                if (item) {
+                    this.setInputValidity(input, false, "La persona ya existe");
+                }
+            }
+        },
     };
 }
 
