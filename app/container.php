@@ -8,6 +8,7 @@ use CuyZ\Valinor\MapperBuilder;
 use CuyZ\Valinor\NormalizerBuilder;
 use League\Plates\Template\Theme;
 use League\Plates\Engine;
+use LLPhant\GeminiOpenAIConfig;
 
 return [
     // Conexion PDO a la base de datos
@@ -36,6 +37,12 @@ return [
         } catch (PDOException $e) {
             throw new RuntimeException('Failed database connection: ' . $e->getMessage());
         }
+    },
+    GeminiOpenAIConfig::class => function () {
+        $config = new GeminiOpenAIConfig();
+        $config->apiKey = "AIzaSyBy2FUTYcnsDqIeYCLTivlXjgOalr9Mgsc";
+        $config->model = "gemini-2.5-flash-lite";
+        return $config;
     },
     // Directorio donde cargar vistas/plantillas
     Engine::class => function () {

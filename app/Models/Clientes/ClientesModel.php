@@ -87,7 +87,7 @@ class ClientesModel extends BaseModel
         return $this->mapper->map(ClienteDTO::class, $row);
     }
 
-    /**
+    /** Obtener listado de todos los clientes junto a su información personal y estado de membresia.
      * @return array<ClienteDTO>
      */
     public function getAll()
@@ -122,6 +122,105 @@ class ClientesModel extends BaseModel
 
         // Build
         return $this->mapToCliente($row);
+    }
+
+    /**
+     * Search for clients using multiple optional filters.
+     *
+     * Supported filters:
+     *   'cedula'        -> partial match (LIKE %...%)
+     *   'nombre'        -> partial match
+     *   'apellido'      -> partial match
+     *   'correo'        -> partial match
+     *   'telefono'      -> partial match
+     *   'activo'        -> exact bool (0 or 1)
+     *   'id_tipo'       -> exact membership type ID
+     *   'id_estado'     -> exact membership state ID
+     *   'fecha_inicio_desde' -> membership start date >= value
+     *   'fecha_inicio_hasta' -> membership start date <= value
+     *   'fecha_fin_desde'    -> membership end date >= value
+     *   'fecha_fin_hasta'    -> membership end date <= value
+     *
+     * @param array $filters Associative array of filters.
+     * @return array<ClienteDTO>
+     */
+    public function search(array $filters): array
+    {
+        $baseSQL = $this->sqlSelect();
+        $conditions = [];
+        $params = [];
+
+        // Text fields with partial match
+        $textFields = ['cedula', 'nombre', 'apellido', 'correo', 'telefono'];
+        foreach ($textFields as $field) {
+            if (!empty($filters[$field])) {
+                // Map filter name to actual column
+                $columnMap = [
+                    'cedula'   => 'cliente.cedula_cliente',
+                    'nombre'   => 'persona.nombre',
+                    'apellido' => 'persona.apellido',
+                    'correo'   => 'persona.correo',
+                    'telefono' => 'persona.telefono',
+                ];
+                $conditions[] = "{$columnMap[$field]} LIKE ?";
+                $params[] = '%' . $filters[$field] . '%';
+            }
+        }
+
+        // Exact boolean: activo
+        if (isset($filters['activo']) && $filters['activo'] !== '') {
+            $conditions[] = "persona.activo = ?";
+            $params[] = $filters['activo'] ? 1 : 0;
+        }
+
+        // Membership type
+        if (!empty($filters['id_tipo'])) {
+            $conditions[] = "m.id_tipo = ?";
+            $params[] = $filters['id_tipo'];
+        }
+
+        // Membership state
+        if (!empty($filters['id_estado'])) {
+            $conditions[] = "m.id_estado = ?";
+            $params[] = $filters['id_estado'];
+        }
+
+        // Date ranges for membership start
+        if (!empty($filters['fecha_inicio_desde'])) {
+            $conditions[] = "m.fecha_inicio >= ?";
+            $params[] = $filters['fecha_inicio_desde'];
+        }
+        if (!empty($filters['fecha_inicio_hasta'])) {
+            $conditions[] = "m.fecha_inicio <= ?";
+            $params[] = $filters['fecha_inicio_hasta'];
+        }
+
+        // Date ranges for membership end
+        if (!empty($filters['fecha_fin_desde'])) {
+            $conditions[] = "m.fecha_fin >= ?";
+            $params[] = $filters['fecha_fin_desde'];
+        }
+        if (!empty($filters['fecha_fin_hasta'])) {
+            $conditions[] = "m.fecha_fin <= ?";
+            $params[] = $filters['fecha_fin_hasta'];
+        }
+
+        // Build final SQL
+        $sql = $baseSQL;
+        if (!empty($conditions)) {
+            $sql .= " WHERE " . implode(" AND ", $conditions);
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll();
+
+        $data = [];
+        foreach ($rows as $row) {
+            $data[] = $this->mapToCliente($row);
+        }
+
+        return $data;
     }
 
     public function getEstadosMembresia(): array

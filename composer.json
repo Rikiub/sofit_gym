@@ -8,6 +8,12 @@
     "require": {
         "league/plates": "^3.6",
         "php-di/php-di": "^7.1",
-        "cuyz/valinor": "^2.4"
+        "cuyz/valinor": "^2.4",
+        "theodo-group/llphant": "^0.11.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     }
 }
