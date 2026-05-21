@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-05-2026 a las 01:12:39
+-- Tiempo de generación: 22-05-2026 a las 01:36:23
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -65,6 +65,14 @@ CREATE TABLE `asistencia_gimnasio` (
   `tipo` enum('Entrada','Salida') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `asistencia_gimnasio`
+--
+
+INSERT INTO `asistencia_gimnasio` (`id_asistencia`, `cedula_cliente`, `fecha`, `tipo`) VALUES
+(4, 'V-11111111', '2026-05-17 12:12:12', 'Entrada'),
+(6, 'V-22222222', '2026-05-18 12:12:12', 'Entrada');
+
 -- --------------------------------------------------------
 
 --
@@ -88,7 +96,7 @@ CREATE TABLE `clase` (
 --
 
 INSERT INTO `clase` (`id_clase`, `cedula_trabajador`, `nombre`, `descripcion`, `cupos_ocupados`, `capacidad_maxima`, `estado`, `fecha_inicio`, `fecha_fin`) VALUES
-(1, 'T-00000002', 'Yoga', NULL, 0, 20, 'Programado', '2026-04-26 10:00:00', '2026-04-26 11:00:00');
+(1, 'V-00000002', 'Yoga', NULL, 0, 20, 'Programado', '2026-04-26 10:00:00', '2026-04-26 11:00:00');
 
 -- --------------------------------------------------------
 
@@ -106,9 +114,9 @@ CREATE TABLE `cliente` (
 --
 
 INSERT INTO `cliente` (`cedula_cliente`, `id_membresia`) VALUES
-('V-11111111', 1),
-('V-22222222', 2),
-('V-33333333', 3);
+('V-22222222', 12),
+('V-33333333', 18),
+('V-11111111', 19);
 
 -- --------------------------------------------------------
 
@@ -161,7 +169,8 @@ CREATE TABLE `equipo` (
 --
 
 INSERT INTO `equipo` (`codigo_equipo`, `nombre`, `tipo`, `estado`, `ubicacion`, `activo`) VALUES
-('EQ-001', 'Cinta de correr', 'Cardio', 'Operativo', NULL, 1);
+('EQ-001', 'Cinta de correr', 'Cardio', 'Operativo', NULL, 1),
+('OOM-3285', 'Plancha', 'Diagnostico', 'Mantenimiento', 'Salon', 1);
 
 -- --------------------------------------------------------
 
@@ -239,7 +248,8 @@ CREATE TABLE `mantenimiento_equipo` (
 --
 
 INSERT INTO `mantenimiento_equipo` (`id_mantenimiento`, `codigo_equipo`, `fecha`, `tipo`, `descripcion`, `costo`, `tecnico`) VALUES
-(1, 'EQ-001', '2026-03-15', 'Preventivo', 'Lubricación y calibración', NULL, NULL);
+(1, 'EQ-001', '2026-03-15', 'Preventivo', 'Lubricación y calibración', NULL, NULL),
+(2, 'EQ-001', '2026-05-20', 'Correctivo', 'kj', 5555.00, 'jkj');
 
 -- --------------------------------------------------------
 
@@ -260,11 +270,27 @@ CREATE TABLE `membresia` (
 --
 
 INSERT INTO `membresia` (`id_membresia`, `id_tipo`, `id_estado`, `fecha_inicio`, `fecha_fin`) VALUES
-(1, 1, 1, '2026-05-01', '2026-05-31'),
+(1, 1, 2, '2026-05-01', '2026-05-31'),
 (2, 2, 2, '2026-03-01', '2026-05-30'),
 (3, 1, 2, '2026-04-01', '2026-04-30'),
 (4, 1, 1, '2026-05-24', '2026-05-30'),
-(5, 1, 1, '2026-05-17', '2026-05-30');
+(5, 1, 1, '2026-05-17', '2026-05-30'),
+(6, 1, 1, '2026-05-17', '2026-05-30'),
+(7, 1, 1, '2026-05-18', '2026-05-30'),
+(8, 1, 1, '2026-05-17', '2026-05-30'),
+(9, 1, 2, '2026-05-18', '2026-06-17'),
+(10, 2, 2, '2026-05-18', '2026-08-16'),
+(11, 1, 2, '2026-05-17', '2026-06-16'),
+(12, 2, 1, '2026-05-17', '2026-08-15'),
+(13, 1, 2, '2026-05-17', '2026-06-16'),
+(14, 1, 2, '2026-05-17', '2026-06-16'),
+(15, 1, 2, '2026-05-18', '2026-06-17'),
+(16, 1, 2, '2026-05-18', '2026-06-17'),
+(17, 1, 2, '2026-05-18', '2026-06-17'),
+(18, 1, 1, '2026-05-18', '2026-06-17'),
+(19, 1, 1, '2026-05-18', '2026-06-17'),
+(20, 1, 1, '2026-05-17', '2026-05-30'),
+(21, 1, 1, '2026-05-19', '2026-05-30');
 
 -- --------------------------------------------------------
 
@@ -307,7 +333,12 @@ CREATE TABLE `pago` (
 INSERT INTO `pago` (`id_pago`, `cedula_cliente`, `monto`, `metodo_pago`, `comprobante_url`, `estado`, `fecha_pago`, `fecha_vencimiento`) VALUES
 (1, 'V-11111111', 30.00, 'Efectivo', NULL, 'Pagado', '2026-05-01', '2026-05-31'),
 (2, 'V-22222222', 80.00, 'Transferencia', NULL, 'Atrasado', '2026-03-01', '2026-05-30'),
-(3, 'V-33333333', 30.00, 'Efectivo', NULL, 'Atrasado', '2026-04-01', '2026-04-30');
+(3, 'V-33333333', 30.00, 'Efectivo', NULL, 'Atrasado', '2026-04-01', '2026-04-30'),
+(4, 'V-33333333', 5.00, 'Efectivo', '', 'Pagado', '2026-05-18', '2026-06-17'),
+(5, 'V-22222222', 5.00, 'Efectivo', '', 'Pagado', '2026-05-18', '2026-08-16'),
+(7, 'V-22222222', 4.00, 'Efectivo', '', 'Pagado', '2026-05-17', '2026-08-15'),
+(13, 'V-33333333', 5.00, 'Efectivo', '', 'Pagado', '2026-05-18', '2026-06-17'),
+(14, 'V-11111111', 5.00, 'Efectivo', '', 'Pagado', '2026-05-18', '2026-06-17');
 
 -- --------------------------------------------------------
 
@@ -332,12 +363,19 @@ CREATE TABLE `persona` (
 --
 
 INSERT INTO `persona` (`cedula_persona`, `nombre`, `apellido`, `correo`, `telefono`, `direccion`, `fecha_nacimiento`, `fecha_registro`, `activo`) VALUES
-('T-00000001', 'Carlos', 'Pérez', 'carlos@sofit.com', NULL, NULL, NULL, NULL, 1),
-('T-00000002', 'Ana', 'Gómez', 'ana@sofit.com', NULL, NULL, NULL, NULL, 1),
-('V-11111111', 'María', 'Torres', 'maria@example.com', '0412-1234567', NULL, '2026-05-17', '2026-05-17 01:11:43', 1),
-('V-22222222', 'Luis', 'Martínez', 'luis@example.com', '0412-7654321', NULL, '2026-05-17', '2026-05-17 01:11:52', 1),
+('325325', 'asfas', 'fas', 'hola@gmail.com', '2323632', 'fa', '2026-05-21', '2026-05-22 00:37:59', 1),
+('V-00000001', 'Carlos', 'Pérez', 'carlos@sofit.com', '0412-4471891', NULL, '2026-05-21', '2026-05-22 01:29:49', 1),
+('V-00000002', 'Ana', 'Gómez', 'ana@sofit.com', '0426-2142141', NULL, '2026-05-21', '2026-05-22 01:29:17', 1),
+('V-11111111', 'María', 'Torres', 'maria@example.com', '0412-1234567', NULL, '2026-05-17', '2026-05-18 18:14:28', 1),
+('V-11111898', 'll', 'fsfas', 'hola@gmail.com', '0412-3253252', 'jk', '2026-05-17', '2026-05-17 23:52:14', 1),
+('V-12421421', 'asfsafXXD', 'f', 'hola@gmail.com', '0412-2421412', 'asf', '2026-05-18', '2026-05-19 01:40:57', 1),
+('V-12521555', 'SSS', 'ff', 'hola@gmail.com', '0412-4212512', 'asfas', '2026-05-19', '2026-05-17 04:51:33', 1),
+('V-13131412', 'asasf', 'asgas', 'hola@gmail.com', '0424-2152151', 'asfasf', '2026-05-18', '2026-05-17 20:50:21', 1),
+('V-22222222', 'Luis', 'Martínez', 'luis@example.com', '0412-7654321', NULL, '2026-05-17', '2026-05-20 07:11:03', 1),
 ('V-25125152', 'afas', 'saf', 'gasgsaas@gmail.com', '0412-2152152', 'asfa', '2026-05-22', '2026-05-17 00:53:17', 1),
-('V-33333333', 'Cliente', 'Moroso', 'moroso@test.com', '0412-4471891', NULL, '2026-05-15', '2026-05-17 01:03:55', 1),
+('V-31114255', 'asf', 'asf', 'hola@gmail.com', '0412-4471891', 'safasf', '2026-05-20', '2026-05-20 05:28:44', 1),
+('V-33333333', 'Juan', 'Garcia', 'moroso@test.com', '0412-4471891', NULL, '2026-05-15', '2026-05-17 04:45:03', 1),
+('V-42142155', 'HOLA', 'fa', 'hola@gmail.com', '0412-2141241', 'asaf', '2026-05-22', '2026-05-22 01:25:04', 1),
 ('V-93682363', 'Pan', 'Waos', 'gasgsaas@gmail.com', '0412-2521512', 'asfas', '2026-05-17', '2026-05-17 00:52:10', 1);
 
 -- --------------------------------------------------------
@@ -362,7 +400,8 @@ CREATE TABLE `producto` (
 --
 
 INSERT INTO `producto` (`codigo_producto`, `nombre`, `categoria`, `precio_venta`, `stock_minimo`, `stock_actual`, `unidad_medida`, `activo`) VALUES
-('PROT001', 'Proteína Whey', NULL, 45.00, 0, 15, 'unidad', 1);
+('1313131', 'asfasfasfas', 'Suplementos', 4444.00, 5, 0, 'unidad', 1),
+('PROT001', 'Proteína Whe', '', 45.00, 0, 19, 'unidad', 0);
 
 -- --------------------------------------------------------
 
@@ -403,6 +442,13 @@ CREATE TABLE `rutina_asignada` (
   `progreso` decimal(5,2) DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `rutina_asignada`
+--
+
+INSERT INTO `rutina_asignada` (`id_asignacion`, `cedula_cliente`, `id_rutina`, `fecha_asignacion`, `fecha_inicio`, `fecha_fin`, `estado`, `progreso`) VALUES
+(1, 'V-33333333', 1, '2026-05-21', '2026-05-20', '2026-05-31', 'Activa', 0.00);
+
 -- --------------------------------------------------------
 
 --
@@ -423,6 +469,14 @@ CREATE TABLE `seguimiento_fisico` (
   `pantorrilla_cm` decimal(5,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `seguimiento_fisico`
+--
+
+INSERT INTO `seguimiento_fisico` (`id_seguimiento`, `cedula_cliente`, `fecha`, `altura_cm`, `peso_kg`, `cintura_cm`, `cadera_cm`, `pecho_cm`, `muslo_cm`, `hombros_cm`, `pantorrilla_cm`) VALUES
+(3, 'V-11111111', '2026-05-17', 2.00, 4.00, NULL, NULL, NULL, NULL, NULL, NULL),
+(14, 'V-22222222', '2026-05-20', 111.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -438,6 +492,13 @@ CREATE TABLE `seguimiento_nutricional` (
   `grasas_g` decimal(5,2) DEFAULT NULL,
   `calorias_diarias` decimal(5,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `seguimiento_nutricional`
+--
+
+INSERT INTO `seguimiento_nutricional` (`id_seguimiento`, `cedula_cliente`, `fecha`, `proteinas_g`, `carbohidratos_g`, `grasas_g`, `calorias_diarias`) VALUES
+(3, 'V-11111111', '2026-05-17', 112.40, 325.30, 326.60, 757.00);
 
 -- --------------------------------------------------------
 
@@ -560,8 +621,9 @@ CREATE TABLE `trabajador` (
 --
 
 INSERT INTO `trabajador` (`cedula_trabajador`, `id_rol`, `salario`, `fecha_contratacion`) VALUES
-('T-00000001', 1, NULL, NULL),
-('T-00000002', 2, NULL, NULL);
+('V-00000001', 1, 5.00, '2026-05-21'),
+('V-00000002', 2, 5.00, '2026-05-22'),
+('V-42142155', 2, 5.00, '2026-05-21');
 
 -- --------------------------------------------------------
 
@@ -583,8 +645,8 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id_usuario`, `id_rol`, `cedula_persona`, `usuario`, `contrasena`, `ultimo_acceso`) VALUES
-(1, 2, 'T-00000001', 'carlos.perez', 'admin123', NULL),
-(2, 2, 'T-00000002', 'ana.gomez', 'ana123', NULL),
+(1, 2, 'V-00000001', 'carlos.perez', 'admin123', NULL),
+(2, 2, 'V-00000002', 'ana.gomez', 'ana123', NULL),
 (3, 4, 'V-11111111', 'luis.martinez', 'cliente123', NULL),
 (4, 4, 'V-33333333', 'cliente.moroso', 'moroso123', NULL);
 
@@ -841,7 +903,7 @@ ALTER TABLE `asistencia_clase`
 -- AUTO_INCREMENT de la tabla `asistencia_gimnasio`
 --
 ALTER TABLE `asistencia_gimnasio`
-  MODIFY `id_asistencia` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_asistencia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `clase`
@@ -871,13 +933,13 @@ ALTER TABLE `inscripcion_clase`
 -- AUTO_INCREMENT de la tabla `mantenimiento_equipo`
 --
 ALTER TABLE `mantenimiento_equipo`
-  MODIFY `id_mantenimiento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_mantenimiento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `membresia`
 --
 ALTER TABLE `membresia`
-  MODIFY `id_membresia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_membresia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT de la tabla `notificacion`
@@ -889,31 +951,31 @@ ALTER TABLE `notificacion`
 -- AUTO_INCREMENT de la tabla `pago`
 --
 ALTER TABLE `pago`
-  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `rutina`
 --
 ALTER TABLE `rutina`
-  MODIFY `id_rutina` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_rutina` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `rutina_asignada`
 --
 ALTER TABLE `rutina_asignada`
-  MODIFY `id_asignacion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_asignacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `seguimiento_fisico`
 --
 ALTER TABLE `seguimiento_fisico`
-  MODIFY `id_seguimiento` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_seguimiento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `seguimiento_nutricional`
 --
 ALTER TABLE `seguimiento_nutricional`
-  MODIFY `id_seguimiento` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_seguimiento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_canal`

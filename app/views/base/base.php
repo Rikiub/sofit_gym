@@ -45,12 +45,6 @@
     <?= $this->renderCss() ?>
     <?= $this->renderJs() ?>
 
-    <script type="module">
-        import Alpine from 'alpinejs'
-        window.Alpine = Alpine;
-        Alpine.start();
-    </script>
-
     <style>
         html {
             overflow-y: scroll;
@@ -66,3 +60,9 @@
         <?= $this->section('content') ?>
     </div>
 </body>
+
+<script type="module">
+    import Alpine from 'alpinejs'
+    window.Alpine = Alpine;
+    Alpine.start();
+</script>
