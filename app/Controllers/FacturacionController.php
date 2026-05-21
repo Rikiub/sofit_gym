@@ -6,8 +6,6 @@ use App\Controllers\BaseController;
 use App\Models\FacturacionPagosModel;
 use Exception;
 
-session_start();
-
 class FacturacionController extends BaseController
 {
     public function __construct(private FacturacionPagosModel $model) {}

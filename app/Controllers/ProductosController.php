@@ -5,8 +5,6 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\ProductosModel;
 
-session_start();
-
 class ProductosController extends BaseController
 {
     public function __construct(private ProductosModel $model) {}
@@ -18,7 +16,7 @@ class ProductosController extends BaseController
     {
         // Soporte para término de búsqueda en URL (?buscar=)
         $termino = $_GET['buscar'] ?? null;
-        
+
         // Obtener productos activos y aquellos que se encuentran bajo el stock de alerta mínimo
         $productos = $this->model->obtenerTodos($termino);
         $bajoStock = $this->model->obtenerBajoStock();

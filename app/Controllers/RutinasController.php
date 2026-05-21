@@ -5,8 +5,6 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\RutinasModel;
 
-session_start();
-
 class RutinasController extends BaseController
 {
     public function __construct(private RutinasModel $model) {}
