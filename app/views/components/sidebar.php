@@ -89,8 +89,7 @@ $this->pushJs('components/sidebar/sidebar.js');
 				<i class="fas fa-robot"></i> <span>Consultar Asistente de Entrenamiento</span>
 			</summary>
 			<div class="group-items">
-				<a href="asistente_chat.php"><i class="fas fa-comments"></i> <span>Interfaz de chat con IA</span></a>
-				<a href="asistente_tendencias.php"><i class="fas fa-chart-line"></i> <span>Tendencias y sugerencias</span></a>
+				<a href="?page=asistente"><i class="fas fa-comments"></i> <span>Interfaz de chat</span></a>
 			</div>
 		</details>
 
