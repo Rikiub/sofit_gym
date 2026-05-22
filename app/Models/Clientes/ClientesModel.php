@@ -192,7 +192,7 @@ class ClientesModel extends BaseModel
                 'fecha_registro' => Validator::dateToString($cliente->fecha_registro),
                 'activo' => $cliente->activo,
             ],
-            ['cedula_persona' => $cliente->cedula]
+            ['cedula_persona' => $cliente->cedula],
         );
 
         if ($cliente->membresia) {
@@ -219,6 +219,6 @@ class ClientesModel extends BaseModel
 
     public function delete(string $cedula): int
     {
-        return $this->pdoDelete("cliente", "cedula_cliente", $cedula);
+        return $this->pdoDelete('cliente', 'cedula_cliente', $cedula);
     }
 }

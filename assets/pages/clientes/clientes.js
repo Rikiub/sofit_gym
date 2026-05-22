@@ -99,7 +99,7 @@ const clientesItemPage = "ClientesItem";
 
 Alpine.data("clienteInfo", () => ({
     id: clientesId,
-    cliente: null,
+    cliente: {},
 
     async init() {
         await this.refresh();

@@ -7,8 +7,8 @@ use App\Models\BaseModel;
 
 class PersonaModel extends BaseModel
 {
-    public string $table = "persona";
-    public string $primaryKey = "cedula_persona";
+    public string $table = 'persona';
+    public string $primaryKey = 'cedula_persona';
 
     private function sqlSelect(): string
     {
@@ -68,7 +68,7 @@ class PersonaModel extends BaseModel
 
         $this->pdoInsert(
             $this->table,
-            $this->dtoToArray($persona)
+            $this->dtoToArray($persona),
         );
     }
 
@@ -77,12 +77,12 @@ class PersonaModel extends BaseModel
         $persona->validateInsert();
 
         $array = $this->dtoToArray($persona);
-        unset($array["cedula_persona"]);
+        unset($array['cedula_persona']);
 
         $this->pdoUpdate(
             $this->table,
             $array,
-            [$this->primaryKey => $persona->cedula]
+            [$this->primaryKey => $persona->cedula],
         );
     }
 

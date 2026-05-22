@@ -1,6 +1,6 @@
 <?php
-$cardTitle = $cardTitle ?? "";
-$children = $children ?? "";
+$title ??= '';
+$children ??= '';
 ?>
 
 <div class="CardComponent">
@@ -8,7 +8,7 @@ $children = $children ?? "";
         <header class="card-header">
             <h1 class="card-title">
                 <i class="fas fa-dumbbell"></i>
-                <?= $cardTitle ?>
+                <?= $title ?>
             </h1>
         </header>
 

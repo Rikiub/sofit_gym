@@ -3,17 +3,15 @@
 namespace App\Models;
 
 use App\Helpers\Validator;
-use App\Models\BaseModel;
 use App\Models\Personas\PersonaDTO;
 use App\Models\Personas\PersonaModel;
+use App\Models\BaseModel;
 use CuyZ\Valinor\Mapper\TreeMapper;
 use DateTimeImmutable;
 use PDO;
-use Override;
 
 readonly class TrabajadorDTO extends PersonaDTO
 {
-    #[Override]
     public function __construct(
         ?string $cedula = null,
         ?string $nombre = null,
@@ -24,7 +22,6 @@ readonly class TrabajadorDTO extends PersonaDTO
         ?bool $activo = true,
         ?DateTimeImmutable $fecha_nacimiento = null,
         ?DateTimeImmutable $fecha_registro = new DateTimeImmutable(),
-
         public ?int $id_rol = null,
         public ?string $rol = null,
         public ?float $salario = null,
@@ -53,14 +50,13 @@ readonly class TrabajadorDTO extends PersonaDTO
 
 class TrabajadoresModel extends BaseModel
 {
-    private string $table = "trabajador";
-    private string $primaryKey = "cedula_trabajador";
+    private string $table = 'trabajador';
+    private string $primaryKey = 'cedula_trabajador';
 
-    #[Override]
     public function __construct(
         PDO $pdo,
         TreeMapper $mapper,
-        private PersonaModel $personaModel
+        private PersonaModel $personaModel,
     ) {
         return parent::__construct($pdo, $mapper);
     }
@@ -127,7 +123,7 @@ class TrabajadoresModel extends BaseModel
         $this->personaModel->insert($trabajador);
         $this->pdoInsert(
             $this->table,
-            $this->dtoToArray($trabajador)
+            $this->dtoToArray($trabajador),
         );
 
         $this->pdo->commit();
@@ -141,12 +137,12 @@ class TrabajadoresModel extends BaseModel
         $this->personaModel->update($trabajador);
 
         $array = $this->dtoToArray($trabajador);
-        unset($array["cedula_trabajador"]);
+        unset($array['cedula_trabajador']);
 
         $this->pdoUpdate(
             $this->table,
             $array,
-            [$this->primaryKey => $trabajador->cedula]
+            [$this->primaryKey => $trabajador->cedula],
         );
 
         $this->pdo->commit();
@@ -157,7 +153,7 @@ class TrabajadoresModel extends BaseModel
         return $this->pdoDelete(
             $this->table,
             $this->primaryKey,
-            $cedula
+            $cedula,
         );
     }
 

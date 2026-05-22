@@ -1,26 +1,19 @@
 <?php
-
-/** @var array $formMeta */
 $this->layout('layout', ['title' => 'Clientes']);
-
 $this->pushJs('pages/clientes/clientes.js');
-$this->pushCss('pages/clientes/clientes.css');
 
 $modalForm = $this->fetch('modalForm', [
     'alpineComponent' => 'modalClientes',
-    'formHtml' => $this->fetch('clientes/forms/cliente', [
-        'formMeta' => $formMeta,
-    ]),
-])
+    'formHtml' => $this->fetch('clientes/forms/cliente'),
+]);
 ?>
 
-<?= $this->insert(
-    "card",
-    [
-        "cardTitle" => "Clientes",
-        "children" => <<<HTML
-            {$this->fetch('crudTable', ['alpineComponent' => 'crudClientes'])}
+<?= $this->insert('card', [
+    'title' => 'Clientes',
+    'children' => <<<HTML
+            <main>
+                {$this->fetch('crudTable', ['alpineComponent' => 'crudClientes'])}
+            </main>
             {$modalForm}
-        HTML
-    ]
-) ?>
+        HTML,
+]) ?>

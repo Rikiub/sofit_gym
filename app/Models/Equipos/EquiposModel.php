@@ -46,20 +46,20 @@ readonly class EquipoDTO
 
 class EquiposModel extends BaseModel
 {
-    private string $table = "equipo";
-    private string $primaryKey = "codigo_equipo";
+    private string $table = 'equipo';
+    private string $primaryKey = 'codigo_equipo';
 
     private function sqlSelect(): string
     {
         return <<<SQL
-            SELECT
-                codigo_equipo AS `codigo`,
-                nombre,
-                tipo,
-                estado,
-                ubicacion,
-                activo
-            FROM {$this->table}
+                SELECT
+                    codigo_equipo AS `codigo`,
+                    nombre,
+                    tipo,
+                    estado,
+                    ubicacion,
+                    activo
+                FROM {$this->table}
             SQL;
     }
 
@@ -127,7 +127,7 @@ class EquiposModel extends BaseModel
                 'ubicacion' => $equipo->ubicacion,
                 'activo' => $equipo->activo,
             ],
-            [$this->primaryKey => $equipo->codigo]
+            [$this->primaryKey => $equipo->codigo],
         );
 
         return $this->find($equipo->codigo);

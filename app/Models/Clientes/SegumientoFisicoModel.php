@@ -60,14 +60,14 @@ readonly class SeguimientoFisicoDTO
 
 class SegumientoFisicoModel extends BaseModel
 {
-    private string $table = "seguimiento_fisico";
-    private string $primaryKey = "id_seguimiento";
+    private string $table = 'seguimiento_fisico';
+    private string $primaryKey = 'id_seguimiento';
 
     private function sqlSelect(): string
     {
         return <<<SQL
-            SELECT * FROM {$this->table}
-        SQL;
+                SELECT * FROM {$this->table}
+            SQL;
     }
 
     private function mapRow(array $row): SeguimientoFisicoDTO

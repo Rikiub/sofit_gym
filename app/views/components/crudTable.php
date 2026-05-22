@@ -1,5 +1,5 @@
 <?php
-$alpineComponent = $alpineComponent ?? 'crudTable';
+$alpineComponent ??= 'crudTable';
 $this->pushJs('components/crudTable/crudTable.js');
 ?>
 
@@ -7,4 +7,5 @@ $this->pushJs('components/crudTable/crudTable.js');
     x-data="<?= $alpineComponent ?>"
     x-ref="table"
     @form-success.window="handleFormSuccess($event.detail)"
-    class="overflow-auto"></div>
+    class="overflow-auto"
+></div>

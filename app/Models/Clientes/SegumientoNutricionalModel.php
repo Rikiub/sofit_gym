@@ -32,14 +32,14 @@ readonly class SeguimientoNutricionalDTO
 
 class SegumientoNutricionalModel extends BaseModel
 {
-    private string $table = "seguimiento_nutricional";
-    private string $primaryKey = "id_seguimiento";
+    private string $table = 'seguimiento_nutricional';
+    private string $primaryKey = 'id_seguimiento';
 
     private function sqlSelect(): string
     {
         return <<<SQL
-            SELECT * FROM {$this->table}
-        SQL;
+                SELECT * FROM {$this->table}
+            SQL;
     }
 
     private function mapRow(array $row): SeguimientoNutricionalDTO
@@ -75,7 +75,7 @@ class SegumientoNutricionalModel extends BaseModel
             <<<SQL
                 {$this->sqlSelect()} 
                 WHERE {$this->primaryKey} = ?
-            SQL
+            SQL,
         );
         $stmt->execute([$id]);
         $row = $stmt->fetch();

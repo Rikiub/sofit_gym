@@ -28,10 +28,8 @@ class ClientesItemController extends BaseController
             $this->redirectToError();
         }
 
-        // Cargar vista: app/views/clientes/item.php
-        return $this->render('clientes/item', [
-            'formMeta' => $this->formMeta(),
-        ]);
+        $templates = $this->templates->addData(['formMeta' => $this->formMeta()]);
+        return $templates->render('clientes/item');
     }
 
     private function formMeta(): array

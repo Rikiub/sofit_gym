@@ -1,30 +1,24 @@
 <?php
-
-/**
- * @var array $formMeta
- */
-
 $this->layout('layout');
 
 $this->pushJs('pages/clientes/clientes.js');
 $this->pushCss('pages/clientes/clientes.css');
-$this->pushCss("lib/picocss/pico.red.min.css");
+$this->pushCss('lib/picocss/pico.red.min.css');
 ?>
 
 <?= $this->insert('modalForm', [
     'alpineComponent' => <<<JS
             modalClientes({ isSinglePage: true })
         JS,
-    'formHtml' => $this->fetch('clientes/forms/cliente', [
-        'formMeta' => $formMeta,
-    ]),
+    'formHtml' => $this->fetch('clientes/forms/cliente'),
 ]) ?>
 
 <article
     x-data="clienteInfo"
     x-effect="document.title = `Cliente: ${nombreCompleto()}`" ,
     @form-success.window="handleFormSuccess($event.detail)"
-    class="pagina-cliente">
+    class="pagina-cliente"
+>
     <header>
         <div class="header-actions">
             <div>
@@ -40,7 +34,8 @@ $this->pushCss("lib/picocss/pico.red.min.css");
                 class="btn btn-warning"
                 data-tooltip="Editar"
                 data-placement="bottom"
-                @click="$dispatch('open-modal', { mode: 'edit', dataId: cliente.cedula, id: 'clientes' })">
+                @click="$dispatch('open-modal', { mode: 'edit', dataId: cliente.cedula, id: 'clientes' })"
+            >
                 <i class="fa-pen-to-square fa-solid"></i>
             </button>
 
@@ -48,7 +43,8 @@ $this->pushCss("lib/picocss/pico.red.min.css");
                 class="btn btn-danger"
                 data-tooltip="Eliminar"
                 data-placement="bottom"
-                @click="$dispatch('open-modal', { mode: 'delete', dataId: cliente.cedula, id: 'clientes' })">
+                @click="$dispatch('open-modal', { mode: 'delete', dataId: cliente.cedula, id: 'clientes' })"
+            >
                 <i class="fa-solid fa-trash-can"></i>
             </button>
         </div>
@@ -161,3 +157,17 @@ $this->pushCss("lib/picocss/pico.red.min.css");
         ]) ?>
     </article>
 </section>
+
+<style>
+    .pagina-cliente {
+        header {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 20px;
+        }
+    }
+</style>

@@ -1,6 +1,6 @@
 <?php
-$formHtml = $formHtml ?? '';
-$alpineComponent = $alpineComponent ?? 'modalForm';
+$formHtml ??= null;
+$alpineComponent ??= 'modalForm';
 
 $this->pushJs('components/modalForm/modalForm.js');
 ?>
@@ -12,7 +12,8 @@ $this->pushJs('components/modalForm/modalForm.js');
     x-data="<?= $alpineComponent ?>"
     x-id="['form']"
     :closedby="loading ? 'none' : 'any'"
-    @open-modal.window="handleOpenModal($event.detail)">
+    @open-modal.window="handleOpenModal($event.detail)"
+>
     <div class="modal-dialog modal-lg">
         <article class="modal-content">
             <header class="modal-header">
@@ -51,7 +52,8 @@ $this->pushJs('components/modalForm/modalForm.js');
                         class="btn btn-danger"
                         :form="$id('form')"
                         :aria-busy="loading"
-                        :disabled="loading">Si</button>
+                        :disabled="loading"
+                    >Si</button>
                 </div>
             </footer>
         </article>

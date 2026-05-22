@@ -10,7 +10,7 @@ use Exception;
 class ClientesController extends BaseController
 {
     public function __construct(
-        private ClientesModel $clientesModelo
+        private ClientesModel $clientesModelo,
     ) {}
 
     // CLIENTES
@@ -18,9 +18,8 @@ class ClientesController extends BaseController
     public function index(): string
     {
         // Cargar vista app/views/clientes/index.php
-        return $this->render('clientes/index', [
-            'formMeta' => $this->formMeta(),
-        ]);
+        $templates = $this->templates->addData(['formMeta' => $this->formMeta()]);
+        return $templates->render('clientes/index');
     }
 
     private function formMeta(): array

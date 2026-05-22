@@ -8,7 +8,6 @@ use CuyZ\Valinor\Mapper\TreeMapper;
 use DateTimeImmutable;
 use InvalidArgumentException;
 use PDO;
-use Override;
 
 enum TipoMantenimiento: string
 {
@@ -63,34 +62,33 @@ readonly class MantenimientoEquipoDTO
 
 class MantenimientoEquipoModel extends BaseModel
 {
-    private string $table = "mantenimiento_equipo";
-    private string $primaryKey = "id_mantenimiento";
+    private string $table = 'mantenimiento_equipo';
+    private string $primaryKey = 'id_mantenimiento';
 
-    #[Override]
     public function __construct(
         protected PDO $pdo,
         protected TreeMapper $mapper,
-        protected EquiposModel $equiposModel
+        protected EquiposModel $equiposModel,
     ) {}
 
     private function sqlSelect(): string
     {
         return <<<SQL
-            SELECT
-                id_mantenimiento AS `id`,
-                codigo_equipo,
-                fecha,
-                tipo,
-                descripcion,
-                costo,
-                tecnico
-            FROM {$this->table}
+                SELECT
+                    id_mantenimiento AS `id`,
+                    codigo_equipo,
+                    fecha,
+                    tipo,
+                    descripcion,
+                    costo,
+                    tecnico
+                FROM {$this->table}
             SQL;
     }
 
     private function mapToMantenimiento(array $row): MantenimientoEquipoDTO
     {
-        $row["equipo"] = $this->equiposModel->find($row["codigo_equipo"]);
+        $row['equipo'] = $this->equiposModel->find($row['codigo_equipo']);
         $mantenimiento = $this->mapper->map(MantenimientoEquipoDTO::class, $row);
         return $mantenimiento;
     }
@@ -175,7 +173,7 @@ class MantenimientoEquipoModel extends BaseModel
                 'costo' => $mantenimiento->costo,
                 'tecnico' => $mantenimiento->tecnico,
             ],
-            [$this->primaryKey => $mantenimiento->id]
+            [$this->primaryKey => $mantenimiento->id],
         );
 
         return $this->find($mantenimiento->id);
