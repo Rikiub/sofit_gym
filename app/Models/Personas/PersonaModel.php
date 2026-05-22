@@ -4,11 +4,20 @@ namespace App\Models\Personas;
 
 use App\Helpers\Validator;
 use App\Models\BaseModel;
+use CuyZ\Valinor\Mapper\TreeMapper;
+use PDO;
 
 class PersonaModel extends BaseModel
 {
     public string $table = 'persona';
     public string $primaryKey = 'cedula_persona';
+
+    public function __construct(
+        PDO $pdo,
+        private TreeMapper $mapper,
+    ) {
+        return parent::__construct($pdo);
+    }
 
     private function sqlSelect(): string
     {

@@ -55,10 +55,10 @@ class TrabajadoresModel extends BaseModel
 
     public function __construct(
         PDO $pdo,
-        TreeMapper $mapper,
+        private TreeMapper $mapper,
         private PersonaModel $personaModel,
     ) {
-        return parent::__construct($pdo, $mapper);
+        return parent::__construct($pdo);
     }
 
     private function sqlSelect(): string

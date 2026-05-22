@@ -3,14 +3,18 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Helpers\Response;
 use App\Models\TrabajadorDTO;
 use App\Models\TrabajadoresModel;
+use CuyZ\Valinor\Mapper\TreeMapper;
 use Exception;
 
 class TrabajadoresController extends BaseController
 {
     public function __construct(
-        private TrabajadoresModel $trabajadoresModel
+        private Response $response,
+        private TreeMapper $mapper,
+        private TrabajadoresModel $trabajadoresModel,
     ) {}
 
     public function index(): string

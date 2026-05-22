@@ -3,16 +3,20 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Helpers\Response;
 use App\Models\Clientes\ClientesModel;
 use App\Models\Clientes\SeguimientoFisicoDTO;
 use App\Models\Clientes\SeguimientoNutricionalDTO;
 use App\Models\Clientes\SegumientoFisicoModel;
 use App\Models\Clientes\SegumientoNutricionalModel;
+use CuyZ\Valinor\Mapper\TreeMapper;
 use Exception;
 
 class ClientesItemController extends BaseController
 {
     public function __construct(
+        private Response $response,
+        private TreeMapper $mapper,
         private ClientesModel $clientesModel,
         private SegumientoFisicoModel $fisicoModel,
         private SegumientoNutricionalModel $nutricionalModel,
@@ -25,7 +29,7 @@ class ClientesItemController extends BaseController
         $cedula = $this->getCedulaParam();
 
         if (!$this->clientesModel->find($cedula)) {
-            $this->redirectToError();
+            Response::redirectToError();
         }
 
         $templates = $this->templates->addData(['formMeta' => $this->formMeta()]);
@@ -103,7 +107,7 @@ class ClientesItemController extends BaseController
 
     public function deleteSegFisico(): string|null
     {
-        $idSeguimiento = isset($_GET["id"]) ? intval($_GET["id"]) : null;
+        $idSeguimiento = isset($_GET['id']) ? intval($_GET['id']) : null;
 
         if (!$this->fisicoModel->find($idSeguimiento)) {
             return $this->response->json(['message' => 'Seguimiento no existe'], 404);
@@ -165,7 +169,7 @@ class ClientesItemController extends BaseController
 
     public function deleteSegNutricional(): string|null
     {
-        $idSeguimiento = isset($_GET["id"]) ? intval($_GET["id"]) : null;
+        $idSeguimiento = isset($_GET['id']) ? intval($_GET['id']) : null;
 
         if (!$this->nutricionalModel->find($idSeguimiento)) {
             return $this->response->json(['message' => 'Seguimiento no existe'], 404);

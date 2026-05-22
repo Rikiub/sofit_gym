@@ -37,7 +37,7 @@ return [
             throw new RuntimeException('Failed database connection: ' . $e->getMessage());
         }
     },
-    // Directorio donde cargar vistas/plantillas
+    // Directorios donde cargar vistas/plantillas
     Engine::class => function () {
         return Engine::fromTheme(Theme::hierarchy([
             Theme::new('app/views/base', 'Base'),

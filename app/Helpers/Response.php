@@ -70,6 +70,18 @@ class Response
         header('Location: ?' . Response::buildQueryParams($queryParams));
     }
 
+    public static function redirectToError($message = '', int $status = 404)
+    {
+        Response::redirect(
+            [
+                'page' => 'error',
+                'message' => $message,
+                'status' => $status,
+            ],
+            404
+        );
+    }
+
     /**
      * Codifica los datos en una JSON string. Si no se proporciono un normalizador, fallback a jscon_encode.
      */

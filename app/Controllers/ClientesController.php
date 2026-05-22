@@ -3,13 +3,17 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Helpers\Response;
 use App\Models\Clientes\ClienteDTO;
 use App\Models\Clientes\ClientesModel;
+use CuyZ\Valinor\Mapper\TreeMapper;
 use Exception;
 
 class ClientesController extends BaseController
 {
     public function __construct(
+        private Response $response,
+        private TreeMapper $mapper,
         private ClientesModel $clientesModelo,
     ) {}
 

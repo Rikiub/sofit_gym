@@ -4,8 +4,10 @@ namespace App\Models\Clientes;
 
 use App\Helpers\Validator;
 use App\Models\BaseModel;
+use CuyZ\Valinor\Mapper\TreeMapper;
 use DateTimeImmutable;
 use InvalidArgumentException;
+use PDO;
 
 readonly class SeguimientoFisicoDTO
 {
@@ -62,6 +64,13 @@ class SegumientoFisicoModel extends BaseModel
 {
     private string $table = 'seguimiento_fisico';
     private string $primaryKey = 'id_seguimiento';
+
+    public function __construct(
+        PDO $pdo,
+        private TreeMapper $mapper,
+    ) {
+        return parent::__construct($pdo);
+    }
 
     private function sqlSelect(): string
     {

@@ -3,17 +3,23 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Helpers\Response;
 use App\Models\Equipos\MantenimientoEquipoDTO;
 use App\Models\Equipos\MantenimientoEquipoModel;
+use CuyZ\Valinor\Mapper\TreeMapper;
 use Exception;
 
 class EquiposMantenimientoController extends BaseController
 {
-    public function __construct(private MantenimientoEquipoModel $model) {}
+    public function __construct(
+        private Response $response,
+        private TreeMapper $mapper,
+        private MantenimientoEquipoModel $model,
+    ) {}
 
     public function index()
     {
-        return $this->templates->render("equipos_mantenimiento");
+        return $this->templates->render('equipos_mantenimiento');
     }
 
     private function getIdParam(): int

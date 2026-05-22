@@ -3,13 +3,15 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Helpers\Response;
 use App\Models\FacturacionPagosModel;
 use Exception;
 
 class FacturacionController extends BaseController
 {
     public function __construct(
-        private FacturacionPagosModel $model
+        private Response $response,
+        private FacturacionPagosModel $model,
     ) {}
 
     public function index()

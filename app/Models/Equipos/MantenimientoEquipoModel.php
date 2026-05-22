@@ -66,10 +66,12 @@ class MantenimientoEquipoModel extends BaseModel
     private string $primaryKey = 'id_mantenimiento';
 
     public function __construct(
-        protected PDO $pdo,
-        protected TreeMapper $mapper,
-        protected EquiposModel $equiposModel,
-    ) {}
+        PDO $pdo,
+        private TreeMapper $mapper,
+        private EquiposModel $equiposModel,
+    ) {
+        return parent::__construct($pdo);
+    }
 
     private function sqlSelect(): string
     {

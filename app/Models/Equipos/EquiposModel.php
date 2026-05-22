@@ -3,7 +3,9 @@
 namespace App\Models\Equipos;
 
 use App\Models\BaseModel;
+use CuyZ\Valinor\Mapper\TreeMapper;
 use InvalidArgumentException;
+use PDO;
 
 enum EstadoEquipo: string
 {
@@ -48,6 +50,13 @@ class EquiposModel extends BaseModel
 {
     private string $table = 'equipo';
     private string $primaryKey = 'codigo_equipo';
+
+    public function __construct(
+        PDO $pdo,
+        private TreeMapper $mapper,
+    ) {
+        return parent::__construct($pdo);
+    }
 
     private function sqlSelect(): string
     {

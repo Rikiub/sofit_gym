@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-use CuyZ\Valinor\Mapper\TreeMapper;
 use PDO;
 
 abstract class BaseModel
 {
     public function __construct(
-        protected PDO $pdo,
-        protected TreeMapper $mapper,
+        protected PDO $pdo
     ) {}
 
     /**

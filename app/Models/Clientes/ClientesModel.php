@@ -4,8 +4,10 @@ namespace App\Models\Clientes;
 
 use App\Helpers\Validator;
 use App\Models\BaseModel;
+use CuyZ\Valinor\Mapper\TreeMapper;
 use DateTimeImmutable;
 use InvalidArgumentException;
+use PDO;
 
 readonly class MembresiaDTO
 {
@@ -51,6 +53,13 @@ readonly class ClienteDTO
 
 class ClientesModel extends BaseModel
 {
+    public function __construct(
+        PDO $pdo,
+        private TreeMapper $mapper,
+    ) {
+        return parent::__construct($pdo);
+    }
+
     private function sqlSelect(): string
     {
         return <<<SQL
