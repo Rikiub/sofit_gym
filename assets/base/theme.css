@@ -22,12 +22,13 @@
     }
 
     button {
-        background-color: var(--pico-primary-background);
-        padding: 1rem;
+        background-color: var(--bs-btn-bg);
+        color: var(--bs-btn-color);
+        padding: var(--bs-btn-padding-y) var(--bs-btn-padding-x);
         width: 50px;
 
         &:hover {
-            background-color: var(--pico-primary-hover-background);
+            background-color: var(--bs-btn-hover-bg);
         }
     }
 }

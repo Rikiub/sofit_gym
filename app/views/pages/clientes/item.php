@@ -8,6 +8,7 @@ $this->layout('layout');
 
 $this->pushJs('pages/clientes/clientes.js');
 $this->pushCss('pages/clientes/clientes.css');
+$this->pushCss("lib/picocss/pico.red.min.css");
 ?>
 
 <?= $this->insert('modalForm', [
@@ -36,6 +37,7 @@ $this->pushCss('pages/clientes/clientes.css');
 
         <div>
             <button
+                class="btn btn-warning"
                 data-tooltip="Editar"
                 data-placement="bottom"
                 @click="$dispatch('open-modal', { mode: 'edit', dataId: cliente.cedula, id: 'clientes' })">
@@ -43,6 +45,7 @@ $this->pushCss('pages/clientes/clientes.css');
             </button>
 
             <button
+                class="btn btn-danger"
                 data-tooltip="Eliminar"
                 data-placement="bottom"
                 @click="$dispatch('open-modal', { mode: 'delete', dataId: cliente.cedula, id: 'clientes' })">

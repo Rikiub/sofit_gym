@@ -43,6 +43,16 @@ export function modalFormComponent(
         loading: false,
         errors: {},
 
+        init() {
+            this.modal = new bootstrap.Modal(this.$refs.modal);
+        },
+        openModal() {
+            this.modal.show();
+        },
+        closeModal() {
+            this.modal.hide();
+        },
+
         handleOpenModal({ mode, id = null, dataId = null }) {
             if (!mode) return console.error("A 'mode' must be provided");
             if (id !== componentId) return;
@@ -111,7 +121,7 @@ export function modalFormComponent(
                     this.loading = false;
                 }
 
-                this.$refs.modal.close();
+                this.closeModal();
 
                 this.$dispatch("form-success", {
                     id: componentId,
@@ -126,7 +136,7 @@ export function modalFormComponent(
         async onAdd() {
             this.clearForm();
             this.mode = "add";
-            this.$refs.modal.showModal();
+            this.openModal();
         },
         async onEdit(id) {
             this.clearForm();
@@ -153,12 +163,12 @@ export function modalFormComponent(
                 }
             }
 
-            this.$refs.modal.showModal();
+            this.openModal();
         },
         async onDelete(id) {
             this.mode = "delete";
             this.currentDataId = id;
-            this.$refs.modal.showModal();
+            this.openModal();
         },
 
         /** @param {HTMLInputElement} input */
@@ -181,14 +191,12 @@ export function modalFormComponent(
             valid
                 ? input.setCustomValidity("")
                 : input.setCustomValidity(message);
-
-            input.setAttribute("aria-invalid", !valid);
+            
             this.errors[input.name] = message;
         },
         /** @param {HTMLInputElement} input */
         clearInputValidity(input) {
             input.setCustomValidity("");
-            input.removeAttribute("aria-invalid");
             this.errors[input.name] = "";
         },
         clearForm() {
