@@ -8,18 +8,20 @@ use Exception;
 
 class FacturacionController extends BaseController
 {
-    public function __construct(private FacturacionPagosModel $model) {}
+    public function __construct(
+        private FacturacionPagosModel $model
+    ) {}
 
     public function index()
     {
         unset($_SESSION['mensaje'], $_SESSION['tipo_mensaje']);
 
-        return $this->render("facturacion", [
-            "clientes" => $this->model->obtenerClientesSimples(),
-            "pagos" =>  $this->model->obtenerTodosPagos(),
-            "activeTab" => $_GET['tab'] ?? 'tab-pagos',
-            "mensaje" => $_SESSION['mensaje'] ?? '',
-            "tipoMensaje" => $_SESSION['tipo_mensaje'] ?? '',
+        return $this->templates->render('facturacion', [
+            'clientes' => $this->model->obtenerClientesSimples(),
+            'pagos' => $this->model->obtenerTodosPagos(),
+            'activeTab' => $_GET['tab'] ?? 'tab-pagos',
+            'mensaje' => $_SESSION['mensaje'] ?? '',
+            'tipoMensaje' => $_SESSION['tipo_mensaje'] ?? '',
         ]);
     }
 
@@ -27,9 +29,9 @@ class FacturacionController extends BaseController
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->response->redirect([
-                "page" => "facturacion",
-                "action" => "index",
-                "tab" => "tab-lista",
+                'page' => 'facturacion',
+                'action' => 'index',
+                'tab' => 'tab-lista',
             ]);
             exit;
         }
@@ -42,17 +44,17 @@ class FacturacionController extends BaseController
 
         try {
             $res = $this->model->registrarPago($cedula, $monto, $metodo, $comprobante, $planTipo);
-            $_SESSION['mensaje'] = "✅ " . $res['mensaje'];
+            $_SESSION['mensaje'] = '✅ ' . $res['mensaje'];
             $_SESSION['tipo_mensaje'] = 'success';
         } catch (Exception $e) {
-            $_SESSION['mensaje'] = "❌ Error: " . $e->getMessage();
+            $_SESSION['mensaje'] = '❌ Error: ' . $e->getMessage();
             $_SESSION['tipo_mensaje'] = 'danger';
         }
 
         $this->response->redirect([
-            "page" => "facturacion",
-            "action" => "index",
-            "tab" => "tab-lista",
+            'page' => 'facturacion',
+            'action' => 'index',
+            'tab' => 'tab-lista',
         ]);
     }
 
@@ -60,9 +62,9 @@ class FacturacionController extends BaseController
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->response->redirect([
-                "page" => "facturacion",
-                "action" => "index",
-                "tab" => "tab-lista",
+                'page' => 'facturacion',
+                'action' => 'index',
+                'tab' => 'tab-lista',
             ]);
             exit;
         }
@@ -76,21 +78,21 @@ class FacturacionController extends BaseController
 
         try {
             if ($this->model->actualizarPago($idPago, $monto, $metodo, $estado, $fechaPago, $fechaVencimiento)) {
-                $_SESSION['mensaje'] = "✅ Pago actualizado correctamente.";
+                $_SESSION['mensaje'] = '✅ Pago actualizado correctamente.';
                 $_SESSION['tipo_mensaje'] = 'success';
             } else {
-                $_SESSION['mensaje'] = "❌ No se pudo actualizar.";
+                $_SESSION['mensaje'] = '❌ No se pudo actualizar.';
                 $_SESSION['tipo_mensaje'] = 'danger';
             }
         } catch (Exception $e) {
-            $_SESSION['mensaje'] = "❌ Error: " . $e->getMessage();
+            $_SESSION['mensaje'] = '❌ Error: ' . $e->getMessage();
             $_SESSION['tipo_mensaje'] = 'danger';
         }
 
         $this->response->redirect([
-            "page" => "facturacion",
-            "action" => "index",
-            "tab" => "tab-lista",
+            'page' => 'facturacion',
+            'action' => 'index',
+            'tab' => 'tab-lista',
         ]);
     }
 
@@ -98,9 +100,9 @@ class FacturacionController extends BaseController
     {
         if (!isset($_GET['eliminar_pago'])) {
             $this->response->redirect([
-                "page" => "facturacion",
-                "action" => "index",
-                "tab" => "tab-lista",
+                'page' => 'facturacion',
+                'action' => 'index',
+                'tab' => 'tab-lista',
             ]);
             exit;
         }
@@ -108,21 +110,21 @@ class FacturacionController extends BaseController
         $idPago = intval($_GET['eliminar_pago']);
         try {
             if ($this->model->eliminarPago($idPago)) {
-                $_SESSION['mensaje'] = "🗑️ Pago eliminado correctamente.";
+                $_SESSION['mensaje'] = '🗑️ Pago eliminado correctamente.';
                 $_SESSION['tipo_mensaje'] = 'warning';
             } else {
-                $_SESSION['mensaje'] = "❌ No se pudo eliminar.";
+                $_SESSION['mensaje'] = '❌ No se pudo eliminar.';
                 $_SESSION['tipo_mensaje'] = 'danger';
             }
         } catch (Exception $e) {
-            $_SESSION['mensaje'] = "❌ Error: " . $e->getMessage();
+            $_SESSION['mensaje'] = '❌ Error: ' . $e->getMessage();
             $_SESSION['tipo_mensaje'] = 'danger';
         }
 
         $this->response->redirect([
-            "page" => "facturacion",
-            "action" => "index",
-            "tab" => "tab-lista",
+            'page' => 'facturacion',
+            'action' => 'index',
+            'tab' => 'tab-lista',
         ]);
     }
 

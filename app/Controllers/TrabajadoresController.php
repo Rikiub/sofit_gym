@@ -15,7 +15,7 @@ class TrabajadoresController extends BaseController
 
     public function index(): string
     {
-        return $this->render('trabajadores');
+        return $this->templates->render('trabajadores');
     }
 
     private function getCedulaParam(): string

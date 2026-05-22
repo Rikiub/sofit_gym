@@ -7,7 +7,9 @@ use App\Models\RutinasModel;
 
 class RutinasController extends BaseController
 {
-    public function __construct(private RutinasModel $model) {}
+    public function __construct(
+        private RutinasModel $model
+    ) {}
 
     /**
      * Vista principal: Gestión de Rutinas Base
@@ -18,11 +20,11 @@ class RutinasController extends BaseController
         // Limpiamos mensajes de sesión previos
         unset($_SESSION['mensaje'], $_SESSION['tipo_mensaje']);
 
-        return $this->render("rutinas", [
-            "rutinas" => $this->model->obtenerTodasLasRutinas(),
-            "dificultades" => $this->model->obtenerDificultades(),
-            "mensaje" => $_SESSION['mensaje'] ?? '',
-            "tipoMensaje" => $_SESSION['tipo_mensaje'] ?? '',
+        return $this->templates->render('rutinas', [
+            'rutinas' => $this->model->obtenerTodasLasRutinas(),
+            'dificultades' => $this->model->obtenerDificultades(),
+            'mensaje' => $_SESSION['mensaje'] ?? '',
+            'tipoMensaje' => $_SESSION['tipo_mensaje'] ?? '',
         ]);
     }
 
@@ -36,11 +38,11 @@ class RutinasController extends BaseController
         unset($_SESSION['mensaje'], $_SESSION['tipo_mensaje']);
 
         // Renderizamos la vista 'rutinasAsignadas' enviándole las asignaciones y las rutinas bases cargadas
-        return $this->render("rutinas_asignadas", [
-            "asignaciones" => $this->model->obtenerTodasLasAsignaciones(),
-            "rutinas" => $this->model->obtenerTodasLasRutinas(),
-            "mensaje" => $_SESSION['mensaje'] ?? '',
-            "tipoMensaje" => $_SESSION['tipo_mensaje'] ?? '',
+        return $this->templates->render('rutinas_asignadas', [
+            'asignaciones' => $this->model->obtenerTodasLasAsignaciones(),
+            'rutinas' => $this->model->obtenerTodasLasRutinas(),
+            'mensaje' => $_SESSION['mensaje'] ?? '',
+            'tipoMensaje' => $_SESSION['tipo_mensaje'] ?? '',
         ]);
     }
 
@@ -53,7 +55,8 @@ class RutinasController extends BaseController
      */
     public function buscar_rutinas_ajax()
     {
-        if (!isset($_GET['ajax']) || $_GET['ajax'] !== 'buscar_rutinas') return;
+        if (!isset($_GET['ajax']) || $_GET['ajax'] !== 'buscar_rutinas')
+            return;
         $termino = $_GET['termino'] ?? '';
         $resultados = $this->model->buscarRutinas($termino);
         header('Content-Type: application/json');
@@ -84,10 +87,10 @@ class RutinasController extends BaseController
         }
 
         $datos = [
-            'id_dificultad'    => $idDificultad,
-            'nombre'           => $nombre,
-            'descripcion'      => $descripcion,
-            'objetivo'         => $objetivo,
+            'id_dificultad' => $idDificultad,
+            'nombre' => $nombre,
+            'descripcion' => $descripcion,
+            'objetivo' => $objetivo,
             'duracion_semanas' => $duracionSemanas
         ];
 
@@ -113,10 +116,14 @@ class RutinasController extends BaseController
         }
 
         $datos = [];
-        if (isset($_POST['id_dificultad'])) $datos['id_dificultad'] = intval($_POST['id_dificultad']);
-        if (isset($_POST['nombre']))        $datos['nombre'] = trim($_POST['nombre']);
-        if (isset($_POST['descripcion']))   $datos['descripcion'] = trim($_POST['descripcion']);
-        if (isset($_POST['objetivo']))      $datos['objetivo'] = trim($_POST['objetivo']);
+        if (isset($_POST['id_dificultad']))
+            $datos['id_dificultad'] = intval($_POST['id_dificultad']);
+        if (isset($_POST['nombre']))
+            $datos['nombre'] = trim($_POST['nombre']);
+        if (isset($_POST['descripcion']))
+            $datos['descripcion'] = trim($_POST['descripcion']);
+        if (isset($_POST['objetivo']))
+            $datos['objetivo'] = trim($_POST['objetivo']);
         if (isset($_POST['duracion_semanas'])) {
             $datos['duracion_semanas'] = !empty($_POST['duracion_semanas']) ? intval($_POST['duracion_semanas']) : null;
         }
@@ -172,7 +179,7 @@ class RutinasController extends BaseController
         $fechaInicio = !empty($_POST['fecha_inicio']) ? $_POST['fecha_inicio'] : null;
         $fechaFin = !empty($_POST['fecha_fin']) ? $_POST['fecha_fin'] : null;
         $estado = $_POST['estado'] ?? 'Activa';
-        $progreso = floatval($_POST['progreso'] ?? 0.00);
+        $progreso = floatval($_POST['progreso'] ?? 0.0);
 
         if (empty($cedula) || $idRutina <= 0) {
             echo json_encode(['success' => false, 'message' => 'Debe seleccionar un cliente y una rutina.']);
@@ -180,13 +187,13 @@ class RutinasController extends BaseController
         }
 
         $datos = [
-            'cedula_cliente'   => $cedula,
-            'id_rutina'        => $idRutina,
+            'cedula_cliente' => $cedula,
+            'id_rutina' => $idRutina,
             'fecha_asignacion' => $fechaAsignacion,
-            'fecha_inicio'     => $fechaInicio,
-            'fecha_fin'        => $fechaFin,
-            'estado'           => $estado,
-            'progreso'         => $progreso
+            'fecha_inicio' => $fechaInicio,
+            'fecha_fin' => $fechaFin,
+            'estado' => $estado,
+            'progreso' => $progreso
         ];
 
         $ok = $this->model->asignarRutina($datos);
@@ -211,13 +218,20 @@ class RutinasController extends BaseController
         }
 
         $datos = [];
-        if (isset($_POST['cedula_cliente']))   $datos['cedula_cliente'] = trim($_POST['cedula_cliente']);
-        if (isset($_POST['id_rutina']))        $datos['id_rutina'] = intval($_POST['id_rutina']);
-        if (isset($_POST['fecha_asignacion'])) $datos['fecha_asignacion'] = $_POST['fecha_asignacion'];
-        if (isset($_POST['fecha_inicio']))     $datos['fecha_inicio'] = !empty($_POST['fecha_inicio']) ? $_POST['fecha_inicio'] : null;
-        if (isset($_POST['fecha_fin']))        $datos['fecha_fin'] = !empty($_POST['fecha_fin']) ? $_POST['fecha_fin'] : null;
-        if (isset($_POST['estado']))           $datos['estado'] = $_POST['estado'];
-        if (isset($_POST['progreso']))         $datos['progreso'] = floatval($_POST['progreso']);
+        if (isset($_POST['cedula_cliente']))
+            $datos['cedula_cliente'] = trim($_POST['cedula_cliente']);
+        if (isset($_POST['id_rutina']))
+            $datos['id_rutina'] = intval($_POST['id_rutina']);
+        if (isset($_POST['fecha_asignacion']))
+            $datos['fecha_asignacion'] = $_POST['fecha_asignacion'];
+        if (isset($_POST['fecha_inicio']))
+            $datos['fecha_inicio'] = !empty($_POST['fecha_inicio']) ? $_POST['fecha_inicio'] : null;
+        if (isset($_POST['fecha_fin']))
+            $datos['fecha_fin'] = !empty($_POST['fecha_fin']) ? $_POST['fecha_fin'] : null;
+        if (isset($_POST['estado']))
+            $datos['estado'] = $_POST['estado'];
+        if (isset($_POST['progreso']))
+            $datos['progreso'] = floatval($_POST['progreso']);
 
         $ok = $this->model->actualizarAsignacion($idAsignacion, $datos);
         echo json_encode(['success' => $ok, 'message' => $ok ? 'Asignación modificada correctamente.' : 'No se realizaron cambios o error de base de datos.']);

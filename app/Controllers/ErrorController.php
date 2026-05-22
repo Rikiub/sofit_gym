@@ -17,6 +17,6 @@ class ErrorController extends BaseController
             $message = '405: Metodo no soportado';
         }
 
-        return $this->render('error', ['message' => $message]);
+        return $this->templates->render('error', ['message' => $message]);
     }
 }

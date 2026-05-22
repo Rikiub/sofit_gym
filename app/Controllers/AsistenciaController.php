@@ -7,26 +7,29 @@ use App\Models\AsistenciaModel;
 
 class AsistenciaController extends BaseController
 {
-    public function __construct(private AsistenciaModel $model) {}
+    public function __construct(
+        private AsistenciaModel $model
+    ) {}
 
     public function index()
     {
         $fechaSeleccionada = $_GET['fecha'] ?? date('Y-m-d');
         unset($_SESSION['mensaje'], $_SESSION['tipo_mensaje']);
 
-        return $this->render("asistencia", [
-            "entradasHoy" => $this->model->obtenerEntradasHoy(),
-            "fechaSeleccionada" => $fechaSeleccionada,
-            "ocupacion" => $this->model->obtenerOcupacionPorFranjas($fechaSeleccionada),
-            "detalleEntradas" => $this->model->obtenerEntradasPorFecha($fechaSeleccionada),
-            "mensaje" => $_SESSION['mensaje'] ?? '',
-            "tipoMensaje" => $_SESSION['tipo_mensaje'] ?? '',
+        return $this->templates->render('asistencia', [
+            'entradasHoy' => $this->model->obtenerEntradasHoy(),
+            'fechaSeleccionada' => $fechaSeleccionada,
+            'ocupacion' => $this->model->obtenerOcupacionPorFranjas($fechaSeleccionada),
+            'detalleEntradas' => $this->model->obtenerEntradasPorFecha($fechaSeleccionada),
+            'mensaje' => $_SESSION['mensaje'] ?? '',
+            'tipoMensaje' => $_SESSION['tipo_mensaje'] ?? '',
         ]);
     }
 
     public function buscar_clientes_ajax()
     {
-        if (!isset($_GET['ajax']) || $_GET['ajax'] !== 'buscar_clientes') return;
+        if (!isset($_GET['ajax']) || $_GET['ajax'] !== 'buscar_clientes')
+            return;
         $termino = $_GET['termino'] ?? '';
         $resultados = $this->model->buscarClientes($termino);
         header('Content-Type: application/json');
@@ -53,7 +56,8 @@ class AsistenciaController extends BaseController
 
     public function buscar_entradas_ajax()
     {
-        if (!isset($_GET['ajax']) || $_GET['ajax'] !== 'buscar_entradas') return;
+        if (!isset($_GET['ajax']) || $_GET['ajax'] !== 'buscar_entradas')
+            return;
         $termino = $_GET['termino'] ?? '';
         $resultados = $this->model->buscarEntradas($termino);
         header('Content-Type: application/json');

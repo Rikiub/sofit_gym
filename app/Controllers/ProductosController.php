@@ -7,7 +7,9 @@ use App\Models\ProductosModel;
 
 class ProductosController extends BaseController
 {
-    public function __construct(private ProductosModel $model) {}
+    public function __construct(
+        private ProductosModel $model
+    ) {}
 
     /**
      * Muestra la vista principal de productos (Catálogo e Inventario)
@@ -27,7 +29,7 @@ class ProductosController extends BaseController
         unset($_SESSION['mensaje'], $_SESSION['tipo_mensaje']);
 
         // Renderizado usando el método heredado de BaseController
-        echo $this->render('productos', [
+        echo $this->templates->render('productos', [
             'productos' => $productos,
             'bajoStock' => $bajoStock,
             'mensaje' => $mensaje,
@@ -78,13 +80,13 @@ class ProductosController extends BaseController
         // Construir arreglo mapeando con el modelo y sanitizando entradas
         $datos = [
             'codigo_producto' => strip_tags(trim($codigo)),
-            'nombre'          => strip_tags(trim($nombre)),
-            'categoria'       => !empty($_POST['categoria']) ? strip_tags(trim($_POST['categoria'])) : null,
-            'precio_venta'    => floatval($precio),
-            'stock_minimo'    => isset($_POST['stock_minimo']) ? intval($_POST['stock_minimo']) : 0,
-            'stock_actual'    => isset($_POST['stock_actual']) ? intval($_POST['stock_actual']) : 0,
-            'unidad_medida'   => !empty($_POST['unidad_medida']) ? strip_tags(trim($_POST['unidad_medida'])) : 'unidad',
-            'activo'          => 1
+            'nombre' => strip_tags(trim($nombre)),
+            'categoria' => !empty($_POST['categoria']) ? strip_tags(trim($_POST['categoria'])) : null,
+            'precio_venta' => floatval($precio),
+            'stock_minimo' => isset($_POST['stock_minimo']) ? intval($_POST['stock_minimo']) : 0,
+            'stock_actual' => isset($_POST['stock_actual']) ? intval($_POST['stock_actual']) : 0,
+            'unidad_medida' => !empty($_POST['unidad_medida']) ? strip_tags(trim($_POST['unidad_medida'])) : 'unidad',
+            'activo' => 1
         ];
 
         $exito = $this->model->crear($datos);
@@ -117,12 +119,18 @@ class ProductosController extends BaseController
 
         // Filtro y recolección de campos editables
         $datosNuevos = [];
-        if (isset($_POST['nombre'])) $datosNuevos['nombre'] = strip_tags(trim($_POST['nombre']));
-        if (isset($_POST['categoria'])) $datosNuevos['categoria'] = strip_tags(trim($_POST['categoria']));
-        if (isset($_POST['precio_venta'])) $datosNuevos['precio_venta'] = floatval($_POST['precio_venta']);
-        if (isset($_POST['stock_minimo'])) $datosNuevos['stock_minimo'] = intval($_POST['stock_minimo']);
-        if (isset($_POST['stock_actual'])) $datosNuevos['stock_actual'] = intval($_POST['stock_actual']);
-        if (isset($_POST['unidad_medida'])) $datosNuevos['unidad_medida'] = strip_tags(trim($_POST['unidad_medida']));
+        if (isset($_POST['nombre']))
+            $datosNuevos['nombre'] = strip_tags(trim($_POST['nombre']));
+        if (isset($_POST['categoria']))
+            $datosNuevos['categoria'] = strip_tags(trim($_POST['categoria']));
+        if (isset($_POST['precio_venta']))
+            $datosNuevos['precio_venta'] = floatval($_POST['precio_venta']);
+        if (isset($_POST['stock_minimo']))
+            $datosNuevos['stock_minimo'] = intval($_POST['stock_minimo']);
+        if (isset($_POST['stock_actual']))
+            $datosNuevos['stock_actual'] = intval($_POST['stock_actual']);
+        if (isset($_POST['unidad_medida']))
+            $datosNuevos['unidad_medida'] = strip_tags(trim($_POST['unidad_medida']));
 
         $exito = $this->model->actualizar($codigo, $datosNuevos);
 

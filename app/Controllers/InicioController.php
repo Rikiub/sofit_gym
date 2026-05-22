@@ -8,6 +8,6 @@ class InicioController extends BaseController
 {
     public function index(): string
     {
-        return $this->render('inicio');
+        return $this->templates->render('inicio');
     }
 }
