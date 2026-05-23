@@ -11,9 +11,9 @@ abstract class BaseModel
     ) {}
 
     /**
-     * Inserta una fila en una tabla.
+     * Insertar fila en una tabla.
      */
-    protected function pdoInsert(string $table, array $data)
+    protected function pdoInsert(string $table, array $data): void
     {
         $columns = array_keys($data);
         $placeholders = array_map(fn($col) => ":$col", $columns);
@@ -32,7 +32,7 @@ abstract class BaseModel
     /**
      * Actualizar fila en una tabla.
      */
-    protected function pdoUpdate(string $table, array $data, array $conditions): int
+    protected function pdoUpdate(string $table, array $data, array $conditions): void
     {
         $setParts = [];
         foreach ($data as $col => $val) {
@@ -62,10 +62,12 @@ abstract class BaseModel
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
-        return $stmt->rowCount();
     }
 
-    protected function pdoDelete(string $table, string $primaryKey, int|string $id)
+    /**
+     * Eliminar fila en una tabla.
+     */
+    protected function pdoDelete(string $table, string $primaryKey, int|string $id): void
     {
         $sql = sprintf(
             'DELETE FROM %s
@@ -75,6 +77,5 @@ abstract class BaseModel
         );
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$id]);
-        return $stmt->rowCount();
     }
 }

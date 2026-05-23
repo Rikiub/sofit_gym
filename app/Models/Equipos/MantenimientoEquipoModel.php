@@ -96,7 +96,7 @@ class MantenimientoEquipoModel extends BaseModel
     }
 
     /**
-     * @return array<MantenimientoEquipoDTO>
+     * @return MantenimientoEquipoDTO[]
      */
     public function getAll(): array
     {
@@ -141,14 +141,7 @@ class MantenimientoEquipoModel extends BaseModel
             throw new InvalidArgumentException("El equipo con código {$mantenimiento->codigo_equipo} no existe o está inactivo");
         }
 
-        $this->pdoInsert($this->table, [
-            'codigo_equipo' => $mantenimiento->codigo_equipo,
-            'fecha' => Validator::dateToString($mantenimiento->fecha),
-            'tipo' => $mantenimiento->tipo->value,
-            'descripcion' => $mantenimiento->descripcion,
-            'costo' => $mantenimiento->costo,
-            'tecnico' => $mantenimiento->tecnico,
-        ]);
+        $this->pdoInsert($this->table, $this->dtoToArray($mantenimiento));
 
         $id = (int) $this->pdo->lastInsertId();
         return $this->find($id);
@@ -165,24 +158,32 @@ class MantenimientoEquipoModel extends BaseModel
             throw new InvalidArgumentException("El equipo con código {$mantenimiento->codigo_equipo} no existe o está inactivo");
         }
 
+        $array = $this->dtoToArray($mantenimiento);
+        unset($array['id']);
+
         $this->pdoUpdate(
             $this->table,
-            [
-                'codigo_equipo' => $mantenimiento->codigo_equipo,
-                'fecha' => Validator::dateToString($mantenimiento->fecha),
-                'tipo' => $mantenimiento->tipo->value,
-                'descripcion' => $mantenimiento->descripcion,
-                'costo' => $mantenimiento->costo,
-                'tecnico' => $mantenimiento->tecnico,
-            ],
+            $array,
             [$this->primaryKey => $mantenimiento->id],
         );
 
         return $this->find($mantenimiento->id);
     }
 
-    public function delete(int $id): int
+    public function delete(int $id): void
     {
-        return $this->pdoDelete($this->table, $this->primaryKey, $id);
+        $this->pdoDelete($this->table, $this->primaryKey, $id);
+    }
+
+    private function dtoToArray(MantenimientoEquipoDTO $mantenimiento)
+    {
+        return [
+            'codigo_equipo' => $mantenimiento->codigo_equipo,
+            'fecha' => Validator::dateToString($mantenimiento->fecha),
+            'tipo' => $mantenimiento->tipo->value,
+            'descripcion' => $mantenimiento->descripcion,
+            'costo' => $mantenimiento->costo,
+            'tecnico' => $mantenimiento->tecnico,
+        ];
     }
 }

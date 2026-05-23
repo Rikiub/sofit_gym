@@ -7,7 +7,10 @@ use App\Models\BaseModel;
 use CuyZ\Valinor\Mapper\TreeMapper;
 use PDO;
 
-class PersonaModel extends BaseModel
+/**
+ * Base para realizar operaciones sobre la tabla `persona`.
+ */
+class PersonasModel extends BaseModel
 {
     public string $table = 'persona';
     public string $primaryKey = 'cedula_persona';
@@ -71,7 +74,7 @@ class PersonaModel extends BaseModel
         return $this->mapper->map(PersonaDTO::class, $row);
     }
 
-    public function insert(PersonaDTO $persona): void
+    public function insert(PersonaDTO $persona): PersonaDTO
     {
         $persona->validateInsert();
 
@@ -79,9 +82,11 @@ class PersonaModel extends BaseModel
             $this->table,
             $this->dtoToArray($persona),
         );
+
+        return $this->find($persona->cedula);
     }
 
-    public function update(PersonaDTO $persona): void
+    public function update(PersonaDTO $persona): PersonaDTO
     {
         $persona->validateInsert();
 
@@ -93,14 +98,16 @@ class PersonaModel extends BaseModel
             $array,
             [$this->primaryKey => $persona->cedula],
         );
+
+        return $this->find($persona->cedula);
     }
 
-    public function delete(string $cedula): int
+    public function delete(string $cedula): void
     {
-        return $this->pdoDelete($this->table, $this->primaryKey, $cedula);
+        $this->pdoDelete($this->table, $this->primaryKey, $cedula);
     }
 
-    private function dtoToArray(PersonaDTO $persona)
+    private function dtoToArray(PersonaDTO $persona): array
     {
         return [
             'cedula_persona' => $persona->cedula,

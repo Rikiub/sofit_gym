@@ -111,15 +111,7 @@ class EquiposModel extends BaseModel
     {
         $equipo->validateInsert();
 
-        $this->pdoInsert($this->table, [
-            'codigo_equipo' => $equipo->codigo,
-            'nombre' => $equipo->nombre,
-            'tipo' => $equipo->tipo,
-            'estado' => $equipo->estado->value,
-            'ubicacion' => $equipo->ubicacion,
-            'activo' => $equipo->activo,
-        ]);
-
+        $this->pdoInsert($this->table, $this->dtoToArray($equipo));
         return $this->find($equipo->codigo);
     }
 
@@ -127,23 +119,32 @@ class EquiposModel extends BaseModel
     {
         $equipo->validateUpdate();
 
+        $array = $this->dtoToArray($equipo);
+        unset($array['codigo_equipo']);
+
         $this->pdoUpdate(
             $this->table,
-            [
-                'nombre' => $equipo->nombre,
-                'tipo' => $equipo->tipo,
-                'estado' => $equipo->estado->value,
-                'ubicacion' => $equipo->ubicacion,
-                'activo' => $equipo->activo,
-            ],
+            $array,
             [$this->primaryKey => $equipo->codigo],
         );
 
         return $this->find($equipo->codigo);
     }
 
-    public function delete(string $codigo): int
+    public function delete(string $codigo): void
     {
-        return $this->pdoDelete($this->table, $this->primaryKey, $codigo);
+        $this->pdoDelete($this->table, $this->primaryKey, $codigo);
+    }
+
+    private function dtoToArray(EquipoDTO $equipo)
+    {
+        return [
+            'codigo_equipo' => $equipo->codigo,
+            'nombre' => $equipo->nombre,
+            'tipo' => $equipo->tipo,
+            'estado' => $equipo->estado->value,
+            'ubicacion' => $equipo->ubicacion,
+            'activo' => $equipo->activo,
+        ];
     }
 }

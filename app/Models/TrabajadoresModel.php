@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Helpers\Validator;
 use App\Models\Personas\PersonaDTO;
-use App\Models\Personas\PersonaModel;
+use App\Models\Personas\PersonasModel;
 use App\Models\BaseModel;
 use CuyZ\Valinor\Mapper\TreeMapper;
 use DateTimeImmutable;
@@ -13,6 +13,7 @@ use PDO;
 readonly class TrabajadorDTO extends PersonaDTO
 {
     public function __construct(
+        // Atributos heredados
         ?string $cedula = null,
         ?string $nombre = null,
         ?string $apellido = null,
@@ -25,6 +26,7 @@ readonly class TrabajadorDTO extends PersonaDTO
         public ?int $id_rol = null,
         public ?string $rol = null,
         public ?float $salario = null,
+        // Nuevos atributos
         public ?DateTimeImmutable $fecha_contratacion = new DateTimeImmutable(),
     ) {
         parent::__construct(
@@ -39,13 +41,6 @@ readonly class TrabajadorDTO extends PersonaDTO
             fecha_registro: $fecha_registro,
         );
     }
-
-    public function validateInsert()
-    {
-        parent::validateInsert();
-    }
-
-    public function validateUpdate() {}
 }
 
 class TrabajadoresModel extends BaseModel
@@ -56,15 +51,15 @@ class TrabajadoresModel extends BaseModel
     public function __construct(
         PDO $pdo,
         private TreeMapper $mapper,
-        private PersonaModel $personaModel,
+        private PersonasModel $personasModel,
     ) {
         return parent::__construct($pdo);
     }
 
     private function sqlSelect(): string
     {
-        $pTable = $this->personaModel->table;
-        $pKey = $this->personaModel->primaryKey;
+        $pTable = $this->personasModel->table;
+        $pKey = $this->personasModel->primaryKey;
 
         return <<<SQL
                 SELECT
@@ -115,26 +110,27 @@ class TrabajadoresModel extends BaseModel
         return $this->mapper->map(TrabajadorDTO::class, $row);
     }
 
-    public function insert(TrabajadorDTO $trabajador): void
+    public function insert(TrabajadorDTO $trabajador): TrabajadorDTO
     {
         $trabajador->validateInsert();
         $this->pdo->beginTransaction();
 
-        $this->personaModel->insert($trabajador);
+        $this->personasModel->insert($trabajador);
         $this->pdoInsert(
             $this->table,
             $this->dtoToArray($trabajador),
         );
 
         $this->pdo->commit();
+        return $this->find($trabajador->cedula);
     }
 
-    public function update(TrabajadorDTO $trabajador): void
+    public function update(TrabajadorDTO $trabajador): TrabajadorDTO
     {
         $trabajador->validateUpdate();
         $this->pdo->beginTransaction();
 
-        $this->personaModel->update($trabajador);
+        $this->personasModel->update($trabajador);
 
         $array = $this->dtoToArray($trabajador);
         unset($array['cedula_trabajador']);
@@ -146,11 +142,12 @@ class TrabajadoresModel extends BaseModel
         );
 
         $this->pdo->commit();
+        return $this->find($trabajador->cedula);
     }
 
-    public function delete(string $cedula): int
+    public function delete(string $cedula): void
     {
-        return $this->pdoDelete(
+        $this->pdoDelete(
             $this->table,
             $this->primaryKey,
             $cedula,

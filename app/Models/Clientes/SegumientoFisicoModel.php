@@ -58,6 +58,13 @@ readonly class SeguimientoFisicoDTO
             throw new InvalidArgumentException('Debe proporcionar al menos una medida');
         }
     }
+
+    public function validateUpdate()
+    {
+        if (!$this->id_seguimiento) {
+            throw new InvalidArgumentException('Se requiere id_seguimiento para actualizar');
+        }
+    }
 }
 
 class SegumientoFisicoModel extends BaseModel
@@ -86,7 +93,7 @@ class SegumientoFisicoModel extends BaseModel
 
     /**
      * Obtiene todos los seguimientos de un cliente.
-     * @return array<SeguimientoFisicoDTO>
+     * @return SeguimientoFisicoDTO[]
      */
     public function getAllByCliente(string $cedula): array
     {
@@ -130,21 +137,9 @@ class SegumientoFisicoModel extends BaseModel
     public function insert(SeguimientoFisicoDTO $seguimiento): SeguimientoFisicoDTO
     {
         $seguimiento->validateInsert();
+        $this->pdoInsert($this->table, $this->dtoToArray($seguimiento));
 
-        $this->pdoInsert($this->table, [
-            'cedula_cliente' => $seguimiento->cedula_cliente,
-            'fecha' => Validator::dateToString($seguimiento->fecha),
-            'altura_cm' => $seguimiento->altura_cm,
-            'peso_kg' => $seguimiento->peso_kg,
-            'cintura_cm' => $seguimiento->cintura_cm,
-            'cadera_cm' => $seguimiento->cadera_cm,
-            'pecho_cm' => $seguimiento->pecho_cm,
-            'muslo_cm' => $seguimiento->muslo_cm,
-            'hombros_cm' => $seguimiento->hombros_cm,
-            'pantorrilla_cm' => $seguimiento->pantorrilla_cm,
-        ]);
-
-        $id = $this->pdo->lastInsertId();
+        $id = (int) $this->pdo->lastInsertId();
         return $this->find($id);
     }
 
@@ -153,13 +148,29 @@ class SegumientoFisicoModel extends BaseModel
      */
     public function update(SeguimientoFisicoDTO $seguimiento): SeguimientoFisicoDTO
     {
-        if (!$seguimiento->id_seguimiento) {
-            throw new InvalidArgumentException('Se requiere id_seguimiento para actualizar');
-        }
+        $seguimiento->validateUpdate();
 
-        $seguimiento->validateInsert();  // al menos una medida
+        $this->pdoUpdate(
+            $this->table,
+            $this->dtoToArray($seguimiento),
+            [$this->primaryKey => $seguimiento->id_seguimiento]
+        );
 
-        $this->pdoUpdate($this->table, [
+        $id = (int) $this->pdo->lastInsertId();
+        return $this->find($id);
+    }
+
+    /**
+     * Elimina un seguimiento por ID.
+     */
+    public function delete(int $id): void
+    {
+        $this->pdoDelete($this->table, $this->primaryKey, $id);
+    }
+
+    private function dtoToArray(SeguimientoFisicoDTO $seguimiento): array
+    {
+        return [
             'cedula_cliente' => $seguimiento->cedula_cliente,
             'fecha' => Validator::dateToString($seguimiento->fecha),
             'altura_cm' => $seguimiento->altura_cm,
@@ -170,16 +181,6 @@ class SegumientoFisicoModel extends BaseModel
             'muslo_cm' => $seguimiento->muslo_cm,
             'hombros_cm' => $seguimiento->hombros_cm,
             'pantorrilla_cm' => $seguimiento->pantorrilla_cm,
-        ], [$this->primaryKey => $seguimiento->id_seguimiento]);
-
-        return $this->find($seguimiento->id_seguimiento);
-    }
-
-    /**
-     * Elimina un seguimiento por ID.
-     */
-    public function delete(int $id): int
-    {
-        return $this->pdoDelete($this->table, $this->primaryKey, $id);
+        ];
     }
 }

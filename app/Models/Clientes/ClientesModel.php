@@ -3,6 +3,8 @@
 namespace App\Models\Clientes;
 
 use App\Helpers\Validator;
+use App\Models\Personas\PersonaDTO;
+use App\Models\Personas\PersonasModel;
 use App\Models\BaseModel;
 use CuyZ\Valinor\Mapper\TreeMapper;
 use DateTimeImmutable;
@@ -22,29 +24,39 @@ readonly class MembresiaDTO
     ) {}
 }
 
-readonly class ClienteDTO
+readonly class ClienteDTO extends PersonaDTO
 {
     public function __construct(
-        public ?string $cedula = null,
-        public ?string $nombre = null,
-        public ?string $apellido = null,
-        public ?string $correo = null,
-        public ?string $telefono = null,
-        public ?string $direccion = null,
-        public ?bool $activo = true,
-        public ?DateTimeImmutable $fecha_nacimiento = null,
-        public ?DateTimeImmutable $fecha_registro = new DateTimeImmutable(),
+        // Atributos heredados
+        ?string $cedula = null,
+        ?string $nombre = null,
+        ?string $apellido = null,
+        ?string $correo = null,
+        ?string $telefono = null,
+        ?string $direccion = null,
+        ?bool $activo = true,
+        ?DateTimeImmutable $fecha_nacimiento = null,
+        ?DateTimeImmutable $fecha_registro = new DateTimeImmutable(),
+        // Nuevos atributos
         public ?MembresiaDTO $membresia = null,
-    ) {}
+    ) {
+        parent::__construct(
+            cedula: $cedula,
+            nombre: $nombre,
+            apellido: $apellido,
+            correo: $correo,
+            telefono: $telefono,
+            direccion: $direccion,
+            activo: $activo,
+            fecha_nacimiento: $fecha_nacimiento,
+            fecha_registro: $fecha_registro,
+        );
+    }
 
     public function validateInsert()
     {
-        if (!$this->cedula) {
-            throw new InvalidArgumentException('Debe tener una cedula');
-        }
-        if (!$this->nombre || !$this->apellido) {
-            throw new InvalidArgumentException('Debe tener nombre y apellido');
-        }
+        parent::validateInsert();
+
         if (!$this->membresia) {
             throw new InvalidArgumentException('Debe tener una membresia');
         }
@@ -56,6 +68,7 @@ class ClientesModel extends BaseModel
     public function __construct(
         PDO $pdo,
         private TreeMapper $mapper,
+        private PersonasModel $personasModel
     ) {
         return parent::__construct($pdo);
     }
@@ -113,7 +126,7 @@ class ClientesModel extends BaseModel
         return $data;
     }
 
-    public function find(string $cedula): ClienteDTO|false
+    public function find(string $cedula): ?ClienteDTO
     {
         // Cliente
         $stmt = $this->pdo->prepare(
@@ -126,7 +139,7 @@ class ClientesModel extends BaseModel
         $row = $stmt->fetch();
 
         if (!$row) {
-            return false;
+            return null;
         }
 
         // Build
@@ -154,25 +167,8 @@ class ClientesModel extends BaseModel
         $cliente->validateInsert();
         $this->pdo->beginTransaction();
 
-        $this->pdoInsert('persona', [
-            'cedula_persona' => $cliente->cedula,
-            'nombre' => $cliente->nombre,
-            'apellido' => $cliente->apellido,
-            'correo' => $cliente->correo,
-            'telefono' => $cliente->telefono,
-            'direccion' => $cliente->direccion,
-            'fecha_nacimiento' => Validator::dateToString($cliente->fecha_nacimiento),
-            'fecha_registro' => Validator::dateToString($cliente->fecha_registro),
-            'activo' => $cliente->activo,
-        ]);
-
-        $membresia = $cliente->membresia;
-        $this->pdoInsert('membresia', [
-            'id_tipo' => $membresia->id_tipo,
-            'id_estado' => $membresia->id_estado,
-            'fecha_inicio' => Validator::dateToString($membresia->fecha_inicio),
-            'fecha_fin' => Validator::dateToString($membresia->fecha_fin),
-        ]);
+        $this->personasModel->insert($cliente);
+        $this->pdoInsert('membresia', $this->membresiaToArray($cliente->membresia));
         $membresiaId = $this->pdo->lastInsertId();
 
         $this->pdoInsert('cliente', [
@@ -186,23 +182,10 @@ class ClientesModel extends BaseModel
 
     public function update(ClienteDTO $cliente): ClienteDTO
     {
-        $cliente->validateInsert();
+        $cliente->validateUpdate();
         $this->pdo->beginTransaction();
 
-        $this->pdoUpdate(
-            'persona',
-            [
-                'nombre' => $cliente->nombre,
-                'apellido' => $cliente->apellido,
-                'correo' => $cliente->correo,
-                'telefono' => $cliente->telefono,
-                'direccion' => $cliente->direccion,
-                'fecha_nacimiento' => Validator::dateToString($cliente->fecha_nacimiento),
-                'fecha_registro' => Validator::dateToString($cliente->fecha_registro),
-                'activo' => $cliente->activo,
-            ],
-            ['cedula_persona' => $cliente->cedula],
-        );
+        $this->personasModel->update($cliente);
 
         if ($cliente->membresia) {
             $stmt = $this->pdo->prepare('SELECT id_membresia FROM cliente WHERE cedula_cliente = ?');
@@ -212,12 +195,7 @@ class ClientesModel extends BaseModel
             $membresia = $cliente->membresia;
             $this->pdoUpdate(
                 'membresia',
-                [
-                    'id_tipo' => $membresia->id_tipo,
-                    'id_estado' => $membresia->id_estado,
-                    'fecha_inicio' => Validator::dateToString($membresia->fecha_inicio),
-                    'fecha_fin' => Validator::dateToString($membresia->fecha_fin),
-                ],
+                $this->membresiaToArray($membresia),
                 ['id_membresia' => $membresiaId],
             );
         }
@@ -226,8 +204,18 @@ class ClientesModel extends BaseModel
         return $this->find($cliente->cedula);
     }
 
-    public function delete(string $cedula): int
+    public function delete(string $cedula): void
     {
-        return $this->pdoDelete('cliente', 'cedula_cliente', $cedula);
+        $this->pdoDelete('cliente', 'cedula_cliente', $cedula);
+    }
+
+    private function membresiaToArray(MembresiaDTO $membresia): array
+    {
+        return [
+            'id_tipo' => $membresia->id_tipo,
+            'id_estado' => $membresia->id_estado,
+            'fecha_inicio' => Validator::dateToString($membresia->fecha_inicio),
+            'fecha_fin' => Validator::dateToString($membresia->fecha_fin),
+        ];
     }
 }

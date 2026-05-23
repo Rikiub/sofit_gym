@@ -30,6 +30,13 @@ readonly class SeguimientoNutricionalDTO
             throw new InvalidArgumentException('Debe tener una fecha de seguimiento');
         }
     }
+
+    public function validateUpdate(): void
+    {
+        if (!$this->id_seguimiento) {
+            throw new InvalidArgumentException('Se requiere id_seguimiento para actualizar');
+        }
+    }
 }
 
 class SegumientoNutricionalModel extends BaseModel
@@ -58,7 +65,7 @@ class SegumientoNutricionalModel extends BaseModel
 
     /**
      * Obtiene todos los seguimientos de un cliente.
-     * @return array<SeguimientoNutricionalDTO>
+     * @return SeguimientoNutricionalDTO[]
      */
     public function getAllByCliente(string $cedula): array
     {
@@ -78,7 +85,7 @@ class SegumientoNutricionalModel extends BaseModel
     /**
      * Busca un seguimiento por su ID.
      */
-    public function find(int $id): SeguimientoNutricionalDTO|false
+    public function find(int $id): ?SeguimientoNutricionalDTO
     {
         $stmt = $this->pdo->prepare(
             <<<SQL
@@ -90,7 +97,7 @@ class SegumientoNutricionalModel extends BaseModel
         $row = $stmt->fetch();
 
         if (!$row) {
-            return false;
+            return null;
         }
 
         return $this->mapRow($row);
@@ -102,17 +109,9 @@ class SegumientoNutricionalModel extends BaseModel
     public function insert(SeguimientoNutricionalDTO $seguimiento): SeguimientoNutricionalDTO
     {
         $seguimiento->validateInsert();
+        $this->pdoInsert($this->table, $this->dtoToArray($seguimiento));
 
-        $this->pdoInsert($this->table, [
-            'cedula_cliente' => $seguimiento->cedula_cliente,
-            'fecha' => Validator::dateToString($seguimiento->fecha),
-            'proteinas_g' => $seguimiento->proteinas_g,
-            'carbohidratos_g' => $seguimiento->carbohidratos_g,
-            'grasas_g' => $seguimiento->grasas_g,
-            'calorias_diarias' => $seguimiento->calorias_diarias,
-        ]);
-
-        $id = $this->pdo->lastInsertId();
+        $id = (int) $this->pdo->lastInsertId();
         return $this->find($id);
     }
 
@@ -121,29 +120,34 @@ class SegumientoNutricionalModel extends BaseModel
      */
     public function update(SeguimientoNutricionalDTO $seguimiento): SeguimientoNutricionalDTO
     {
-        if (!$seguimiento->id_seguimiento) {
-            throw new InvalidArgumentException('Se requiere id_seguimiento para actualizar');
-        }
+        $seguimiento->validateUpdate();
+        $this->pdoUpdate(
+            $this->table,
+            $this->dtoToArray($seguimiento),
+            [$this->primaryKey => $seguimiento->id_seguimiento]
+        );
 
-        $seguimiento->validateInsert();
+        $id = (int) $this->pdo->lastInsertId();
+        return $this->find($id);
+    }
 
-        $this->pdoUpdate($this->table, [
+    /**
+     * Elimina un seguimiento por ID.
+     */
+    public function delete(int $id): void
+    {
+        $this->pdoDelete($this->table, $this->primaryKey, $id);
+    }
+
+    private function dtoToArray(SeguimientoNutricionalDTO $seguimiento): array
+    {
+        return [
             'cedula_cliente' => $seguimiento->cedula_cliente,
             'fecha' => Validator::dateToString($seguimiento->fecha),
             'proteinas_g' => $seguimiento->proteinas_g,
             'carbohidratos_g' => $seguimiento->carbohidratos_g,
             'grasas_g' => $seguimiento->grasas_g,
             'calorias_diarias' => $seguimiento->calorias_diarias,
-        ], [$this->primaryKey => $seguimiento->id_seguimiento]);
-
-        return $this->find($seguimiento->id_seguimiento);
-    }
-
-    /**
-     * Elimina un seguimiento por ID.
-     */
-    public function delete(int $id): int
-    {
-        return $this->pdoDelete($this->table, $this->primaryKey, $id);
+        ];
     }
 }

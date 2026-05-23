@@ -5,6 +5,9 @@ namespace App\Models\Personas;
 use DateTimeImmutable;
 use InvalidArgumentException;
 
+/**
+ * Base para compartir tipos y validaciones con las clases: ClienteDTO y TrabajadorDTO.
+ */
 readonly class PersonaDTO
 {
     public function __construct(
@@ -28,4 +31,6 @@ readonly class PersonaDTO
             throw new InvalidArgumentException('Debe tener nombre y apellido');
         }
     }
+
+    public function validateUpdate() {}
 }
