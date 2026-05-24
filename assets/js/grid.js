@@ -39,6 +39,13 @@ export function createGrid(options = {}) {
             limit: 20,
             summary: true,
         },
+        className: {
+            table: "table table-striped",
+            paginationButton: "btn-group",
+            paginationButtonNext: "btn",
+            paginationButtonCurrent: "btn",
+            paginationButtonPrev: "btn"
+        },
         ...options,
     });
 

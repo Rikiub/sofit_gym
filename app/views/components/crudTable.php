@@ -7,5 +7,14 @@ $this->pushJs('components/crudTable/crudTable.js');
     x-data="<?= $alpineComponent ?>"
     x-ref="table"
     @form-success.window="handleFormSuccess($event.detail)"
-    class="overflow-auto"
-></div>
+    class="overflow-auto"></div>
+
+<style>
+    .gridjs-wrapper {
+        box-shadow: unset;
+    }
+
+    .gridjs-footer {
+        box-shadow: unset;
+    }
+</style>
