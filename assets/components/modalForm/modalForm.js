@@ -16,6 +16,7 @@ import Alpine from "alpinejs";
  * page: string,
  * actions: Actions,
  * extraPostBody: object?,
+ * elementName: string?,
  * transformEditData?: (data: object) => object,
  * editDisableFields?: array<string>,
  * afterSubmit?: (mode: string) => void,
@@ -27,6 +28,7 @@ export function modalFormComponent(
         page,
         actions,
         extraPostBody = {},
+        elementName = "",
         transformEditData = (data) => data,
         editDisableFields = [],
         afterSubmit = () => null,
@@ -39,6 +41,7 @@ export function modalFormComponent(
 
         page,
         actions,
+        elementName,
 
         loading: false,
         errors: {},

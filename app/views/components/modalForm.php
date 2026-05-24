@@ -6,27 +6,50 @@ $this->pushJs('components/modalForm/modalForm.js');
 ?>
 
 <div
-    class="modal"
+    class="ModalComponent modal fade"
     tabindex="-1"
     x-ref="modal"
     x-data="<?= $alpineComponent ?>"
     x-id="['form']"
     :closedby="loading ? 'none' : 'any'"
     @open-modal.window="handleOpenModal($event.detail)">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog" :class="mode == 'delete' ? 'modal-sm' : 'modal-lg'">
         <article class="modal-content">
             <header class="modal-header">
-                <h3 class="modal-title" x-show="mode == 'add'">Crear</h3>
-                <h3 class="modal-title" x-show="mode == 'edit'">Editar</h3>
-                <h3 class="modal-title" x-show="mode == 'delete'">Eliminar</h3>
+                <template x-if="mode == 'add'">
+                    <h4 class="modal-title fw-semibold">
+                        <i class="fa-solid fa-square-plus"></i>
+                        Crear
+                        <span x-text="elementName"></span>
+                    </h4>
+                </template>
+
+                <template x-if="mode == 'edit'">
+                    <h4 class="modal-title fw-semibold">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        Editar
+                        <span x-text="elementName"></span>
+                    </h4>
+                </template>
+
+                <template x-if="mode == 'delete'">
+                    <h4 class="modal-title fw-semibold">
+                        <i class="fa-solid fa-trash-can"></i>
+                        Eliminar
+                        <span x-text="elementName"></span>
+                    </h4>
+                </template>
 
                 <button type="button" class="btn-close" @click="closeModal()" aria-label="Close"></button>
             </header>
 
             <div class="modal-body">
-                <p x-show="mode == 'delete'">
-                    ¿Seguro que quieres eliminarlo?
-                </p>
+                <div x-show="mode == 'delete'">
+                    <div class="text-center">
+                        <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                        <p class="fw-bold">¿Está seguro de eliminarlo?</p>
+                    </div>
+                </div>
 
                 <form
                     x-show="mode !== 'delete'" x-ref="form"
@@ -43,7 +66,8 @@ $this->pushJs('components/modalForm/modalForm.js');
                     x-show="mode !== 'delete'"
                     :form="$id('form')"
                     :aria-busy="loading"
-                    :disabled="loading">Enviar</button>
+                    :disabled="loading"
+                    x-text="mode == 'add' ? 'Crear' : 'Guardar cambios'"></button>
 
                 <div x-show="mode == 'delete'">
                     <button class="btn btn-secondary" @click="closeModal()">No</button>
@@ -59,8 +83,10 @@ $this->pushJs('components/modalForm/modalForm.js');
 </div>
 
 <style>
-    .modal-header {
-        background-color: #C62828;
-        color: white;
+    .ModalComponent {
+        .modal-header {
+            background-color: #C62828;
+            color: white;
+        }
     }
 </style>

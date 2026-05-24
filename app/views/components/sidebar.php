@@ -1,15 +1,31 @@
-<?php
-$this->pushCss('components/sidebar/sidebar.css');
-$this->pushJs('components/sidebar/sidebar.js');
-?>
+<script type="module">
+	import Alpine from "alpinejs";
 
-<aside class="sidebar" id="sidebar">
+	Alpine.data("sidebar", () => ({
+		collapsed: localStorage.getItem("sidebarCollapsed") === "true",
+
+		toggle() {
+			this.collapsed = !this.collapsed;
+			localStorage.setItem("sidebarCollapsed", this.collapsed);
+		}
+	}));
+</script>
+
+<aside x-data="sidebar" class="sidebar" :class="{ collapsed }">
+	<script>
+		// Sincronizar clase 'collapsed' antes de renderizar
+		var sidebar = document.currentScript.parentElement;
+		var collapsed = localStorage.getItem("sidebarCollapsed") === "true";
+		if (collapsed) sidebar.classList.add("collapsed");
+	</script>
+
 	<div class="sidebar-header">
 		<div class="logo-container">
 			<i class="fas fa-dumbbell logo-icon"></i>
 			<h2>Sofit<span>GYM</span></h2>
 		</div>
-		<button class="sidebar-toggle" id="sidebarToggle" aria-label="Colapsar menú">
+
+		<button class="sidebar-toggle" @click="toggle" aria-label="Colapsar menú">
 			<i class="fa-chevron-left fas"></i>
 		</button>
 	</div>
@@ -20,6 +36,7 @@ $this->pushJs('components/sidebar/sidebar.js');
 		<details class="nav-group">
 			<summary class="group-title">
 				<i class="fas fa-id-card"></i> <span>Gestionar Clientes e Inscripciones</span>
+				<i class="fas fa-chevron-down toggle-icon"></i>
 			</summary>
 			<div class="group-items">
 				<a href="?page=clientes"><i class="fas fa-user-plus"></i> <span>Registro de clientes</span></a>
@@ -29,6 +46,7 @@ $this->pushJs('components/sidebar/sidebar.js');
 		<details class="nav-group">
 			<summary class="group-title">
 				<i class="fas fa-chalkboard-user"></i> <span>Gestionar Trabajadores y Clases</span>
+				<i class="fas fa-chevron-down toggle-icon"></i>
 			</summary>
 			<div class="group-items">
 				<a href="?page=trabajadores"><i class="fas fa-user-tie"></i> <span>Registro de trabajadores</span></a>
@@ -40,6 +58,7 @@ $this->pushJs('components/sidebar/sidebar.js');
 		<details class="nav-group">
 			<summary class="group-title">
 				<i class="fas fa-coins"></i> <span>Gestionar Facturación y Control de Pagos</span>
+				<i class="fas fa-chevron-down toggle-icon"></i>
 			</summary>
 			<div class="group-items">
 				<a href="?page=facturacion"><i class="fas fa-calculator"></i> <span>Automatización de vencimiento y recibos</span></a>
@@ -49,6 +68,7 @@ $this->pushJs('components/sidebar/sidebar.js');
 		<details class="nav-group">
 			<summary class="group-title">
 				<i class="fas fa-fingerprint"></i> <span>Controlar Asistencia</span>
+				<i class="fas fa-chevron-down toggle-icon"></i>
 			</summary>
 			<div class="group-items">
 				<a href="?page=asistencia"><i class="fas fa-edit"></i> <span>Registro entrada/salida</span></a>
@@ -58,6 +78,7 @@ $this->pushJs('components/sidebar/sidebar.js');
 		<details class="nav-group">
 			<summary class="group-title">
 				<i class="fas fa-microchip"></i> <span>Gestionar Equipos y Maquinaria</span>
+				<i class="fas fa-chevron-down toggle-icon"></i>
 			</summary>
 			<div class="group-items">
 				<a href="?page=equipos"><i class="fas fa-tools"></i> <span>Registro de equipos</span></a>
@@ -68,6 +89,7 @@ $this->pushJs('components/sidebar/sidebar.js');
 		<details class="nav-group">
 			<summary class="group-title">
 				<i class="fas fa-boxes"></i> <span>Gestionar Productos</span>
+				<i class="fas fa-chevron-down toggle-icon"></i>
 			</summary>
 			<div class="group-items">
 				<a href="?page=productos"><i class="fas fa-boxes"></i> <span>Control de stock y demanda</span></a>
@@ -77,6 +99,7 @@ $this->pushJs('components/sidebar/sidebar.js');
 		<details class="nav-group">
 			<summary class="group-title">
 				<i class="fas fa-dumbbell"></i> <span>Gestionar Rutinas de Entrenamiento</span>
+				<i class="fas fa-chevron-down toggle-icon"></i>
 			</summary>
 			<div class="group-items">
 				<a href="?page=rutinas&action=index"><i class="fas fa-pen-ruler"></i> <span>Diseñar planes de entrenamiento</span></a>
@@ -87,6 +110,7 @@ $this->pushJs('components/sidebar/sidebar.js');
 		<details class="nav-group">
 			<summary class="group-title">
 				<i class="fas fa-robot"></i> <span>Consultar Asistente de Entrenamiento</span>
+				<i class="fas fa-chevron-down toggle-icon"></i>
 			</summary>
 			<div class="group-items">
 				<a href="?page=asistente"><i class="fas fa-comments"></i> <span>Interfaz de chat</span></a>
@@ -98,6 +122,7 @@ $this->pushJs('components/sidebar/sidebar.js');
 		<details class="nav-group">
 			<summary class="group-title">
 				<i class="fas fa-shield-alt"></i> <span>Gestión de Auditoría y Seguridad</span>
+				<i class="fas fa-chevron-down toggle-icon"></i>
 			</summary>
 			<div class="group-items">
 				<a href="seguridad.php"><i class="fas fa-lock"></i> <span>Seguridad (Login/MD5/Captcha)</span></a>
@@ -109,6 +134,7 @@ $this->pushJs('components/sidebar/sidebar.js');
 		<details class="nav-group">
 			<summary class="group-title">
 				<i class="fas fa-database"></i> <span>Gestión de Soporte y Datos</span>
+				<i class="fas fa-chevron-down toggle-icon"></i>
 			</summary>
 			<div class="group-items">
 				<a href="reportes.php"><i class="fas fa-chart-bar"></i> <span>Reportes Estadísticos</span></a>
@@ -123,3 +149,218 @@ $this->pushJs('components/sidebar/sidebar.js');
 		<i class="fas fa-cog"></i> <span>Soporte y configuración</span>
 	</div>
 </aside>
+
+<style>
+	.sidebar {
+		--sidebar-bg: rgba(30, 41, 59, 0.85);
+		--sidebar-text: #e2e8f0;
+		--sidebar-accent: #dc2626;
+		--sidebar-muted: #cbd5e1;
+		--sidebar-border: rgba(255, 255, 255, 0.1);
+		--sidebar-hover: rgba(255, 255, 255, 0.1);
+		--sidebar-radius: 12px;
+
+		width: 280px;
+		background: var(--sidebar-bg);
+		color: var(--sidebar-text);
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		overflow-y: auto;
+		border-right: 1px solid var(--sidebar-border);
+		transition: width 0.3s ease;
+		scrollbar-width: none;
+
+		/* ===== ESTADO COLAPSADO ===== */
+		&.collapsed {
+			width: 80px;
+
+			.logo-container h2,
+			.sidebar-nav a span,
+			.group-title span,
+			.group-items a span,
+			.sidebar-footer span {
+				display: none;
+			}
+
+			.group-items {
+				padding-left: 0;
+			}
+
+			.group-title {
+				justify-content: center;
+
+				.toggle-icon {
+					display: none;
+				}
+			}
+
+			.sidebar-nav>a {
+				justify-content: center;
+			}
+
+			.sidebar-nav a i {
+				margin: 0;
+			}
+
+			.sidebar-toggle i {
+				rotate: 180deg;
+			}
+		}
+
+		/* ===== CABECERA ===== */
+		.sidebar-header {
+			padding: 1rem;
+			border-bottom: 1px solid var(--sidebar-border);
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.logo-container {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+
+			.logo-icon {
+				font-size: 1.5rem;
+				color: var(--sidebar-accent);
+			}
+
+			h2 {
+				font-size: 1.2rem;
+				color: white;
+				margin: 0;
+
+				span {
+					color: var(--sidebar-accent);
+				}
+			}
+		}
+
+		.sidebar-toggle {
+			background: transparent;
+			border: none;
+			color: #94a3b8;
+			cursor: pointer;
+			font-size: 0.9rem;
+			padding: 6px;
+			border-radius: 50%;
+			transition: background 0.2s, color 0.2s;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			&:hover {
+				background: var(--sidebar-hover);
+				color: white;
+			}
+		}
+
+		/* ===== NAVEGACIÓN ===== */
+		.sidebar-nav {
+			padding: 0 0.8rem;
+			flex: 1;
+
+			>a {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+				padding: 0.5rem 0.8rem;
+				color: var(--sidebar-text);
+				text-decoration: none;
+				border-radius: var(--sidebar-radius);
+				margin: 0.3rem 0;
+
+				&:hover,
+				&.active {
+					background: var(--sidebar-accent);
+					color: white;
+				}
+			}
+		}
+
+		/* ===== GRUPOS COLAPSABLES (details/summary) ===== */
+		.nav-group {
+			margin-bottom: 0.4rem;
+		}
+
+		.group-title {
+			display: flex;
+			align-items: center;
+			gap: 15px;
+			font-size: 0.75rem;
+			font-weight: 600;
+			text-transform: uppercase;
+			color: var(--sidebar-muted);
+			padding: 0.5rem 0.8rem;
+			cursor: pointer;
+			border-radius: var(--sidebar-radius);
+
+			>i:first-child {
+				min-width: 20px;
+				text-align: center;
+			}
+
+			span {
+				flex: 1;
+				white-space: normal;
+				line-height: 1.2;
+			}
+
+			&:hover {
+				background: var(--sidebar-hover);
+			}
+
+			.toggle-icon {
+				transition: rotate 0.2s ease;
+				font-size: 0.7rem;
+			}
+		}
+
+		/* Rota el chevrón cuando el acordeón está abierto */
+		.nav-group[open] .toggle-icon {
+			rotate: 180deg;
+		}
+
+		.group-items {
+			padding-left: 1.2rem;
+			display: flex;
+			flex-direction: column;
+
+			a {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+				padding: 0.4rem 0.8rem;
+				color: var(--sidebar-muted);
+				text-decoration: none;
+				border-radius: var(--sidebar-radius);
+				margin-bottom: 2px;
+
+				&:hover {
+					background: var(--sidebar-accent);
+					color: white;
+				}
+			}
+		}
+
+		/* ===== FOOTER Y DIVISOR ===== */
+		.sidebar-footer {
+			padding: 0.8rem;
+			border-top: 1px solid var(--sidebar-border);
+			font-size: 0.7rem;
+			text-align: left;
+
+			i {
+				margin-right: 6px;
+			}
+		}
+
+		.sidebar-divider {
+			height: 1px;
+			background: var(--sidebar-border);
+			margin: 0.6rem 0;
+		}
+	}
+</style>

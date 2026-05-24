@@ -1,19 +1,25 @@
 <?php
+// Diseño de tarjeta
+
+// Props
 $title ??= '';
-$children ??= '';
+$header_right ??= '';
+$body ??= '';
 ?>
 
 <div class="CardComponent">
     <div class="card">
-        <header class="card-header">
-            <h1 class="card-title">
+        <header class="card-header d-flex justify-content-between">
+            <h1 class="card-title fs-3 fw-semibold mb-0">
                 <i class="fas fa-dumbbell"></i>
-                <?= $title ?>
+                <?= $this->e($title) ?>
             </h1>
+
+            <?= $header_right ?>
         </header>
 
         <div class="card-body">
-            <?= $children ?>
+            <?= $body ?>
         </div>
     </div>
 </div>
@@ -30,20 +36,14 @@ $children ??= '';
             overflow: hidden;
         }
 
-        .card>.card-header {
-            background: #C62828;
+        >.card>.card-header {
+            background: var(--primary-bg);
             color: white;
             padding: 1.2rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-
-            h1 {
-                font-size: 1.6rem;
-                font-weight: 600;
-                margin: 0;
-            }
         }
     }
 </style>

@@ -9,15 +9,33 @@
  * En cualquier vista.
  */
 $this->layout('base', ['title' => $title ?? null]);
-$this->pushCss('base/layout/layout.css');
 
-$backgroundImage = ASSETS_DIR . '/base/layout/background.webp';
+$backgroundImage = ASSETS_DIR . '/base/background.webp';
 ?>
 
-<div class="layout-default" style="background-image: url('<?= $backgroundImage ?>');">
+<div class="layout-root" style="background-image: url('<?= $backgroundImage ?>');">
     <?= $this->insert('sidebar') ?>
 
-    <div class="layout-default-content">
+    <div class="layout-content">
         <?= $this->section('content') ?>
     </div>
 </div>
+
+<style>
+    .layout-root {
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+
+        display: grid;
+        grid-template-columns: auto 1fr;
+
+        height: 100%;
+        min-height: 100vh;
+
+        .layout-content {
+            margin: 1rem;
+        }
+    }
+</style>

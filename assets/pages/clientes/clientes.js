@@ -53,6 +53,7 @@ Alpine.data("modalClientes", (isSinglePage = false) => ({
             onEdit: "updateCliente",
             onDelete: "deleteCliente",
         },
+        elementName: "Cliente",
         transformEditData: (data) => {
             data.fecha_nacimiento = extractDate(data.fecha_nacimiento);
             data.membresia.fecha_inicio = extractDate(

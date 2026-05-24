@@ -60,6 +60,7 @@ Alpine.data("modalMantenimiento", () => (
             onEditFind: "find",
             onDelete: "delete",
         },
+        elementName: "Mantenimiento",
         transformEditData: (item) => {
             item.fecha = extractDate(item.fecha);
             return item;

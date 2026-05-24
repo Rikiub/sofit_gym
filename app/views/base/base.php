@@ -46,9 +46,21 @@
     <?= $this->renderJs() ?>
 
     <style>
+        /**
+        Muestra siempre la scrollbar
+        Para evitar flickering
+        */
         html {
             overflow-y: scroll;
             scrollbar-width: thin;
+        }
+
+        body {
+            /** 
+            Remueve el padding extraño que agrega
+            Boostrap al abrir un modal.
+            */
+            padding-right: 0 !important;
         }
     </style>
 
@@ -62,7 +74,6 @@
 </body>
 
 <script type="module">
-    import Alpine from 'alpinejs'
-    window.Alpine = Alpine;
+    import Alpine from 'alpinejs';
     Alpine.start();
 </script>

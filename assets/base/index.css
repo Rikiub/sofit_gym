@@ -1,5 +1,16 @@
-@import url(theme.css);
+/** CSS global compartido por todas las vistas. */
 
-* {
-    box-sizing: border-box;
+/** Variables globales */
+:root {
+    --primary-bg: #C62828;
+    --primary-color: #C62828;
+}
+
+/** Bootstrap Overrides */
+.form-label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #5a6e7a;
 }

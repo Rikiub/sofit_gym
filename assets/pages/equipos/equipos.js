@@ -27,5 +27,6 @@ Alpine.data("modalEquipos", () => (
             onEditFind: "findEquipo",
             onDelete: "deleteEquipo",
         },
+        elementName: "Equipo",
         editDisableFields: ["codigo"],
     })))

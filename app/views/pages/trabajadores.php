@@ -38,7 +38,7 @@ $modalForm = $this->fetch('modalForm', [
 
 <?= $this->insert('card', [
     'title' => 'Trabajadores',
-    'children' => <<<HTML
+    'body' => <<<HTML
             <main>
                 {$this->fetch('crudTable', ['alpineComponent' => 'crudTable'])}
             </main>

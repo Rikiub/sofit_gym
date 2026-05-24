@@ -1,1 +1,1 @@
-import "@/base/dialog.js";
+// JavaScript global compartido por todas las vistas.
