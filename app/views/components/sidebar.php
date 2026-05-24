@@ -19,10 +19,9 @@
 		if (collapsed) sidebar.classList.add("collapsed");
 	</script>
 
-	<div class="sidebar-header">
-		<div class="logo-container">
-			<i class="fas fa-dumbbell logo-icon"></i>
-			<h2>Sofit<span>GYM</span></h2>
+	<div class="sidebar-header d-flex justify-content-end">
+		<div class="logo-container" x-show="!collapsed" x-transition>
+			<img src="assets/logo.webp" class="img-fluid ratio">
 		</div>
 
 		<button class="sidebar-toggle" @click="toggle" aria-label="Colapsar menú">
