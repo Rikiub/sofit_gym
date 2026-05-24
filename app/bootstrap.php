@@ -89,5 +89,6 @@ try {
         'message' => $error->getMessage(),
         "file" => $error->getFile(),
         "line" => $error->getLine(),
+        "trace" => $error->getTrace()
     ], 500);
 }

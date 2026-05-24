@@ -44,33 +44,22 @@ class PersonasModel extends BaseModel
      */
     public function getAll(): array
     {
-        $stmt = $this->pdo->prepare($this->sqlSelect());
-        $stmt->execute();
-        $rows = $stmt->fetchAll();
-
-        $data = [];
-        foreach ($rows as $row) {
-            $data[] = $this->mapper->map(PersonaDTO::class, $row);
-        }
-
-        return $data;
+        $rows = $this->pdoQuery($this->sqlSelect())->fetchAll();
+        return array_map(
+            fn($row) => $this->mapper->map(PersonaDTO::class, $row),
+            $rows
+        );
     }
 
     public function find(string $cedula): ?PersonaDTO
     {
-        $stmt = $this->pdo->prepare(
-            <<<SQL
-                {$this->sqlSelect()}
-                WHERE {$this->primaryKey} = ?
-            SQL
-        );
-        $stmt->execute([$cedula]);
-        $row = $stmt->fetch();
+        $row = $this->pdoQuery(
+            "{$this->sqlSelect()} WHERE {$this->primaryKey} = ?",
+            [$cedula]
+        )->fetch();
 
-        if (!$row) {
+        if (!$row)
             return null;
-        }
-
         return $this->mapper->map(PersonaDTO::class, $row);
     }
 
@@ -104,7 +93,7 @@ class PersonasModel extends BaseModel
 
     public function delete(string $cedula): void
     {
-        $this->pdoDelete($this->table, $this->primaryKey, $cedula);
+        $this->pdoDelete($this->table, [$this->primaryKey => $cedula]);
     }
 
     private function dtoToArray(PersonaDTO $persona): array

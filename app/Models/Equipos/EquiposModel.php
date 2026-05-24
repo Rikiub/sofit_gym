@@ -73,37 +73,26 @@ class EquiposModel extends BaseModel
     }
 
     /**
-     * @return array<EquipoDTO>
+     * @return EquipoDTO[]
      */
     public function getAll(): array
     {
-        $stmt = $this->pdo->prepare($this->sqlSelect());
-        $stmt->execute();
-        $rows = $stmt->fetchAll();
-
-        $data = [];
-        foreach ($rows as $row) {
-            $data[] = $this->mapper->map(EquipoDTO::class, $row);
-        }
-
-        return $data;
+        $rows = $this->pdoQuery($this->sqlSelect())->fetchAll();
+        return array_map(
+            fn($row) => $this->mapper->map(EquipoDTO::class, $row),
+            $rows
+        );
     }
 
     public function find(string $codigo): ?EquipoDTO
     {
-        $stmt = $this->pdo->prepare(
-            <<<SQL
-                {$this->sqlSelect()} 
-                WHERE {$this->primaryKey} = ?
-            SQL
-        );
-        $stmt->execute([$codigo]);
-        $row = $stmt->fetch();
+        $row = $this->pdoQuery(
+            "{$this->sqlSelect()} WHERE {$this->primaryKey} = ?",
+            [$codigo]
+        )->fetch();
 
-        if (!$row) {
+        if (!$row)
             return null;
-        }
-
         return $this->mapper->map(EquipoDTO::class, $row);
     }
 
@@ -133,18 +122,18 @@ class EquiposModel extends BaseModel
 
     public function delete(string $codigo): void
     {
-        $this->pdoDelete($this->table, $this->primaryKey, $codigo);
+        $this->pdoDelete($this->table, [$this->primaryKey => $codigo]);
     }
 
-    private function dtoToArray(EquipoDTO $equipo)
+    private function dtoToArray(EquipoDTO $dto): array
     {
         return [
-            'codigo_equipo' => $equipo->codigo,
-            'nombre' => $equipo->nombre,
-            'tipo' => $equipo->tipo,
-            'estado' => $equipo->estado->value,
-            'ubicacion' => $equipo->ubicacion,
-            'activo' => $equipo->activo,
+            'codigo_equipo' => $dto->codigo,
+            'nombre' => $dto->nombre,
+            'tipo' => $dto->tipo,
+            'estado' => $dto->estado->value,
+            'ubicacion' => $dto->ubicacion,
+            'activo' => $dto->activo,
         ];
     }
 }

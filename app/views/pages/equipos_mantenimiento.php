@@ -12,7 +12,7 @@ $modalForm = $this->fetch(
 
                 <fieldset class="row">
                     <label class="text-label col">Equipo
-                        <select class="form-select" name="codigo_equipo" required placeholder="Equipo">
+                        <select class="form-select" name="codigo_equipo" required placeholder="Equipo" @input.debounce="checkValidity(\$el)">
                             <template x-for="item in equipos" :key="item.codigo">
                                 <option :value="item.codigo" x-text="item.codigo + ': ' + item.nombre"></option>
                             </template>
@@ -21,14 +21,14 @@ $modalForm = $this->fetch(
                     </label>
 
                     <label class="text-label col">Fecha
-                        <input class="form-control" type="date" name="fecha" required>
+                        <input class="form-control" type="date" name="fecha" required @input.debounce="checkValidity(\$el)">
                         <small x-text="errors.fecha"></small>
                     </label>
                 </fieldset>
 
                 <fieldset class="row">
                     <label class="text-label col">Tipo de Mantenimiento
-                        <select class="form-select" name="tipo" required>
+                        <select class="form-select" name="tipo" required @input.debounce="checkValidity(\$el)">
                             <option value="">Seleccione un tipo…</option>
                             <option value="Preventivo">Preventivo</option>
                             <option value="Correctivo">Correctivo</option>
@@ -39,14 +39,27 @@ $modalForm = $this->fetch(
                     </label>
 
                     <label class="text-label col">Costo
-                        <input class="form-control" type="number" name="costo" step="any" min="0" x-mask="999999.99" placeholder="0.00">
+                        <input
+                            class="form-control"
+                            name="costo"
+                            type="number"
+                            step="any"
+                            placeholder="0.00"
+                            @input.debounce="checkValidity(\$el)"
+                        >
                         <small x-text="errors.costo"></small>
                     </label>
                 </fieldset>
 
                 <fieldset class="row">
                     <label class="text-label col">Técnico
-                        <input class="form-control" type="text" name="tecnico" placeholder="Nombre del técnico responsable">
+                        <input
+                            class="form-control"
+                            type="text"
+                            name="tecnico"
+                            placeholder="Nombre del técnico responsable" 
+                            @input.debounce="checkValidity(\$el)"
+                        >
                         <small x-text="errors.tecnico"></small>
                     </label>
                 </fieldset>
@@ -55,7 +68,13 @@ $modalForm = $this->fetch(
 
                 <fieldset class="row">
                     <label class="text-label col">Descripción
-                        <textarea class="form-control" name="descripcion" placeholder="Detalles del mantenimiento realizado" rows="3"></textarea>
+                        <textarea
+                            class="form-control"
+                            name="descripcion"
+                            placeholder="Detalles del mantenimiento realizado"
+                            rows="3"
+                            @input.debounce="checkValidity(\$el)"
+                        ></textarea>
                         <small x-text="errors.descripcion"></small>
                     </label>
                 </fieldset>

@@ -80,33 +80,22 @@ class TrabajadoresModel extends BaseModel
      */
     public function getAll(): array
     {
-        $stmt = $this->pdo->prepare($this->sqlSelect());
-        $stmt->execute();
-        $rows = $stmt->fetchAll();
-
-        $data = [];
-        foreach ($rows as $row) {
-            $data[] = $this->mapper->map(TrabajadorDTO::class, $row);
-        }
-
-        return $data;
+        $rows = $this->pdoQuery($this->sqlSelect())->fetchAll();
+        return array_map(
+            fn($row) => $this->mapper->map(TrabajadorDTO::class, $row),
+            $rows
+        );
     }
 
     public function find(string $cedula): ?TrabajadorDTO
     {
-        $stmt = $this->pdo->prepare(
-            <<<SQL
-                {$this->sqlSelect()} 
-                WHERE {$this->primaryKey} = ?
-            SQL
-        );
-        $stmt->execute([$cedula]);
-        $row = $stmt->fetch();
+        $row = $this->pdoQuery(
+            "{$this->sqlSelect()} WHERE {$this->primaryKey} = ?",
+            [$cedula]
+        )->fetch();
 
-        if (!$row) {
+        if (!$row)
             return null;
-        }
-
         return $this->mapper->map(TrabajadorDTO::class, $row);
     }
 
@@ -147,20 +136,16 @@ class TrabajadoresModel extends BaseModel
 
     public function delete(string $cedula): void
     {
-        $this->pdoDelete(
-            $this->table,
-            $this->primaryKey,
-            $cedula,
-        );
+        $this->pdoDelete($this->table, [$this->primaryKey => $cedula]);
     }
 
-    private function dtoToArray(TrabajadorDTO $trabajador): array
+    private function dtoToArray(TrabajadorDTO $dto): array
     {
         return [
-            'cedula_trabajador' => $trabajador->cedula,
-            'id_rol' => $trabajador->id_rol,
-            'salario' => $trabajador->salario,
-            'fecha_contratacion' => Validator::dateToString($trabajador->fecha_contratacion),
+            'cedula_trabajador' => $dto->cedula,
+            'id_rol' => $dto->id_rol,
+            'salario' => $dto->salario,
+            'fecha_contratacion' => Validator::dateToString($dto->fecha_contratacion),
         ];
     }
 }

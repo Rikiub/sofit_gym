@@ -2,6 +2,7 @@ import Alpine from "alpinejs";
 import { fetchApi } from "@/js/api.js";
 import { crudTableComponent } from "@/components/crudTable/crudTable.js";
 import { modalFormComponent } from "@/components/modalForm/modalForm.js";
+import { extractDate } from "@/js/helpers.js";
 
 const PAGE_EQUIPOS = "equipos";
 
@@ -47,7 +48,7 @@ Alpine.data("crudMantenimiento", () => (
             item.descripcion,
             item.costo,
             item.tecnico,
-        ]
+        ],
     })))
 
 Alpine.data("modalMantenimiento", () => (
@@ -59,4 +60,8 @@ Alpine.data("modalMantenimiento", () => (
             onEditFind: "find",
             onDelete: "delete",
         },
+        transformEditData: (item) => {
+            item.fecha = extractDate(item.fecha);
+            return item;
+        }
     })))

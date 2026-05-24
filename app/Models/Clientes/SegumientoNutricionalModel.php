@@ -58,28 +58,25 @@ class SegumientoNutricionalModel extends BaseModel
             SQL;
     }
 
-    private function mapRow(array $row): SeguimientoNutricionalDTO
-    {
-        return $this->mapper->map(SeguimientoNutricionalDTO::class, $row);
-    }
-
     /**
      * Obtiene todos los seguimientos de un cliente.
      * @return SeguimientoNutricionalDTO[]
      */
     public function getAllByCliente(string $cedula): array
     {
-        $stmt = $this->pdo->prepare(
+        $rows = $this->pdoQuery(
             <<<SQL
                 {$this->sqlSelect()} 
                 WHERE cedula_cliente = ?
                 ORDER BY fecha DESC
-            SQL
-        );
-        $stmt->execute([$cedula]);
-        $rows = $stmt->fetchAll();
+            SQL,
+            [$cedula]
+        )->fetchAll();
 
-        return array_map([$this, 'mapRow'], $rows);
+        return array_map(
+            fn($row) => $this->mapper->map(SeguimientoNutricionalDTO::class, $row),
+            $rows
+        );
     }
 
     /**
@@ -87,20 +84,14 @@ class SegumientoNutricionalModel extends BaseModel
      */
     public function find(int $id): ?SeguimientoNutricionalDTO
     {
-        $stmt = $this->pdo->prepare(
-            <<<SQL
-                {$this->sqlSelect()} 
-                WHERE {$this->primaryKey} = ?
-            SQL,
-        );
-        $stmt->execute([$id]);
-        $row = $stmt->fetch();
+        $row = $this->pdoQuery(
+            "{$this->sqlSelect()} WHERE {$this->primaryKey} = ?",
+            [$id]
+        )->fetch();
 
-        if (!$row) {
+        if (!$row)
             return null;
-        }
-
-        return $this->mapRow($row);
+        return $this->mapper->map(SeguimientoNutricionalDTO::class, $row);
     }
 
     /**
@@ -136,18 +127,13 @@ class SegumientoNutricionalModel extends BaseModel
      */
     public function delete(int $id): void
     {
-        $this->pdoDelete($this->table, $this->primaryKey, $id);
+        $this->pdoDelete($this->table, [$this->primaryKey => $id]);
     }
 
-    private function dtoToArray(SeguimientoNutricionalDTO $seguimiento): array
+    private function dtoToArray(SeguimientoNutricionalDTO $dto): array
     {
-        return [
-            'cedula_cliente' => $seguimiento->cedula_cliente,
-            'fecha' => Validator::dateToString($seguimiento->fecha),
-            'proteinas_g' => $seguimiento->proteinas_g,
-            'carbohidratos_g' => $seguimiento->carbohidratos_g,
-            'grasas_g' => $seguimiento->grasas_g,
-            'calorias_diarias' => $seguimiento->calorias_diarias,
-        ];
+        $array = (array) $dto;
+        $array["fecha"] = Validator::dateToString($dto->fecha);
+        return $array;
     }
 }

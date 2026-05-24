@@ -61,6 +61,7 @@ class EquiposMantenimientoController extends BaseController
     public function update(): string
     {
         $body = $this->response->getParsedBody();
+        $body["id"] = $this->getIdParam();
         $man = $this->mapper->map(MantenimientoEquipoDTO::class, $body);
 
         if (!$this->model->find($man->id)) {

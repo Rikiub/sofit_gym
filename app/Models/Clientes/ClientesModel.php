@@ -110,56 +110,34 @@ class ClientesModel extends BaseModel
     }
 
     /**
-     * @return array<ClienteDTO>
+     * @return ClienteDTO[]
      */
-    public function getAll()
+    public function getAll(): array
     {
-        $stmt = $this->pdo->prepare($this->sqlSelect());
-        $stmt->execute();
-        $rows = $stmt->fetchAll();
-
-        $data = [];
-        foreach ($rows as $row) {
-            array_push($data, $this->mapToCliente($row));
-        }
-
-        return $data;
+        $stmt = $this->pdoQuery($this->sqlSelect());
+        return array_map($this->mapToCliente(...), $stmt->fetchAll());
     }
 
     public function find(string $cedula): ?ClienteDTO
     {
-        // Cliente
-        $stmt = $this->pdo->prepare(
-            <<<SQL
-                {$this->sqlSelect()}
-                WHERE cliente.cedula_cliente = ?
-            SQL
-        );
-        $stmt->execute([$cedula]);
-        $row = $stmt->fetch();
+        $row = $this->pdoQuery(
+            "{$this->sqlSelect()} WHERE cedula_cliente = ?",
+            [$cedula]
+        )->fetch();
 
-        if (!$row) {
+        if (!$row)
             return null;
-        }
-
-        // Build
         return $this->mapToCliente($row);
     }
 
     public function getEstadosMembresia(): array
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM estado_membresia');
-        $stmt->execute();
-        $rows = $stmt->fetchAll();
-        return $rows;
+        return $this->pdoQuery('SELECT * FROM estado_membresia')->fetchAll();
     }
 
     public function getTiposMembresia(): array
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM tipo_membresia');
-        $stmt->execute();
-        $rows = $stmt->fetchAll();
-        return $rows;
+        return $this->pdoQuery('SELECT * FROM tipo_membresia')->fetchAll();
     }
 
     public function insert(ClienteDTO $cliente): ClienteDTO
@@ -188,14 +166,15 @@ class ClientesModel extends BaseModel
         $this->personasModel->update($cliente);
 
         if ($cliente->membresia) {
-            $stmt = $this->pdo->prepare('SELECT id_membresia FROM cliente WHERE cedula_cliente = ?');
-            $stmt->execute([$cliente->cedula]);
-            $membresiaId = $stmt->fetchColumn();
+            // Obtener ID de la membresia desde el cliente
+            $membresiaId = $this->pdoQuery(
+                'SELECT id_membresia FROM cliente WHERE cedula_cliente = ?',
+                [$cliente->cedula]
+            )->fetchColumn();
 
-            $membresia = $cliente->membresia;
             $this->pdoUpdate(
                 'membresia',
-                $this->membresiaToArray($membresia),
+                $this->membresiaToArray($cliente->membresia),
                 ['id_membresia' => $membresiaId],
             );
         }
@@ -206,7 +185,7 @@ class ClientesModel extends BaseModel
 
     public function delete(string $cedula): void
     {
-        $this->pdoDelete('cliente', 'cedula_cliente', $cedula);
+        $this->pdoDelete('cliente', ['cedula_cliente' => $cedula]);
     }
 
     private function membresiaToArray(MembresiaDTO $membresia): array

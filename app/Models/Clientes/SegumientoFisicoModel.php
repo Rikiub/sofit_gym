@@ -86,28 +86,25 @@ class SegumientoFisicoModel extends BaseModel
             SQL;
     }
 
-    private function mapRow(array $row): SeguimientoFisicoDTO
-    {
-        return $this->mapper->map(SeguimientoFisicoDTO::class, $row);
-    }
-
     /**
      * Obtiene todos los seguimientos de un cliente.
      * @return SeguimientoFisicoDTO[]
      */
     public function getAllByCliente(string $cedula): array
     {
-        $stmt = $this->pdo->prepare(
+        $rows = $this->pdoQuery(
             <<<SQL
                 {$this->sqlSelect()} 
                 WHERE cedula_cliente = ?
                 ORDER BY fecha DESC
-            SQL
-        );
-        $stmt->execute([$cedula]);
-        $rows = $stmt->fetchAll();
+            SQL,
+            [$cedula],
+        )->fetchAll();
 
-        return array_map([$this, 'mapRow'], $rows);
+        return array_map(
+            fn($row) => $this->mapper->map(SeguimientoFisicoDTO::class, $row),
+            $rows
+        );
     }
 
     /**
@@ -115,20 +112,14 @@ class SegumientoFisicoModel extends BaseModel
      */
     public function find(int $id): ?SeguimientoFisicoDTO
     {
-        $stmt = $this->pdo->prepare(
-            <<<SQL
-                {$this->sqlSelect()} 
-                WHERE {$this->primaryKey} = ?
-            SQL
-        );
-        $stmt->execute([$id]);
-        $row = $stmt->fetch();
+        $row = $this->pdoQuery(
+            "{$this->sqlSelect()} WHERE {$this->primaryKey} = ?",
+            [$id],
+        )->fetch();
 
-        if (!$row) {
+        if (!$row)
             return null;
-        }
-
-        return $this->mapRow($row);
+        return $this->mapper->map(SeguimientoFisicoDTO::class, $row);
     }
 
     /**
@@ -137,7 +128,7 @@ class SegumientoFisicoModel extends BaseModel
     public function insert(SeguimientoFisicoDTO $seguimiento): SeguimientoFisicoDTO
     {
         $seguimiento->validateInsert();
-        $this->pdoInsert($this->table, $this->dtoToArray($seguimiento));
+        $this->pdoInsert($this->table, $this->dtoToArray($seguimiento),);
 
         $id = (int) $this->pdo->lastInsertId();
         return $this->find($id);
@@ -165,22 +156,13 @@ class SegumientoFisicoModel extends BaseModel
      */
     public function delete(int $id): void
     {
-        $this->pdoDelete($this->table, $this->primaryKey, $id);
+        $this->pdoDelete($this->table, [$this->primaryKey => $id]);
     }
 
-    private function dtoToArray(SeguimientoFisicoDTO $seguimiento): array
+    private function dtoToArray(SeguimientoFisicoDTO $dto): array
     {
-        return [
-            'cedula_cliente' => $seguimiento->cedula_cliente,
-            'fecha' => Validator::dateToString($seguimiento->fecha),
-            'altura_cm' => $seguimiento->altura_cm,
-            'peso_kg' => $seguimiento->peso_kg,
-            'cintura_cm' => $seguimiento->cintura_cm,
-            'cadera_cm' => $seguimiento->cadera_cm,
-            'pecho_cm' => $seguimiento->pecho_cm,
-            'muslo_cm' => $seguimiento->muslo_cm,
-            'hombros_cm' => $seguimiento->hombros_cm,
-            'pantorrilla_cm' => $seguimiento->pantorrilla_cm,
-        ];
+        $array = (array) $dto;
+        $array["fecha"] = Validator::dateToString($dto->fecha);
+        return $array;
     }
 }

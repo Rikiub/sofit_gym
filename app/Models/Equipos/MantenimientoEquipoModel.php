@@ -100,33 +100,22 @@ class MantenimientoEquipoModel extends BaseModel
      */
     public function getAll(): array
     {
-        $stmt = $this->pdo->prepare($this->sqlSelect());
-        $stmt->execute();
-        $rows = $stmt->fetchAll();
-
-        $data = [];
-        foreach ($rows as $row) {
-            $data[] = $this->mapToMantenimiento($row);
-        }
-
-        return $data;
+        $rows = $this->pdoQuery($this->sqlSelect())->fetchAll();
+        return array_map(
+            fn($row) => $this->mapToMantenimiento($row),
+            $rows
+        );
     }
 
     public function find(int $id): ?MantenimientoEquipoDTO
     {
-        $stmt = $this->pdo->prepare(
-            <<<SQL
-                {$this->sqlSelect()} 
-                WHERE {$this->primaryKey} = ?
-            SQL
-        );
-        $stmt->execute([$id]);
-        $row = $stmt->fetch();
+        $row = $this->pdoQuery(
+            "{$this->sqlSelect()} WHERE {$this->primaryKey} = ?",
+            [$id]
+        )->fetch();
 
-        if (!$row) {
+        if (!$row)
             return null;
-        }
-
         return $this->mapToMantenimiento($row);
     }
 
@@ -159,7 +148,6 @@ class MantenimientoEquipoModel extends BaseModel
         }
 
         $array = $this->dtoToArray($mantenimiento);
-        unset($array['id']);
 
         $this->pdoUpdate(
             $this->table,
@@ -172,18 +160,18 @@ class MantenimientoEquipoModel extends BaseModel
 
     public function delete(int $id): void
     {
-        $this->pdoDelete($this->table, $this->primaryKey, $id);
+        $this->pdoDelete($this->table, [$this->primaryKey => $id]);
     }
 
-    private function dtoToArray(MantenimientoEquipoDTO $mantenimiento)
+    private function dtoToArray(MantenimientoEquipoDTO $dto): array
     {
         return [
-            'codigo_equipo' => $mantenimiento->codigo_equipo,
-            'fecha' => Validator::dateToString($mantenimiento->fecha),
-            'tipo' => $mantenimiento->tipo->value,
-            'descripcion' => $mantenimiento->descripcion,
-            'costo' => $mantenimiento->costo,
-            'tecnico' => $mantenimiento->tecnico,
+            'codigo_equipo' => $dto->codigo_equipo,
+            'fecha' => Validator::dateToString($dto->fecha),
+            'tipo' => $dto->tipo->value,
+            'descripcion' => $dto->descripcion,
+            'costo' => $dto->costo,
+            'tecnico' => $dto->tecnico,
         ];
     }
 }

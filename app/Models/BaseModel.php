@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use PDO;
+use PDOStatement;
 
 abstract class BaseModel
 {
@@ -11,9 +12,58 @@ abstract class BaseModel
     ) {}
 
     /**
-     * Insertar fila en una tabla.
+     * Prepara una consulta con parametros y la ejecuta inmediatamente.
+     *
+     * En pocas palabras, es un helper para evitar el repetitivo patron:
+     * ```
+     * $stmt = $this->pdo->prepare($sql);
+     * $stmt->execute($params);
+     * ```
+     *
+     * @param $sql Codigo SQL a preparar.
+     * @param $params Parametros a remplazar en el SQL.
      */
-    protected function pdoInsert(string $table, array $data): void
+    protected function pdoQuery(string $sql, array $params = []): PDOStatement
+    {
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt;
+    }
+
+    /**
+     * Busca y devuelve una sola fila.
+     * Si `$primaryKey = $id` entonces obtienes la fila encontrada.
+     *
+     * @param $sql Codigo SQL a agregar.
+     * @param $conditions Array asociativo donde cada key-value se convertira en una condición WHERE.
+     */
+    protected function pdoFetch(string $sql, array $conditions): ?array
+    {
+        $whereParts = [];
+        foreach ($conditions as $col => $val) {
+            $whereParts[] = "$col = :{$col}";
+        }
+
+        $row = $this->pdoQuery(
+            sprintf(
+                "%s WHERE %s",
+                $sql,
+                join(' AND ', $whereParts),
+            )
+        )->fetch();
+
+        if (!$row)
+            return null;
+        return $row;
+    }
+
+    /**
+     * Insertar fila en una tabla.
+     *
+     * @param $table Tabla a seleccionar.
+     * @param $data Array asociativo donde cada key-value debe corresponder a una columna.
+     */
+    protected function pdoInsert(string $table, array $data): PDOStatement
     {
         $columns = array_keys($data);
         $placeholders = array_map(fn($col) => ":$col", $columns);
@@ -21,61 +71,71 @@ abstract class BaseModel
         $sql = sprintf(
             'INSERT INTO %s (%s) VALUES (%s)',
             $table,
-            implode(', ', $columns),
-            implode(', ', $placeholders)
+            join(', ', $columns),
+            join(', ', $placeholders),
         );
 
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($data);
+        return $this->pdoQuery($sql, $data);
     }
 
     /**
      * Actualizar fila en una tabla.
+     *
+     * @param $table Tabla a seleccionar.
+     * @param $data Array asociativo donde cada key-value debe corresponder a una columna.
+     * @param $conditions Array asociativo donde cada key-value se convertira en una condición WHERE.
      */
-    protected function pdoUpdate(string $table, array $data, array $conditions): void
+    protected function pdoUpdate(string $table, array $data, array $conditions): PDOStatement
     {
+        $params = [];
+
+        // Preparar partes del SQL y prefixear parametros
         $setParts = [];
         foreach ($data as $col => $val) {
-            $setParts[] = "$col = :set_$col";
+            $placeholder = ":set_$col";
+            $setParts[] = "$col = $placeholder";
+            $params[$placeholder] = $val;
         }
 
         $whereParts = [];
         foreach ($conditions as $col => $val) {
-            $whereParts[] = "$col = :where_$col";
+            $placeholder = ":where_$col";
+            $whereParts[] = "$col = $placeholder";
+            $params[$placeholder] = $val;
         }
 
+        // Construir SQL
         $sql = sprintf(
             'UPDATE %s SET %s WHERE %s',
             $table,
-            implode(', ', $setParts),
-            implode(' AND ', $whereParts)
+            join(', ', $setParts),
+            join(' AND ', $whereParts),
         );
 
-        // Prefix bind values to avoid name collisions
-        $params = [];
-        foreach ($data as $col => $val) {
-            $params["set_$col"] = $val;
-        }
-        foreach ($conditions as $col => $val) {
-            $params["where_$col"] = $val;
-        }
-
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($params);
+        // Ejecutar consulta
+        return $this->pdoQuery($sql, $params);
     }
 
     /**
      * Eliminar fila en una tabla.
+     * Si `$primaryKey = $id` entonces la tabla sera eliminada.
+     *
+     * @param $table Tabla a seleccionar.
+     * @param $conditions Array asociativo que sera convertido en `column = value`.
      */
-    protected function pdoDelete(string $table, string $primaryKey, int|string $id): void
+    protected function pdoDelete(string $table, array $conditions): PDOStatement
     {
+        $whereParts = [];
+        foreach ($conditions as $col => $val) {
+            $whereParts[] = "$col = :{$col}";
+        }
+
         $sql = sprintf(
-            'DELETE FROM %s
-            WHERE %s = ?',
+            'DELETE FROM %s WHERE %s',
             $table,
-            $primaryKey
+            join(' AND ', $whereParts),
         );
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([$id]);
+
+        return $this->pdoQuery($sql, $conditions);
     }
 }
