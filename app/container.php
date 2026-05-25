@@ -44,7 +44,7 @@ return [
             Theme::new('app/views/components', 'Components'),
             Theme::new('app/views/pages', 'Page'),
         ]))
-            ->loadExtension(new AssetExtension());
+            ->loadExtension(new AssetExtension(ASSETS_DIR));
     },
     // Valinor: Mapper
     // Utilizado para convertir arrays en DTOs

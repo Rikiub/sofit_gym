@@ -14,6 +14,8 @@ class AssetExtension implements ExtensionInterface
     protected array $css = [];
     protected array $js = [];
 
+    public function __construct(private string $assets_dir) {}
+
     public function register(Engine $engine)
     {
         // Funciones para añadir assets
@@ -31,7 +33,7 @@ class AssetExtension implements ExtensionInterface
 
         // Si no empieza con HTTPS, entonces preparar como archivo
         if (!str_starts_with($path, 'https://')) {
-            $file = ASSETS_DIR . "/" . $file;
+            $file = $this->assets_dir . "/" . $file;
         }
 
         return $file;
