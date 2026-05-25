@@ -58,9 +58,7 @@ class TrabajadoresController extends BaseController
             return $this->response->json(['message' => 'El trabajador ya existe'], 400);
         }
 
-        $this->trabajadoresModel->insert($trabajador);
-        $trabajador = $this->trabajadoresModel->find($trabajador->cedula);
-
+        $trabajador = $this->trabajadoresModel->insert($trabajador);
         return $this->response->json($trabajador, 201);
     }
 
@@ -73,9 +71,7 @@ class TrabajadoresController extends BaseController
             return $this->response->json(['message' => 'El trabajador no existe'], 400);
         }
 
-        $this->trabajadoresModel->update($trabajador);
-        $trabajador = $this->trabajadoresModel->find($trabajador->cedula);
-
+        $trabajador = $this->trabajadoresModel->update($trabajador);
         return $this->response->json($trabajador, 201);
     }
 

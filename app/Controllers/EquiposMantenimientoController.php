@@ -33,43 +33,43 @@ class EquiposMantenimientoController extends BaseController
 
     public function getAll()
     {
-        $results = $this->model->getAll();
-        return $this->response->json($results);
+        $mantenimientos = $this->model->getAll();
+        return $this->response->json($mantenimientos);
     }
 
     public function find(): ?string
     {
         $id = $this->getIdParam();
-        $man = $this->model->find($id);
+        $mantenimiento = $this->model->find($id);
 
-        if (!$man) {
+        if (!$mantenimiento) {
             return $this->response->empty(404);
         }
 
-        return $this->response->json($man);
+        return $this->response->json($mantenimiento);
     }
 
     public function insert(): string
     {
         $body = $this->response->getParsedBody();
-        $man = $this->mapper->map(MantenimientoEquipoDTO::class, $body);
+        $mantenimiento = $this->mapper->map(MantenimientoEquipoDTO::class, $body);
 
-        $man = $this->model->insert($man);
-        return $this->response->json($man, 201);
+        $mantenimiento = $this->model->insert($mantenimiento);
+        return $this->response->json($mantenimiento, 201);
     }
 
     public function update(): string
     {
         $body = $this->response->getParsedBody();
         $body["id"] = $this->getIdParam();
-        $man = $this->mapper->map(MantenimientoEquipoDTO::class, $body);
+        $mantenimiento = $this->mapper->map(MantenimientoEquipoDTO::class, $body);
 
-        if (!$this->model->find($man->id)) {
+        if (!$this->model->find($mantenimiento->id)) {
             return $this->response->json(['message' => 'El mantenimiento no existe'], 404);
         }
 
-        $man = $this->model->update($man);
-        return $this->response->json($man, 201);
+        $mantenimiento = $this->model->update($mantenimiento);
+        return $this->response->json($mantenimiento, 201);
     }
 
     public function delete(): string|null
