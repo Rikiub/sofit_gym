@@ -6,15 +6,11 @@ $this->layout("layout", ["title" => "Gestion de Productos"]);
 
 <!-- ==================== ESTILOS ADICIONALES ==================== -->
 <style>
-    .container-custom {
-        max-width: 1100px;
-        margin: 0 auto;
-        background: white;
+    .container {
+        --bs-gutter-x: 0;
         border-radius: 28px;
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+        background-color: white;
         overflow: hidden;
-        margin-top: 1.5rem;
-        margin-bottom: 1.5rem;
     }
 
     .header-banner {
@@ -229,7 +225,7 @@ $this->layout("layout", ["title" => "Gestion de Productos"]);
     }
 </style>
 
-<div class="container-custom">
+<div class="container">
     <!-- Encabezado de la Sección -->
     <div class="header-banner">
         <h1><i class="fas fa-boxes"></i> Inventario de Productos</h1>
