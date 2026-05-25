@@ -1,5 +1,5 @@
 <?php
-$this->layout('layout');
+$this->layout('layout', ["title" => "Cliente"]);
 $this->pushJs('pages/clientes/clientes.js');
 $this->pushCss('pages/clientes/clientes.css');
 ?>

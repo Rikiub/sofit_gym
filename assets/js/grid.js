@@ -44,7 +44,7 @@ export function createGrid(options = {}) {
             paginationButton: "btn-group",
             paginationButtonNext: "btn",
             paginationButtonCurrent: "btn",
-            paginationButtonPrev: "btn"
+            paginationButtonPrev: "btn",
         },
         ...options,
     });

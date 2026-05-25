@@ -121,7 +121,9 @@ Alpine.data("clienteInfo", () => ({
     },
 
     nombreCompleto() {
-        if (!this.cliente) return "Cargando...";
+        const isEmpty = Object.keys(this.cliente).length === 0;
+
+        if (isEmpty) return "Cargando...";
         return `${this.cliente.nombre} ${this.cliente.apellido}`;
     },
 
