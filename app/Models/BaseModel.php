@@ -35,7 +35,7 @@ abstract class BaseModel
      * Si `$primaryKey = $id` entonces obtienes la fila encontrada.
      *
      * @param $sql Codigo SQL a agregar.
-     * @param $conditions Array asociativo donde cada key-value se convertira en una condición WHERE.
+     * @param $conditions Array asociativo que sera convertido en `column = value`.
      */
     protected function pdoFetch(string $sql, array $conditions): ?array
     {
@@ -83,7 +83,7 @@ abstract class BaseModel
      *
      * @param $table Tabla a seleccionar.
      * @param $data Array asociativo donde cada key-value debe corresponder a una columna.
-     * @param $conditions Array asociativo donde cada key-value se convertira en una condición WHERE.
+     * @param $conditions Array asociativo que sera convertido en `column = value`.
      */
     protected function pdoUpdate(string $table, array $data, array $conditions): PDOStatement
     {
@@ -118,7 +118,6 @@ abstract class BaseModel
 
     /**
      * Eliminar fila en una tabla.
-     * Si `$primaryKey = $id` entonces la tabla sera eliminada.
      *
      * @param $table Tabla a seleccionar.
      * @param $conditions Array asociativo que sera convertido en `column = value`.

@@ -114,8 +114,8 @@ class ClientesModel extends BaseModel
      */
     public function getAll(): array
     {
-        $stmt = $this->pdoQuery($this->sqlSelect());
-        return array_map($this->mapToCliente(...), $stmt->fetchAll());
+        $rows = $this->pdoQuery($this->sqlSelect())->fetchAll();
+        return array_map($this->mapToCliente(...), $rows);
     }
 
     public function find(string $cedula): ?ClienteDTO
