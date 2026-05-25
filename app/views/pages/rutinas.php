@@ -7,7 +7,6 @@ $this->layout("layout", ["title" => "Gestion de Rutinas"]);
 <div class="container">
     <div class="header">
         <h1><i class="fas fa-dumbbell"></i> Gestión de Rutinas Base</h1>
-        <div class="badge"><i class="fas fa-list-ol"></i> Catálogo de Ejercicios</div>
     </div>
 
     <?php if (!empty($mensaje)): ?>
@@ -117,8 +116,6 @@ $this->layout("layout", ["title" => "Gestion de Rutinas"]);
             </div>
         </div>
     </div>
-
-    <footer><i class="fas fa-dumbbell"></i> Sofit Gym - Sistema de Gestión</footer>
 </div>
 
 <!-- Modal Editar Rutina -->

@@ -1,7 +1,8 @@
 <?php
-// Diseño de tarjeta
+// Diseño de tarjeta reutilizable
 
 // Props
+$icon ??= 'fa-dumbbell';
 $title ??= '';
 $header_right ??= '';
 $body ??= '';
@@ -11,7 +12,7 @@ $body ??= '';
     <div class="card">
         <header class="card-header d-flex justify-content-between">
             <h1 class="card-title fs-3 fw-semibold mb-0">
-                <i class="fas fa-dumbbell"></i>
+                <i class="fa <?= $icon ?>"></i>
                 <?= $this->e($title) ?>
             </h1>
 

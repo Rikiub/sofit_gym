@@ -8,8 +8,7 @@ $this->layout("layout", ["title" => "Facturacion"]);
 
 <div class="container">
     <div class="header">
-        <h1><i class="fas fa-dumbbell"></i> Sofit Gym - Facturación</h1>
-        <div class="badge"><i class="fas fa-credit-card"></i> Control de Pagos</div>
+        <h1><i class="fas fa-dumbbell"></i> Facturación y Control de pagos</h1>
     </div>
 
     <div id="alertContainer" style="margin: 0 2rem;">
@@ -193,7 +192,7 @@ $this->layout("layout", ["title" => "Facturacion"]);
         </div>
     </div>
 
-    <footer><i class="fas fa-dumbbell"></i> Sofit Gym - Sistema de Gestión</footer>
+
 </div>
 
 <!-- MODALES (igual que antes) -->

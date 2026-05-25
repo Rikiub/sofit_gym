@@ -7,7 +7,6 @@ $this->layout("layout", ["title" => "Asignar Rutinas"]);
 <div class="container">
     <div class="header">
         <h1><i class="fas fa-user-tag"></i> Asignación de Rutinas</h1>
-        <div class="badge"><i class="fas fa-calendar-check"></i> Planificación Clientes</div>
     </div>
 
     <?php if (!empty($mensaje)): ?>
@@ -166,7 +165,7 @@ $this->layout("layout", ["title" => "Asignar Rutinas"]);
         </div>
     </div>
 
-    <footer><i class="fas fa-dumbbell"></i> Sofit Gym - Sistema de Gestión</footer>
+
 </div>
 
 <!-- Modal Buscar Cliente (Igual que en AsistenciaVista.php) -->

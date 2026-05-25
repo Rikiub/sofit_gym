@@ -36,8 +36,8 @@ export function createGrid(options = {}) {
         sort: true,
         search: true,
         pagination: {
-            limit: 20,
-            summary: true,
+            limit: 25,
+            summary: false,
         },
         className: {
             table: "table table-striped",

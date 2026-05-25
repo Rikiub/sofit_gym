@@ -1,7 +1,6 @@
 <?php
 $this->layout('layout', ["title" => "Cliente"]);
 $this->pushJs('pages/clientes/clientes.js');
-$this->pushCss('pages/clientes/clientes.css');
 ?>
 
 <?php ob_start() ?>
@@ -161,6 +160,7 @@ $this->pushCss('pages/clientes/clientes.css');
 ]) ?>
 
 <?= $this->insert("card", [
+    "icon" => "fa-info-circle",
     "title" => "Información del cliente",
     "header_right" => <<<HTML
         <a href="?page=clientes" class="btn btn-primary">

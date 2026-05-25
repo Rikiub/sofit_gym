@@ -229,7 +229,6 @@ $this->layout("layout", ["title" => "Gestion de Productos"]);
     <!-- Encabezado de la Sección -->
     <div class="header-banner">
         <h1><i class="fas fa-boxes"></i> Inventario de Productos</h1>
-        <div class="badge-custom"><i class="fas fa-dumbbell"></i> Sofit Gym Store</div>
     </div>
 
     <!-- Div para notificaciones instantáneas JS (Toast) -->

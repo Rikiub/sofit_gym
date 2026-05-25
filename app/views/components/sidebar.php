@@ -14,9 +14,11 @@
 <aside x-data="sidebar" class="sidebar" :class="{ collapsed }">
 	<script>
 		// Sincronizar clase 'collapsed' antes de renderizar
-		var sidebar = document.currentScript.parentElement;
-		var collapsed = localStorage.getItem("sidebarCollapsed") === "true";
-		if (collapsed) sidebar.classList.add("collapsed");
+		(() => {
+			const sidebar = document.currentScript.parentElement;
+			const collapsed = localStorage.getItem("sidebarCollapsed") === "true";
+			if (collapsed) sidebar.classList.add("collapsed");
+		})()
 	</script>
 
 	<div class="sidebar-header d-flex justify-content-end">
@@ -25,23 +27,18 @@
 		</div>
 
 		<button class="sidebar-toggle" @click="toggle" aria-label="Colapsar menú">
-			<i class="fa-chevron-left fas"></i>
+			<i class="fas fa-chevron-left"></i>
 		</button>
 	</div>
 
 	<nav class="sidebar-nav">
 		<a href="?pagina=clientes" class="active"><i class="fas fa-home"></i> <span>Inicio</span></a>
 
-		<details class="nav-group">
-			<summary class="group-title">
-				<i class="fas fa-id-card"></i> <span>Gestionar Clientes e Inscripciones</span>
-				<i class="fas fa-chevron-down toggle-icon"></i>
-			</summary>
-			<div class="group-items">
-				<a href="?page=clientes"><i class="fas fa-user-plus"></i> <span>Registro de clientes</span></a>
-			</div>
-		</details>
+		<a href="?page=clientes" class="nav-single">
+			<i class="fas fa-id-card"></i> <span>Gestionar Clientes e Inscripciones</span>
+		</a>
 
+		<!-- Multi‑item groups remain as <details> -->
 		<details class="nav-group">
 			<summary class="group-title">
 				<i class="fas fa-chalkboard-user"></i> <span>Gestionar Trabajadores y Clases</span>
@@ -54,25 +51,13 @@
 			</div>
 		</details>
 
-		<details class="nav-group">
-			<summary class="group-title">
-				<i class="fas fa-coins"></i> <span>Gestionar Facturación y Control de Pagos</span>
-				<i class="fas fa-chevron-down toggle-icon"></i>
-			</summary>
-			<div class="group-items">
-				<a href="?page=facturacion"><i class="fas fa-calculator"></i> <span>Automatización de vencimiento y recibos</span></a>
-			</div>
-		</details>
+		<a href="?page=facturacion" class="nav-single">
+			<i class="fas fa-coins"></i> <span>Gestionar Facturación y Control de Pagos</span>
+		</a>
 
-		<details class="nav-group">
-			<summary class="group-title">
-				<i class="fas fa-fingerprint"></i> <span>Controlar Asistencia</span>
-				<i class="fas fa-chevron-down toggle-icon"></i>
-			</summary>
-			<div class="group-items">
-				<a href="?page=asistencia"><i class="fas fa-edit"></i> <span>Registro entrada/salida</span></a>
-			</div>
-		</details>
+		<a href="?page=asistencia" class="nav-single">
+			<i class="fas fa-fingerprint"></i> <span>Controlar Asistencia</span>
+		</a>
 
 		<details class="nav-group">
 			<summary class="group-title">
@@ -85,15 +70,9 @@
 			</div>
 		</details>
 
-		<details class="nav-group">
-			<summary class="group-title">
-				<i class="fas fa-boxes"></i> <span>Gestionar Productos</span>
-				<i class="fas fa-chevron-down toggle-icon"></i>
-			</summary>
-			<div class="group-items">
-				<a href="?page=productos"><i class="fas fa-boxes"></i> <span>Control de stock y demanda</span></a>
-			</div>
-		</details>
+		<a href="?page=productos" class="nav-single">
+			<i class="fas fa-boxes"></i> <span>Gestionar Productos</span>
+		</a>
 
 		<details class="nav-group">
 			<summary class="group-title">
@@ -106,15 +85,9 @@
 			</div>
 		</details>
 
-		<details class="nav-group">
-			<summary class="group-title">
-				<i class="fas fa-robot"></i> <span>Consultar Asistente de Entrenamiento</span>
-				<i class="fas fa-chevron-down toggle-icon"></i>
-			</summary>
-			<div class="group-items">
-				<a href="?page=asistente"><i class="fas fa-comments"></i> <span>Interfaz de chat</span></a>
-			</div>
-		</details>
+		<a href="?page=asistente" class="nav-single">
+			<i class="fas fa-robot"></i> <span>Consultar Asistente de Entrenamiento</span>
+		</a>
 
 		<div class="sidebar-divider" role="separator"></div>
 
@@ -153,7 +126,7 @@
 	.sidebar {
 		--sidebar-bg: rgba(30, 41, 59, 0.85);
 		--sidebar-text: #e2e8f0;
-		--sidebar-accent: #dc2626;
+		--sidebar-accent: var(--primary-bg);
 		--sidebar-muted: #cbd5e1;
 		--sidebar-border: rgba(255, 255, 255, 0.1);
 		--sidebar-hover: rgba(255, 255, 255, 0.1);
@@ -194,7 +167,8 @@
 				}
 			}
 
-			.sidebar-nav>a {
+			.sidebar-nav>a,
+			.sidebar-nav>a.nav-single {
 				justify-content: center;
 			}
 
@@ -216,27 +190,6 @@
 			align-items: center;
 		}
 
-		.logo-container {
-			display: flex;
-			align-items: center;
-			gap: 8px;
-
-			.logo-icon {
-				font-size: 1.5rem;
-				color: var(--sidebar-accent);
-			}
-
-			h2 {
-				font-size: 1.2rem;
-				color: white;
-				margin: 0;
-
-				span {
-					color: var(--sidebar-accent);
-				}
-			}
-		}
-
 		.sidebar-toggle {
 			background: transparent;
 			border: none;
@@ -252,7 +205,7 @@
 
 			&:hover {
 				background: var(--sidebar-hover);
-				color: white;
+				color: var(--sidebar-muted);
 			}
 		}
 
@@ -275,6 +228,32 @@
 				&.active {
 					background: var(--sidebar-accent);
 					color: white;
+				}
+			}
+
+			/* Single‑item link style (mimics group‑title appearance) */
+			>a.nav-single {
+				font-size: 0.75rem;
+				font-weight: 600;
+				text-transform: uppercase;
+				color: var(--sidebar-muted);
+				gap: 15px;
+				margin-bottom: 0.4rem;
+
+				>i:first-child {
+					min-width: 20px;
+					text-align: center;
+				}
+
+				span {
+					flex: 1;
+					white-space: normal;
+					line-height: 1.2;
+				}
+
+				&:hover {
+					background-color: var(--sidebar-hover);
+					color: var(--sidebar-muted);
 				}
 			}
 		}
@@ -338,8 +317,8 @@
 				margin-bottom: 2px;
 
 				&:hover {
-					background: var(--sidebar-accent);
-					color: white;
+					background: var(--sidebar-hover);
+					color: var(--sidebar-muted);
 				}
 			}
 		}

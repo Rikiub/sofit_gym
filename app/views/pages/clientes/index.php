@@ -9,6 +9,7 @@ $modalForm = $this->fetch('modalForm', [
 ?>
 
 <?= $this->insert('card', [
+    'icon' => "fa-id-card",
     'title' => 'Clientes',
     'body' => <<<HTML
             <main>

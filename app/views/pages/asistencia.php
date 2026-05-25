@@ -8,7 +8,6 @@ $this->layout("layout", ["title" => "Control de asistencia"]);
 <div class="container">
     <div class="header">
         <h1><i class="fas fa-door-open"></i> Control de Asistencia</h1>
-        <div class="badge"><i class="fas fa-clock"></i> Registrar Entradas</div>
     </div>
 
     <?php if (!empty($mensaje)): ?>
@@ -91,8 +90,6 @@ $this->layout("layout", ["title" => "Control de asistencia"]);
             </div>
         </div>
     </div>
-
-    <footer><i class="fas fa-dumbbell"></i> Sofit Gym - Sistema de Gestión</footer>
 </div>
 
 <!-- Modal Clientes (selección) -->
