@@ -32,7 +32,7 @@ Alpine.data("modalForm", () => (
             onEditFind: "find",
             onDelete: "delete",
         },
-        editDisableFields: ["cedula"],
+        editDisableFields: ["cedula", "fecha_contratacion"],
         transformEditData: (item) => {
             item.fecha_nacimiento = extractDate(item.fecha_nacimiento);
             item.fecha_contratacion = extractDate(item.fecha_contratacion);
