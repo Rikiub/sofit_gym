@@ -20,8 +20,8 @@
 	</script>
 
 	<div class="sidebar-header d-flex justify-content-end">
-		<div class="logo-container" x-show="!collapsed" x-transition>
-			<img src="assets/logo.webp" class="img-fluid ratio">
+		<div class="logo-container" style="height: 100px;" x-show="!collapsed" x-transition>
+			<img src="assets/logo.webp" class="img-fluid">
 		</div>
 
 		<button class="sidebar-toggle" @click="toggle" aria-label="Colapsar menú">

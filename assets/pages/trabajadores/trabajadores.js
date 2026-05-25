@@ -17,7 +17,7 @@ Alpine.data("crudTable", () => (
             "Apellido",
             {
                 name: "Salario",
-                formatter: (cell, row) => `${cell}bs`,
+                formatter: (cell, row) => `\$${cell}`,
             },
             "Rol",
         ],

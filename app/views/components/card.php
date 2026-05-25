@@ -12,7 +12,7 @@ $body ??= '';
         <header class="card-header d-flex justify-content-between">
             <h1 class="card-title fs-3 fw-semibold mb-0">
                 <i class="fas fa-dumbbell"></i>
-                <?= $title ?>
+                <?= $this->e($title) ?>
             </h1>
 
             <?= $header_right ?>
