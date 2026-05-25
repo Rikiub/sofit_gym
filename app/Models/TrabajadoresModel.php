@@ -63,15 +63,15 @@ class TrabajadoresModel extends BaseModel
 
         return <<<SQL
                 SELECT
-                    t.{$this->primaryKey} AS `cedula`,
-                    t.*,
-                    p.*,
-                    tipo_rol.nombre AS `rol`
-                FROM {$this->table} t
-                LEFT JOIN {$pTable} p
-                    ON p.{$pKey} = t.{$this->primaryKey}
-                LEFT JOIN tipo_rol
-                    ON t.id_rol = tipo_rol.id_rol
+                    trabajador.{$this->primaryKey} AS `cedula`,
+                    trabajador.*,
+                    persona.*,
+                    rol.nombre AS `rol`
+                FROM {$this->table} trabajador
+                LEFT JOIN {$pTable} persona
+                    ON persona.{$pKey} = trabajador.{$this->primaryKey}
+                LEFT JOIN sofit_gym_seguridad.rol rol
+                    ON trabajador.id_rol = rol.id_rol
             SQL;
     }
 
