@@ -63,11 +63,17 @@ $this->pushJs('components/modalForm/modalForm.js');
             <footer class="modal-footer">
                 <button
                     class="btn btn-primary"
-                    x-show="mode !== 'delete'"
+                    x-show="mode == 'add'"
                     :form="$id('form')"
                     :aria-busy="loading"
-                    :disabled="loading"
-                    x-text="mode == 'add' ? 'Crear' : 'Guardar cambios'"></button>
+                    :disabled="loading">Crear</button>
+
+                <button
+                    class="btn btn-primary"
+                    x-show="mode == 'edit'"
+                    :form="$id('form')"
+                    :aria-busy="loading"
+                    :disabled="loading">Guardar Cambios</button>
 
                 <div x-show="mode == 'delete'">
                     <button class="btn btn-secondary" @click="closeModal()">No</button>

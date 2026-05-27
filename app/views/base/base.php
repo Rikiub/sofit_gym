@@ -20,9 +20,16 @@
         {
             "imports": {
                 "@/": "<?= ASSETS_DIR ?>/",
-                "gridjs": "<?= ASSETS_DIR ?>/lib/gridjs/gridjs.module.js",
+
+                "form-data-json": "<?= ASSETS_DIR ?>/lib/form-data-json/form-data-json.es6.js",
                 "alpinejs": "<?= ASSETS_DIR ?>/lib/alpinejs/alpinejs.esm.min.js",
-                "form-data-json": "<?= ASSETS_DIR ?>/lib/form-data-json/form-data-json.es6.js"
+                "gridjs": "<?= ASSETS_DIR ?>/lib/gridjs/gridjs.module.js",
+                
+                "date-fns": "https://esm.sh/date-fns@4.3.0",
+                "@fullcalendar/core": "https://esm.sh/@fullcalendar/core@6.1.20",
+                "@fullcalendar/core/locales/es": "https://esm.sh/@fullcalendar/core/locales/es",
+                "@fullcalendar/daygrid": "https://esm.sh/@fullcalendar/daygrid@6.1.20",
+                "@fullcalendar/bootstrap5": "https://esm.sh/@fullcalendar/bootstrap5@6.1.20"
             }
         }
     </script>

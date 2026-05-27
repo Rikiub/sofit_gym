@@ -46,8 +46,7 @@
 			</summary>
 			<div class="group-items">
 				<a href="?page=trabajadores"><i class="fas fa-user-tie"></i> <span>Registro de trabajadores</span></a>
-				<a href="?page=horarios"><i class="fas fa-calendar-week"></i> <span>Horarios, clases grupales y cupos</span></a>
-				<a href="?page=clases"><i class="fas fa-user-check"></i> <span>Asignación de clientes a clases</span></a>
+				<a href="?page=clases"><i class="fas fa-user-check"></i> <span>Horarios de clases</span></a>
 			</div>
 		</details>
 

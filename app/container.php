@@ -56,6 +56,7 @@ return [
             ->allowUndefinedValues()
             ->supportDateFormats(
                 DateTimeInterface::ATOM,
+                'Y-m-d\TH:i',
                 'Y-m-d H:i:s',
                 'Y-m-d',
             )

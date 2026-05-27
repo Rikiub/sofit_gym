@@ -4,6 +4,18 @@ import FormDataJson from "form-data-json";
 import Alpine from "alpinejs";
 
 /**
+ * @param {Object} data
+ * @param {{
+ * mode: "add"|"edit"|"delete",
+ * dataId: string|number|null,
+ * id: string|number|null,
+ * }} detail
+ */
+export function openModal(data, detail) {
+    data.$dispatch("open-modal", detail);
+}
+
+/**
  * @typedef {Object} Actions
  * @property {string} onAdd
  * @property {string} onEditFind
@@ -17,8 +29,9 @@ import Alpine from "alpinejs";
  * actions: Actions,
  * extraPostBody: object?,
  * elementName: string?,
+ * prepareAddData?: Object,
  * transformEditData?: (data: object) => object,
- * editDisableFields?: array<string>,
+ * editDisableFields?: string[],
  * afterSubmit?: (mode: string) => void,
  * id?: string,
  * }}
@@ -29,6 +42,7 @@ export function modalFormComponent(
         actions,
         extraPostBody = {},
         elementName = "",
+        prepareAddData = {},
         transformEditData = (data) => data,
         editDisableFields = [],
         afterSubmit = () => null,
@@ -57,8 +71,8 @@ export function modalFormComponent(
         },
 
         handleOpenModal({ mode, id = null, dataId = null }) {
-            if (!mode) return console.error("A 'mode' must be provided");
             if (id !== componentId) return;
+            if (!mode) return console.error("A 'mode' must be provided");
 
             // On Add
             if (mode === "add") return this.onAdd();
@@ -70,6 +84,7 @@ export function modalFormComponent(
 
             if (mode === "edit") return this.onEdit(dataId);
             if (mode === "delete") return this.onDelete(dataId);
+
             return console.error(
                 "'mode' must be one of: 'add', 'edit', 'delete'",
             );
@@ -139,6 +154,12 @@ export function modalFormComponent(
         async onAdd() {
             this.clearForm();
             this.mode = "add";
+
+            FormDataJson.fromJson(this.$refs.form, prepareAddData, {
+                clearOthers: true,
+                includeDisabled: true,
+            });
+
             this.openModal();
         },
         async onEdit(id) {

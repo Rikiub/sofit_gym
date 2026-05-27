@@ -2,6 +2,7 @@ import { Grid, h, PluginPosition } from "gridjs";
 
 /** Crea una tabla de datos adaptada para CRUDs
  * @param {object} options
+ * @returns {Grid}
  */
 export function createGrid(options = {}) {
     if (options.crud?.onEdit || options.crud?.onDelete) {
