@@ -1,5 +1,5 @@
 import { fetchApi } from "@/js/api.js";
-import { extractDate } from "@/js/helpers.js";
+import { toIsoDate } from "@/js/dates.js";
 import FormDataJson from "form-data-json";
 import Alpine from "alpinejs";
 

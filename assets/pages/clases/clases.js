@@ -1,11 +1,10 @@
 import Alpine from "alpinejs";
 import { modalFormComponent, openModal } from "@/components/modalForm/modalForm.js";
 import { crudTableComponent } from "@/components/crudTable/crudTable.js";
-import { extractDate, extractDateTimeLocal, extractTime } from "@/js/helpers.js";
 import { createCalendar } from "@/js/calendar.js";
 import { fetchApi } from "@/js/api.js";
 import { toIsoDateTime } from "@/js/dates.js";
-import { format } from "date-fns";
+import dayjs from "dayjs";
 
 const PAGE = "clases";
 
@@ -164,8 +163,8 @@ Alpine.data("calendar", () => ({
 
     // Plantilla HTML del Popover
     getPopoverTemplate(props) {
-        const startTime = format(props.fecha_inicio, 'hh:mm a');
-        const endTime = format(props.fecha_fin, 'hh:mm a');
+        const startTime = dayjs(props.fecha_inicio).format('hh:mm A');
+        const endTime = dayjs(props.fecha_fin).format('hh:mm A');
 
         return `
             <div class="ctx-popover-card p-1" style="min-width: 250px;">

@@ -1,7 +1,7 @@
 import Alpine from "alpinejs";
 import { modalFormComponent } from "@/components/modalForm/modalForm.js";
 import { crudTableComponent } from "@/components/crudTable/crudTable.js";
-import { extractDate } from "@/js/helpers.js";
+import { toIsoDate } from "@/js/dates.js";
 
 const PAGE = "trabajadores";
 
@@ -34,8 +34,8 @@ Alpine.data("modalForm", () => (
         },
         editDisableFields: ["cedula", "fecha_contratacion"],
         transformEditData: (item) => {
-            item.fecha_nacimiento = extractDate(item.fecha_nacimiento);
-            item.fecha_contratacion = extractDate(item.fecha_contratacion);
+            item.fecha_nacimiento = toIsoDate(item.fecha_nacimiento);
+            item.fecha_contratacion = toIsoDate(item.fecha_contratacion);
             return item;
         }
     })));

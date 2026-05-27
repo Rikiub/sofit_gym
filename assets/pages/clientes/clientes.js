@@ -1,6 +1,6 @@
 import { crudTableComponent } from "@/components/crudTable/crudTable.js";
 import { modalFormComponent } from "@/components/modalForm/modalForm.js";
-import { extractDate } from "@/js/helpers.js";
+import { toIsoDate } from "@/js/dates.js";
 import { fetchApi } from "@/js/api.js";
 import Alpine from "alpinejs";
 import { h } from "gridjs";
@@ -54,12 +54,17 @@ Alpine.data("modalClientes", (isSinglePage = false) => ({
             onDelete: "deleteCliente",
         },
         elementName: "Cliente",
+        prepareAddData: {
+            membresia: {
+                fecha_inicio: toIsoDate(new Date())
+            },
+        },
         transformEditData: (data) => {
-            data.fecha_nacimiento = extractDate(data.fecha_nacimiento);
-            data.membresia.fecha_inicio = extractDate(
+            data.fecha_nacimiento = toIsoDate(data.fecha_nacimiento);
+            data.membresia.fecha_inicio = toIsoDate(
                 data.membresia.fecha_inicio,
             );
-            data.membresia.fecha_fin = extractDate(data.membresia.fecha_fin);
+            data.membresia.fecha_fin = toIsoDate(data.membresia.fecha_fin);
             return data;
         },
         editDisableFields: ["cedula"],
