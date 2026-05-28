@@ -34,10 +34,11 @@ export function calendarComponent({
                 themeSystem: 'bootstrap5',
                 locale: "es",
                 headerToolbar: {
-                    left: 'title',
-                    center: '',
-                    right: "prev,next addEvent today",
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: "addEvent dayGridMonth,dayGridWeek,dayGridDay",
                 },
+                initialView: "dayGridWeek",
                 events: `?${params}`,
                 eventDataTransform: (item) => ({
                     extendedProps: item,

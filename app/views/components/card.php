@@ -2,13 +2,15 @@
 // Diseño de tarjeta reutilizable
 
 // Props
+$class ??= "";
+
 $icon ??= 'fa-dumbbell';
 $title ??= '';
 $header_right ??= '';
 $body ??= '';
 ?>
 
-<div class="CardComponent">
+<div class="CardComponent <?= $class ?>">
     <div class="card">
         <header class="card-header d-flex justify-content-between">
             <h1 class="card-title fs-3 fw-semibold mb-0">

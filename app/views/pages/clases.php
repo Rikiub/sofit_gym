@@ -1,5 +1,7 @@
 <?php
-$this->layout("layout", ["title" => "Clases"]);
+$title = "Calendario de Clases";
+
+$this->layout("layout", ["title" => $title]);
 $this->pushJs("pages/clases/clases.js");
 
 $modalForm = $this->fetch('modalForm', [
@@ -80,12 +82,20 @@ $modalForm = $this->fetch('modalForm', [
 ?>
 
 <?= $this->insert('card', [
-    'title' => 'Clases',
+    "class" => "main",
+    'title' => $title,
     'body' => <<<HTML
-        <main class="container px-5 mb-5">
+        <main class="px-5 mb-5">
             {$this->fetch("calendar", ["alpineComponent" => "calendarClases"])}
         </main>
         
         {$modalForm}
     HTML
 ]) ?>
+
+<style>
+    .main {
+        max-width: 1000px;
+        margin: auto;
+    }
+</style>
