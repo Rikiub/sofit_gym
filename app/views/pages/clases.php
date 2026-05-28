@@ -28,15 +28,10 @@ $modalForm = $this->fetch('modalForm', [
             <hr>
 
             <fieldset class="row">
-                <label class="col form-label">Instructor (cédula)
-                    <input class="form-control" required name="cedula_trabajador" type="text" 
-                        pattern="^V-\d{8}$" x-mask="V-99999999" 
-                        @input.debounce.500ms="checkValidity(\$el)">
-                    <small class="form-text" x-text="errors.cedula_trabajador"></small>
+                <label class="col form-label">Entrenador
+                    {$this->fetch("personasSelect", ["name" => "cedula_trabajador", "required" => true])}
                 </label>
-            </fieldset>
-
-            <fieldset class="row">
+                
                 <label class="col form-label">Cupos ocupados
                     <input class="form-control" required name="cupos_ocupados" type="number" min="0" 
                         @input.debounce="checkValidity(\$el)" placeholder="0">
@@ -85,7 +80,7 @@ $modalForm = $this->fetch('modalForm', [
     "class" => "main",
     'title' => $title,
     'body' => <<<HTML
-        <main class="px-5 mb-5">
+        <main class="px-1 mb-5">
             {$this->fetch("calendar", ["alpineComponent" => "calendarClases"])}
         </main>
         

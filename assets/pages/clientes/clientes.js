@@ -14,9 +14,8 @@ Alpine.data("crudClientes", () =>
         id: clientesId,
         params: {
             page: CLIENTES_PAGE,
-            action: "getClientes",
+            action: "getAll",
         },
-        action: "getClientes",
         columns: [
             {
                 name: "Cedula",
@@ -48,10 +47,10 @@ Alpine.data("modalClientes", (isSinglePage = false) => ({
         id: clientesId,
         page: CLIENTES_PAGE,
         actions: {
-            onAdd: "insertCliente",
-            onEditFind: "findCliente",
-            onEdit: "updateCliente",
-            onDelete: "deleteCliente",
+            onAdd: "insert",
+            onEditFind: "find",
+            onEdit: "update",
+            onDelete: "delete",
         },
         elementName: "Cliente",
         prepareAddData: {
@@ -120,7 +119,7 @@ Alpine.data("clienteInfo", () => ({
     async refresh() {
         this.cliente = await fetchApi({
             page: CLIENTES_PAGE,
-            action: "findCliente",
+            action: "find",
             id: new URLSearchParams(location.search).get("id"),
         });
     },

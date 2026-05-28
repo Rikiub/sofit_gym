@@ -61,7 +61,7 @@ export function modalFormComponent(
         errors: {},
 
         init() {
-            this.modal = new bootstrap.Modal(this.$refs.modal);
+            this.modal = bootstrap.Modal.getOrCreateInstance(this.$refs.modal);
         },
         openModal() {
             this.modal.show();

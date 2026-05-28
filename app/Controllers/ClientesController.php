@@ -45,13 +45,14 @@ class ClientesController extends BaseController
         return $cedula;
     }
 
-    public function getClientes(): string
+    public function getAll(): string
     {
-        $clientes = $this->clientesModelo->getAll();
+        $query = $_GET["query"] ?? null;
+        $clientes = $this->clientesModelo->getAll($query);
         return $this->response->json($clientes);
     }
 
-    public function findCliente(): ?string
+    public function find(): ?string
     {
         $cedula = $this->getCedulaParam();
         $cliente = $this->clientesModelo->find($cedula);
@@ -63,7 +64,7 @@ class ClientesController extends BaseController
         return $this->response->json($cliente);
     }
 
-    public function insertCliente(): string
+    public function insert(): string
     {
         $body = $this->response->getParsedBody();
         $cliente = $this->mapper->map(ClienteDTO::class, $body);
@@ -77,7 +78,7 @@ class ClientesController extends BaseController
         return $this->response->json($cliente, 201);
     }
 
-    public function updateCliente(): string
+    public function update(): string
     {
         $body = $this->response->getParsedBody();
         $cliente = $this->mapper->map(ClienteDTO::class, $body);
@@ -90,7 +91,7 @@ class ClientesController extends BaseController
         return $this->response->json($cliente, 201);
     }
 
-    public function deleteCliente(): string|null
+    public function delete(): string|null
     {
         $cedula = $this->getCedulaParam();
 

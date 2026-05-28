@@ -24,7 +24,7 @@ class TrabajadoresController extends BaseController
 
     private function getCedulaParam(): string
     {
-        $cedula = $_GET['cedula'] ?? $_GET['id'] ?? '';
+        $cedula = $_GET['cedula'] ?? $_GET['id'] ?? null;
         if (!$cedula) {
             throw new Exception("'id' or 'cedula' param is required");
         }
@@ -33,7 +33,8 @@ class TrabajadoresController extends BaseController
 
     public function getAll(): string
     {
-        $trabajadores = $this->trabajadoresModel->getAll();
+        $query = $_GET["query"] ?? null;
+        $trabajadores = $this->trabajadoresModel->getAll($query);
         return $this->response->json($trabajadores);
     }
 

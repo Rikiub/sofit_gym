@@ -112,9 +112,32 @@ class ClientesModel extends BaseModel
     /**
      * @return ClienteDTO[]
      */
-    public function getAll(): array
+    public function getAll(?string $query = null): array
     {
-        $rows = $this->pdoQuery($this->sqlSelect())->fetchAll();
+        $sql = $this->sqlSelect();
+        $params = [];
+
+        if (!empty($query)) {
+            $columns = [
+                'persona.nombre',
+                'persona.apellido',
+                'persona.correo',
+                'persona.telefono',
+                'persona.fecha_nacimiento',
+                'persona.fecha_registro',
+            ];
+
+            // Transforma cada columna en "columna LIKE ?"
+            $clauses = array_map(fn($col) => "$col LIKE ?", $columns);
+
+            // Une las cláusulas con un OR y las pega al SQL
+            $sql .= " WHERE " . implode(" OR ", $clauses);
+
+            // Rellena el arreglo con el mismo término de búsqueda tantas veces como columnas haya
+            $params = array_fill(0, count($columns), "%" . $query . "%");
+        }
+
+        $rows = $this->pdoQuery($sql, $params)->fetchAll();
         return array_map($this->mapToCliente(...), $rows);
     }
 
