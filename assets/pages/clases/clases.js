@@ -1,170 +1,49 @@
 import Alpine from "alpinejs";
 import { modalFormComponent, openModal } from "@/components/modalForm/modalForm.js";
-import { crudTableComponent } from "@/components/crudTable/crudTable.js";
-import { createCalendar } from "@/js/calendar.js";
+import { calendarComponent } from "@/components/calendar/calendar.js";
 import { fetchApi } from "@/js/api.js";
 import { toIsoDateTime } from "@/js/dates.js";
 import dayjs from "dayjs";
 
 const PAGE = "clases";
 
-Alpine.data("crudTable", () => (
-    crudTableComponent({
-        id: PAGE,
-        params: {
-            page: PAGE,
-            action: "getAll",
-        },
-        columns: [
-            {
-                id: "id_clase",
-                hidden: true,
-            },
-            {
-                id: "cedula_trabajador",
-                name: "Instructor",
-            },
-            "Nombre",
-            {
-                id: "descripcion",
-                name: "Descripción",
-            },
-            "Rol",
-        ],
-    })));
-
-Alpine.data("modalForm", () => (
-    modalFormComponent({
-        id: PAGE,
-        page: PAGE,
-        actions: {
-            onAdd: "insert",
-            onEdit: "update",
-            onEditFind: "find",
-            onDelete: "delete",
-        },
-        elementName: "Clase",
-        prepareAddData: {
-            fecha_inicio: toIsoDateTime(new Date()),
-        },
-        transformEditData: (item) => {
-            item.fecha_inicio = toIsoDateTime(item.fecha_inicio);
-            item.fecha_fin = toIsoDateTime(item.fecha_fin);
-            return item;
-        }
-    })));
-
-Alpine.data("calendar", () => ({
-    calendar: null,
-    popover: null,
-    popoverTimeout: null,
-    popoverEventId: null,
-
-    init() {
-        this.calendar = createCalendar(this.$el, {
-            onAdd: () => openModal(this, { mode: "add", id: PAGE }),
-            events: "?page=clases&action=getAll",
-            eventDataTransform: (item) => ({
-                id: item.id_clase,
-                title: item.nombre,
-                start: item.fecha_inicio,
-                end: item.fecha_fin,
-                extendedProps: {
-                    ...item,
-                    descripcion: item.descripcion || "Sin descripción",
-                }
-            }),
-            eventDidMount: (info) => this.bindEventHover(info),
-        });
-
-        // El click global se registra una sola vez aquí
-        document.addEventListener('click', (e) => {
-            if (this.popover && !e.target.closest('.popover') && !e.target.closest('.fc-event')) {
-                this.destroyPopover();
-            }
-        });
+Alpine.data("modalForm", () => modalFormComponent({
+    id: PAGE,
+    page: PAGE,
+    actions: {
+        onAdd: "insert",
+        onEdit: "update",
+        onEditFind: "find",
+        onDelete: "delete",
     },
-
-    // Escuchadores del elemento del calendario
-    bindEventHover(info) {
-        const el = info.el;
-        el.addEventListener('mouseenter', () => this.showPopover(info));
-        el.addEventListener('mouseleave', () => this.startHideTimeout());
-        el.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            this.showPopover(info); 
-        });
+    elementName: "Clase",
+    prepareAddData: {
+        fecha_inicio: toIsoDateTime(new Date()),
     },
+    transformEditData: (item) => {
+        item.fecha_inicio = toIsoDateTime(item.fecha_inicio);
+        item.fecha_fin = toIsoDateTime(item.fecha_fin);
+        return item;
+    }
+}));
 
-    destroyPopover() {
-        if (this.popover) {
-            this.popover.dispose();
-            this.popover = null;
-            this.popoverEventId = null;
-        }
-        if (this.popoverTimeout) {
-            clearTimeout(this.popoverTimeout);
-            this.popoverTimeout = null;
-        }
+Alpine.data("calendarClases", () => calendarComponent({
+    id: PAGE,
+    urlParams: {
+        page: "clases",
+        action: "getAll",
     },
-
-    startHideTimeout() {
-        if (this.popoverTimeout) clearTimeout(this.popoverTimeout);
-        this.popoverTimeout = setTimeout(() => this.destroyPopover(), 200);
-    },
-
-    showPopover(info) {
-        const event = info.event;
-
-        if (this.popoverTimeout) clearTimeout(this.popoverTimeout);
-        if (this.popoverEventId === event.id) return;
-        this.popoverEventId = event.id;
-
-        // Si hay un popover abierto de otra clase, lo destruimos inmediatamente
-        if (this.popover) this.destroyPopover();
-
-        // Inicializar Popover
-        this.popover = new bootstrap.Popover(info.el, {
-            title: `<span class="fw-bold text-secondary small">${event.title}</span>`,
-            content: this.getPopoverTemplate(event.extendedProps),
-            html: true,
-            trigger: 'manual',
-            placement: 'auto',
-            container: 'body',
-            sanitize: false
-        });
-
-        this.popover.show();
-
-        // Configurar acciones internas cuando el popover aparece en el DOM
-        info.el.addEventListener('shown.bs.popover', () => {
-            const openPopoverEl = document.querySelector('.popover:last-child');
-            if (!openPopoverEl) return;
-
-            // Mantener abierto si el mouse entra al popover
-            openPopoverEl.addEventListener('mouseenter', () => {
-                if (this.popoverTimeout) clearTimeout(this.popoverTimeout);
-            });
-            openPopoverEl.addEventListener('mouseleave', () => this.startHideTimeout());
-
-            // Cliks de acciones
-            openPopoverEl.querySelector('.btn-ctx-edit').onclick = () => {
-                openModal(this, { mode: "edit", dataId: event.id, id: PAGE });
-                this.destroyPopover();
-            };
-
-            openPopoverEl.querySelector('.btn-ctx-delete').onclick = () => {
-                openModal(this, { mode: "delete", dataId: event.id, id: PAGE });
-                this.destroyPopover();
-            };
-        }, { once: true });
-    },
-
-    // Plantilla HTML del Popover
-    getPopoverTemplate(props) {
-        const startTime = dayjs(props.fecha_inicio).format('hh:mm A');
-        const endTime = dayjs(props.fecha_fin).format('hh:mm A');
+    mapEvent: (data) => ({
+        id: data.id_clase,
+        title: data.nombre,
+        start: data.fecha_inicio,
+        end: data.fecha_fin,
+    }),
+    onAdd: (self) => openModal(self, { mode: "add", id: PAGE }),
+    popoverTitle: (data) => `<span class="fw-bold text-secondary small">${data.nombre}</span>`,
+    popoverContent: (data) => {
+        const startTime = dayjs(data.fecha_inicio).format('hh:mm A');
+        const endTime = dayjs(data.fecha_fin).format('hh:mm A');
 
         return `
             <div class="ctx-popover-card p-1" style="min-width: 250px;">
@@ -175,13 +54,13 @@ Alpine.data("calendar", () => ({
 
                     <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 0.75rem;">
                         <i class="fa-solid fa-users text-primary me-1"></i> 
-                        <strong>${props.cupos_ocupados || 0}</strong>/${props.capacidad_maxima || '∞'}
+                        <strong>${data.cupos_ocupados || 0}</strong>/${data.capacidad_maxima || '∞'}
                     </span>
                 </div>
 
                 <div class="p-2 rounded mb-3 text-muted border-start border-primary border-3" 
                     style="background-color: #f8f9fa; font-size: 0.8rem; line-height: 1.4;">
-                    ${props.descripcion || '<em>Sin descripción disponible.</em>'}
+                    ${data.descripcion || '<em>Sin descripción disponible.</em>'}
                 </div>
 
                 <hr class="my-2 opacity-10">
@@ -198,10 +77,15 @@ Alpine.data("calendar", () => ({
             </div>
         `;
     },
+    onPopoverHover: (element, data, self) => {
+        element.querySelector('.btn-ctx-edit').onclick = () => {
+            openModal(self, { mode: "edit", dataId: data.id, id: PAGE });
+            self.destroyPopover();
+        };
 
-    handleFormSucess({ id = null }) {
-        if (id === PAGE) {
-            this.calendar.refetchEvents();
-        }
+        element.querySelector('.btn-ctx-delete').onclick = () => {
+            openModal(self, { mode: "delete", dataId: data.id, id: PAGE });
+            self.destroyPopover();
+        };
     },
 }));

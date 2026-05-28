@@ -82,12 +82,8 @@ $modalForm = $this->fetch('modalForm', [
 <?= $this->insert('card', [
     'title' => 'Clases',
     'body' => <<<HTML
-        <main>
-            <div
-                class="container px-5 mb-5"
-                x-data="calendar"
-                @form-success.window="handleFormSucess(\$event.detail)"
-            ></div>
+        <main class="container px-5 mb-5">
+            {$this->fetch("calendar", ["alpineComponent" => "calendarClases"])}
         </main>
         
         {$modalForm}
