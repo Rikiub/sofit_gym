@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\Auth\UsuarioSession;
 use App\Helpers\Response;
 use CuyZ\Valinor\Mapper\MappingError;
 use DI\ContainerBuilder;
@@ -20,12 +21,14 @@ $container = $builder->build();
 
 // FRONT CONTROLLER
 try {
-    // Verificar si esta pidiendo JSON
-    $wantsJson = $_GET['format'] ?? '' == 'json' ?? $response->isJson();
+    session_start();
 
     // Obtener query params
     $page = $_GET['page'] ?? 'inicio';
     $action = $_GET['action'] ?? 'index';
+
+    // Verificar si esta pidiendo JSON
+    $wantsJson = ($_GET['format'] ?? '') === 'json' || $response->isJson();
 
     // Construir clase a partir de los query params
     $className = ucfirst($page) . 'Controller';
@@ -56,8 +59,13 @@ try {
         throw new Exception("Method '$action' not founded in controller '$className'");
     }
 
+    // Si no se ha iniciado sesión, redigir a pagina 'login' siempre.
+    if ($page !== "login" && !UsuarioSession::getUsuario()) {
+        $response->redirect(["page" => "login"]);
+        exit;
+    }
+
     // Ejecutar controlador junto a su metodo.
-    session_start();
     $respuesta = $controller->$action();
 
     // Mostrar respuesta como string

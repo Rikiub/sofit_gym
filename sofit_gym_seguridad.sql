@@ -1,141 +1,191 @@
--- MySQL dump 10.13  Distrib 8.0.19, for Win64 (x86_64)
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
 --
--- Host: localhost    Database: sofit_gym_seguridad
--- ------------------------------------------------------
--- Server version	5.5.5-10.4.32-MariaDB
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 29-05-2026 a las 03:29:59
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
--- Table structure for table `bitacora`
+-- Base de datos: `sofit_gym_seguridad`
 --
 
-DROP TABLE IF EXISTS `bitacora`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `bitacora`
+--
+
 CREATE TABLE `bitacora` (
-  `id_bitacora` int(11) NOT NULL AUTO_INCREMENT,
+  `id_bitacora` int(11) NOT NULL,
   `id_usuario` int(11) DEFAULT NULL,
   `id_modulo` int(11) NOT NULL,
   `accion` varchar(100) NOT NULL,
   `es_exitoso` tinyint(1) NOT NULL,
-  `fecha` date NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id_bitacora`),
-  KEY `bitacora_modulo_FK` (`id_modulo`),
-  KEY `bitacora_usuario_FK` (`id_usuario`),
-  CONSTRAINT `bitacora_modulo_FK` FOREIGN KEY (`id_modulo`) REFERENCES `modulo` (`id_modulo`) ON UPDATE CASCADE,
-  CONSTRAINT `bitacora_usuario_FK` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `fecha` date NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `bitacora`
+-- Volcado de datos para la tabla `bitacora`
 --
 
-LOCK TABLES `bitacora` WRITE;
-/*!40000 ALTER TABLE `bitacora` DISABLE KEYS */;
-INSERT INTO `bitacora` VALUES (2,2,1,'registrar_cliente',1,'2026-05-25');
-/*!40000 ALTER TABLE `bitacora` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `bitacora` (`id_bitacora`, `id_usuario`, `id_modulo`, `accion`, `es_exitoso`, `fecha`) VALUES
+(2, 2, 1, 'registrar_cliente', 1, '2026-05-25');
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `modulo`
+-- Estructura de tabla para la tabla `modulo`
 --
 
-DROP TABLE IF EXISTS `modulo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `modulo` (
-  `id_modulo` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(100) NOT NULL,
-  PRIMARY KEY (`id_modulo`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `id_modulo` int(11) NOT NULL,
+  `nombre` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `modulo`
+-- Volcado de datos para la tabla `modulo`
 --
 
-LOCK TABLES `modulo` WRITE;
-/*!40000 ALTER TABLE `modulo` DISABLE KEYS */;
-INSERT INTO `modulo` VALUES (1,'Clientes'),(2,'Trabajadores'),(3,'Horarios y clases'),(4,'Facturación y pagos'),(5,'Equipos'),(6,'Historial de mantenimientos de equipos'),(7,'Productos'),(8,'Rutinas de entrenamiento');
-/*!40000 ALTER TABLE `modulo` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `modulo` (`id_modulo`, `nombre`) VALUES
+(1, 'Clientes'),
+(2, 'Trabajadores'),
+(3, 'Horarios y clases'),
+(4, 'Facturación y pagos'),
+(5, 'Equipos'),
+(6, 'Historial de mantenimientos de equipos'),
+(7, 'Productos'),
+(8, 'Rutinas de entrenamiento');
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `rol`
+-- Estructura de tabla para la tabla `rol`
 --
 
-DROP TABLE IF EXISTS `rol`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `rol` (
-  `id_rol` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(100) NOT NULL,
-  PRIMARY KEY (`id_rol`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `id_rol` int(11) NOT NULL,
+  `nombre` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `rol`
+-- Volcado de datos para la tabla `rol`
 --
 
-LOCK TABLES `rol` WRITE;
-/*!40000 ALTER TABLE `rol` DISABLE KEYS */;
-INSERT INTO `rol` VALUES (1,'Administrador'),(2,'Entrenador');
-/*!40000 ALTER TABLE `rol` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `rol` (`id_rol`, `nombre`) VALUES
+(1, 'Administrador'),
+(2, 'Entrenador');
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `usuario`
+-- Estructura de tabla para la tabla `usuario`
 --
 
-DROP TABLE IF EXISTS `usuario`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `usuario` (
-  `id_usuario` int(11) NOT NULL AUTO_INCREMENT,
+  `id_usuario` int(11) NOT NULL,
   `id_rol` int(11) NOT NULL,
   `nombre_usuario` varchar(100) NOT NULL,
   `contrasena_hash` varchar(100) NOT NULL,
   `cedula_persona` varchar(15) DEFAULT NULL,
-  `fecha_registro` date DEFAULT current_timestamp(),
-  PRIMARY KEY (`id_usuario`),
-  KEY `usuario_rol_FK` (`id_rol`),
-  CONSTRAINT `usuario_rol_FK` FOREIGN KEY (`id_rol`) REFERENCES `rol` (`id_rol`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `fecha_registro` date DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `usuario`
+-- Volcado de datos para la tabla `usuario`
 --
 
-LOCK TABLES `usuario` WRITE;
-/*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (2,1,'carlos','12345',NULL,'2026-05-25');
-/*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `usuario` (`id_usuario`, `id_rol`, `nombre_usuario`, `contrasena_hash`, `cedula_persona`, `fecha_registro`) VALUES
+(2, 1, 'admin', '$2y$12$QNvc2YCte1vrHUW4XN/.WuzyjN6T5sRoemQgjyaXFkxM/2xTQFtlO', NULL, '2026-05-25');
 
 --
--- Dumping routines for database 'sofit_gym_seguridad'
+-- Índices para tablas volcadas
 --
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+--
+-- Indices de la tabla `bitacora`
+--
+ALTER TABLE `bitacora`
+  ADD PRIMARY KEY (`id_bitacora`),
+  ADD KEY `bitacora_modulo_FK` (`id_modulo`),
+  ADD KEY `bitacora_usuario_FK` (`id_usuario`);
+
+--
+-- Indices de la tabla `modulo`
+--
+ALTER TABLE `modulo`
+  ADD PRIMARY KEY (`id_modulo`);
+
+--
+-- Indices de la tabla `rol`
+--
+ALTER TABLE `rol`
+  ADD PRIMARY KEY (`id_rol`);
+
+--
+-- Indices de la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  ADD PRIMARY KEY (`id_usuario`),
+  ADD KEY `usuario_rol_FK` (`id_rol`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `bitacora`
+--
+ALTER TABLE `bitacora`
+  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `modulo`
+--
+ALTER TABLE `modulo`
+  MODIFY `id_modulo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT de la tabla `rol`
+--
+ALTER TABLE `rol`
+  MODIFY `id_rol` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `bitacora`
+--
+ALTER TABLE `bitacora`
+  ADD CONSTRAINT `bitacora_modulo_FK` FOREIGN KEY (`id_modulo`) REFERENCES `modulo` (`id_modulo`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `bitacora_usuario_FK` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  ADD CONSTRAINT `usuario_rol_FK` FOREIGN KEY (`id_rol`) REFERENCES `rol` (`id_rol`) ON UPDATE CASCADE;
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2026-05-25 13:45:47

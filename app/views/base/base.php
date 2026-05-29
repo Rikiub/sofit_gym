@@ -37,7 +37,8 @@
     $this->pushCss("lib/bootstrap/bootstrap.min.css");
     $this->pushJs("lib/bootstrap/bootstrap.bundle.min.js", false);
 
-    $this->pushCss("lib/font-awesome/css/all.min.css"); // Font Awesome
+    // Font Awesome
+    $this->pushCss("lib/font-awesome/css/all.min.css");
 
     // Importes globales
     $this->pushCss('base/index.css');
@@ -55,6 +56,7 @@
         html {
             overflow-y: scroll;
             scrollbar-width: thin;
+            scrollbar-gutter: stable;
         }
 
         body {

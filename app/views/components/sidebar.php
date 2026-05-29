@@ -1,5 +1,8 @@
 <script type="module">
 	import Alpine from "alpinejs";
+	import {
+		fetchApi
+	} from "@/js/api.js";
 
 	Alpine.data("sidebar", () => ({
 		collapsed: localStorage.getItem("sidebarCollapsed") === "true",
@@ -7,7 +10,7 @@
 		toggle() {
 			this.collapsed = !this.collapsed;
 			localStorage.setItem("sidebarCollapsed", this.collapsed);
-		}
+		},
 	}));
 </script>
 
@@ -21,7 +24,7 @@
 		})()
 	</script>
 
-	<div class="sidebar-header d-flex justify-content-end">
+	<div class="py-4 d-flex justify-content-end">
 		<div class="logo-container" style="height: 100px;" x-show="!collapsed" x-transition>
 			<img src="assets/logo.webp" class="img-fluid">
 		</div>
@@ -32,6 +35,16 @@
 	</div>
 
 	<nav class="sidebar-nav">
+		<hr class="m-2">
+
+		<div class="sidebar-actions p-2">
+			<a class="btn btn-secondary w-100" href="?page=login&action=logout">
+				<i class="fa-solid fa-right-from-bracket"></i> <span>Cerrar sesión</span>
+			</a>
+		</div>
+
+		<hr class="m-2">
+
 		<a href="?pagina=clientes" class="active"><i class="fas fa-home"></i> <span>Inicio</span></a>
 
 		<a href="?page=clientes" class="nav-single">
@@ -147,6 +160,7 @@
 			width: 80px;
 
 			.logo-container h2,
+			.sidebar-actions span,
 			.sidebar-nav a span,
 			.group-title span,
 			.group-items a span,
@@ -178,15 +192,6 @@
 			.sidebar-toggle i {
 				rotate: 180deg;
 			}
-		}
-
-		/* ===== CABECERA ===== */
-		.sidebar-header {
-			padding: 1rem;
-			border-bottom: 1px solid var(--sidebar-border);
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
 		}
 
 		.sidebar-toggle {
