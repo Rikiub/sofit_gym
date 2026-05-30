@@ -12,7 +12,7 @@ Alpine.data("mainData", () => ({
     async init() {
         this.equipos = await fetchApi({
             page: PAGE_EQUIPOS,
-            action: "getAllEquipos",
+            action: "query",
         });
     }
 }));

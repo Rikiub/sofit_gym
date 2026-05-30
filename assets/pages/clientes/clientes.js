@@ -189,9 +189,9 @@ Alpine.data("crudSegFisico", () =>
         ],
         gridOptions: {
             search: false,
-        },
-        crudButtons: {
-            onEdit: null
+            crudButtons: {
+                onEdit: null
+            },
         },
     }));
 

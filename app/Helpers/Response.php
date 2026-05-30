@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use CuyZ\Valinor\Normalizer\Normalizer;
 use Exception;
+use JsonException;
 
 /**
  * Helper para manejar peticiones globales
@@ -42,10 +43,11 @@ class Response
         // Si el contenido es JSON, entonces decodificarlo.
         if (Response::isJson()) {
             $rawInput = file_get_contents('php://input');
-            $data = json_decode($rawInput, true);
 
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new Exception('JSON invalido');
+            try {
+                $data = json_decode($rawInput, associative: true, flags: JSON_THROW_ON_ERROR);
+            } catch (JsonException $error) {
+                throw new Exception("Invalid JSON: " . $error->getMessage());
             }
 
             return $data;

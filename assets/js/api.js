@@ -1,43 +1,59 @@
+import FormDataJson from "form-data-json";
+
 /**
  * Helper para comunicarse con la API en el backend.
  * Solo acepta y envia JSON.
  * @param {object|URLSearchParams} params,
  * @param {RequestInit} options
- * @returns {Promise<object>}
+ * @returns {Promise<Object>}
  */
 export async function fetchApi(params = "", options = {}) {
-    if (
-        options.body !== null &&
-        typeof options.body === "object" &&
-        !Array.isArray(options.body)
-    ) {
-        options.body = JSON.stringify(options.body);
+    let { headers = {}, body, ...restOptions } = options;
+    let defaultHeaders = {"Accept": "application/json"};
+
+    // Convertir el body en JSON
+    if (body) {
+        defaultHeaders["Content-Type"] = "application/json";
+        
+        if (body instanceof FormData) {
+            body = FormDataJson.toJson(body);
+        }
+        
+        if (body?.constructor === Object) {
+            body = JSON.stringify(body);
+        }
     }
 
-    const defaultHeaders = options.method !== "GET"
-        ? { "Content-Type": "application/json" }
-        : {};
-
+    // Enviar con fetch
     const query = new URLSearchParams(params).toString();
-    const response = await fetch(`?${query}`, {
-        method: "POST",
-        headers: { ...defaultHeaders, ...options.headers },
-        ...options,
+    const url = query ? `?${query}` : '';
+
+    const response = await fetch(url, {
+        headers: { ...defaultHeaders, ...headers },
+        body,
+        ...restOptions,
     });
 
+    // Lanzar error si la respuesta no es OK
     if (!response.ok) {
-        let body;
+        let errorBody;
 
         try {
-            body = await response.clone().json();
+            errorBody = await response.clone().json();
         } catch {
-            body = await response.clone().text();
+            errorBody = await response.clone().text();
         }
 
-        console.error(body);
+        if (self.DEBUG === true) console.error(errorBody);
+
+        // Si es un objeto (JSON) se esparce, si es un string se guarda en una propiedad 'message'
+        const errorCause = typeof errorBody === "object" 
+            ? { ...errorBody } 
+            : { message: errorBody };
+        
         throw new Error(
             `API error ${response.status}: ${response.statusText}`,
-            { cause: { ...body, status: response.status } },
+            { cause: { ...errorCause, status: response.status } },
         );
     }
 

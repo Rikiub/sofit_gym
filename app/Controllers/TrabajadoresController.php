@@ -33,10 +33,10 @@ class TrabajadoresController extends BaseController
 
     public function query(): string
     {
-        $query = $_GET["search"] ?? null;
+        $search = $_GET["search"] ?? null;
         $id_rol = (int)($_GET["id_rol"] ?? 0);
 
-        $trabajadores = $this->trabajadoresModel->query($query, $id_rol);
+        $trabajadores = $this->trabajadoresModel->query($search, $id_rol);
         return $this->response->json($trabajadores);
     }
 

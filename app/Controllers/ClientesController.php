@@ -47,8 +47,8 @@ class ClientesController extends BaseController
 
     public function query(): string
     {
-        $query = $_GET["search"] ?? null;
-        $clientes = $this->clientesModelo->query($query);
+        $search = $_GET["search"] ?? null;
+        $clientes = $this->clientesModelo->query($search);
         return $this->response->json($clientes);
     }
 

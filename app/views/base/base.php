@@ -78,7 +78,11 @@
 </body>
 
 <script type="module">
+    // Declarar variable global
+    self.DEBUG = <?= json_encode(DEBUG) ?>;
+
+    // Inicializar AlpineJS
     import Alpine from 'alpinejs';
-    window.Alpine = Alpine;
+    self.Alpine = Alpine;
     Alpine.start();
 </script>

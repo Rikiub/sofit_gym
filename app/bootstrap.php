@@ -9,7 +9,19 @@ use DI\ContainerBuilder;
 const CONTAINER_FILE = 'app/container.php';
 const CONTROLLERS_PATH = 'App\Controllers';
 
+// Obtener query params
+$page = $_GET['page'] ?? 'inicio';
+$action = $_GET['action'] ?? 'index';
+
+// Construir clase a partir de los query params
+$className = ucfirst($page) . 'Controller';
+$classPath = '\\' . CONTROLLERS_PATH . "\\$className";
+
+// Response
 $response = new Response(normalizer: null);
+$wantsJson = $response->acceptsJson()
+    || $response->isJson()
+    || ($_GET['format'] ?? '') === 'json';
 
 // Configurar inyector de dependencias (PHP-DI).
 // Dependiendo de las dependencias que tengan en los __contruct de los controladores
@@ -23,24 +35,13 @@ $container = $builder->build();
 try {
     session_start();
 
-    // Obtener query params
-    $page = $_GET['page'] ?? 'inicio';
-    $action = $_GET['action'] ?? 'index';
-
-    // Verificar si esta pidiendo JSON
-    $wantsJson = ($_GET['format'] ?? '') === 'json' || $response->isJson();
-
-    // Construir clase a partir de los query params
-    $className = ucfirst($page) . 'Controller';
-    $classPath = '\\' . CONTROLLERS_PATH . "\\$className";
-
     if (!class_exists($classPath)) {
         if ($wantsJson) {
             // Si no se encuentra la pagina, devolver error como JSON
             echo $response->json([
                 'error' => 'Not Found',
                 'message' => "Controller {$className} not founded",
-                'controller' => $classPath,
+                ...(DEBUG ? ['controller' => $classPath] : [])
             ], 404);
         } else {
             // Si no se encuentra la pagina, redirigir a pagina de error.
@@ -78,11 +79,14 @@ try {
     $errors = [];
 
     foreach ($messages as $m) {
-        array_push($errors, [
+        $errors[] = DEBUG ? [
             'name' => $m->name(),
             'source' => $m->sourceValue(),
             'expected' => $m->expectedSignature(),
-        ]);
+        ] : [
+            'name' => $m->name(),
+            'message' => 'The provided value is invalid'
+        ];
     }
 
     echo $response->json([
@@ -91,12 +95,22 @@ try {
         'errors' => $errors
     ], 400);
 } catch (Throwable $error) {
-    // Capturar todos los errores y convertirlos en JSON
-    echo $response->json([
-        'error' => 'Internal Server Error',
-        'message' => $error->getMessage(),
-        "file" => $error->getFile(),
-        "line" => $error->getLine(),
-        "trace" => $error->getTrace()
-    ], 500);
+    // Capturar todos los errores
+
+    if ($wantsJson) {
+        $res = [
+            'error' => 'Internal Server Error',
+            'message' => DEBUG ? $error->getMessage() : 'An unexpected error occurred on the server'
+        ];
+
+        if (DEBUG) {
+            $res['file'] = $error->getFile();
+            $res['line'] = $error->getLine();
+            $res['trace'] = $error->getTrace();
+        }
+
+        echo $response->json($res, 500);
+    } else {
+        $response->redirect(['page' => 'error', 'status' => 500]);
+    }
 }
