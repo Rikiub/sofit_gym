@@ -65,7 +65,7 @@ class ClientesItemController extends BaseController
             return $this->response->empty(404);
         }
 
-        $registros = $this->fisicoModel->getAllByCliente($cedula);
+        $registros = $this->fisicoModel->queryByCliente($cedula);
         return $this->response->json($registros);
     }
 
@@ -127,7 +127,7 @@ class ClientesItemController extends BaseController
             return $this->response->empty(404);
         }
 
-        $registros = $this->nutricionalModel->getAllByCliente($cedula);
+        $registros = $this->nutricionalModel->queryByCliente($cedula);
         return $this->response->json($registros);
     }
 

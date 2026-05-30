@@ -90,7 +90,7 @@ class SegumientoFisicoModel extends BaseModel
      * Obtiene todos los seguimientos de un cliente.
      * @return SeguimientoFisicoDTO[]
      */
-    public function getAllByCliente(string $cedula): array
+    public function queryByCliente(string $cedula): array
     {
         $rows = $this->pdoQuery(
             <<<SQL

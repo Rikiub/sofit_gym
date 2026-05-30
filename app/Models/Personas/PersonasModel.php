@@ -42,7 +42,7 @@ class PersonasModel extends BaseModel
     /**
      * @return PersonaDTO[]
      */
-    public function getAll(): array
+    public function query(): array
     {
         $rows = $this->pdoQuery($this->sqlSelect())->fetchAll();
         return array_map(
