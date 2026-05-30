@@ -8,13 +8,23 @@
  * $this->layout('layout')
  * En cualquier vista.
  */
-$this->layout('base', ['title' => $title ?? null]);
 
+// Props
+$sidebar ??= true;
+$title ??= null;
+
+// Insertar layout base
+$this->layout('base', ['title' => $title]);
 $backgroundImage = ASSETS_DIR . '/base/background.webp';
 ?>
 
-<div class="layout-root" style="background-image: url('<?= $backgroundImage ?>');">
-    <?= $this->insert('sidebar') ?>
+<div
+    class="layout-root <?= $sidebar ? 'layout-sidebar' : '' ?>"
+    style="background-image: url('<?= $backgroundImage ?>');">
+
+    <?php if ($sidebar): ?>
+        <?= $this->insert('sidebar') ?>
+    <?php endif ?>
 
     <div class="layout-content">
         <?= $this->section('content') ?>
@@ -22,20 +32,22 @@ $backgroundImage = ASSETS_DIR . '/base/background.webp';
 </div>
 
 <style>
+    .layout-sidebar {
+        display: grid;
+        grid-template-columns: auto 1fr;
+    }
+
     .layout-root {
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         background-attachment: fixed;
 
-        display: grid;
-        grid-template-columns: auto 1fr;
-
         height: 100%;
-        min-height: 100vh;
+        min-height: 100cqh;
 
         .layout-content {
-            margin: 1rem;
+            padding: 1rem;
         }
     }
 </style>
