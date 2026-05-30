@@ -23,17 +23,17 @@ $wantsJson = $response->acceptsJson()
     || $response->isJson()
     || ($_GET['format'] ?? '') === 'json';
 
-// Configurar inyector de dependencias (PHP-DI).
-// Dependiendo de las dependencias que tengan en los __contruct de los controladores
-// el inyector las instanciara automaticamente con la configuración definida
-// en el archivo CONTAINER_FILE.
-$builder = new ContainerBuilder();
-$builder->addDefinitions(CONTAINER_FILE)->useAttributes(true);
-$container = $builder->build();
-
 // FRONT CONTROLLER
 try {
     session_start();
+
+    // Configurar inyector de dependencias (PHP-DI).
+    // Dependiendo de las dependencias que tengan en los __contruct de los controladores
+    // el inyector las instanciara automaticamente con la configuración definida
+    // en el archivo CONTAINER_FILE.
+    $builder = new ContainerBuilder();
+    $builder->addDefinitions(CONTAINER_FILE)->useAttributes(true);
+    $container = $builder->build();
 
     if (!class_exists($classPath)) {
         if ($wantsJson) {
@@ -96,6 +96,9 @@ try {
     ], 400);
 } catch (Throwable $error) {
     // Capturar todos los errores
+
+    // Registrar error en los logs del servidor en producción
+    error_log(sprintf("Error: %s en %s:%d", $error->getMessage(), $error->getFile(), $error->getLine()));
 
     if ($wantsJson) {
         $res = [
