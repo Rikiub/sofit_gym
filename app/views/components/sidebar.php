@@ -45,7 +45,7 @@
 
 		<hr class="m-2">
 
-		<a href="?pagina=clientes" class="active"><i class="fas fa-home"></i> <span>Inicio</span></a>
+		<a href="?page=inicio" class="active"><i class="fas fa-home"></i> <span>Inicio</span></a>
 
 		<a href="?page=clientes" class="nav-single">
 			<i class="fas fa-id-card"></i> <span>Gestionar Clientes e Inscripciones</span>
