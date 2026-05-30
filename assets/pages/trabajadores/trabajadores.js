@@ -9,7 +9,7 @@ Alpine.data("crudTable", () => (
     crudTableComponent({
         params: {
             page: PAGE,
-            action: "getAll",
+            action: "query",
         },
         columns: [
             "Cedula",

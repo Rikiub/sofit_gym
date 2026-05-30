@@ -31,9 +31,9 @@ class ClasesController extends BaseController
         return (int) $id;
     }
 
-    public function getAll(): string
+    public function query(): string
     {
-        $clases = $this->clasesModel->getAll();
+        $clases = $this->clasesModel->query();
         return $this->response->json($clases);
     }
 

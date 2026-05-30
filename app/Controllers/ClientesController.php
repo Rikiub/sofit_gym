@@ -45,10 +45,10 @@ class ClientesController extends BaseController
         return $cedula;
     }
 
-    public function getAll(): string
+    public function query(): string
     {
-        $query = $_GET["query"] ?? null;
-        $clientes = $this->clientesModelo->getAll($query);
+        $query = $_GET["search"] ?? null;
+        $clientes = $this->clientesModelo->query($query);
         return $this->response->json($clientes);
     }
 

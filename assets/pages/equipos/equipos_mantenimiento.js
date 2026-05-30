@@ -23,7 +23,7 @@ Alpine.data("crudMantenimiento", () => (
     crudTableComponent({
         params: {
             page: PAGE_MANTENIMIENTO,
-            action: "getAll",
+            action: "query",
         },
         columns: [
             {

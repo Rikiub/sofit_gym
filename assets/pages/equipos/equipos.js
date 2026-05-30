@@ -7,7 +7,7 @@ Alpine.data("crudEquipos", () => (
     crudTableComponent({
         params: {
             page: "equipos",
-            action: "getAllEquipos",
+            action: "query",
         },
         columns: [
             "Codigo",
@@ -22,10 +22,10 @@ Alpine.data("modalEquipos", () => (
     modalFormComponent({
         page: "equipos",
         actions: {
-            onAdd: "insertEquipo",
-            onEdit: "updateEquipo",
-            onEditFind: "findEquipo",
-            onDelete: "deleteEquipo",
+            onAdd: "insert",
+            onEdit: "update",
+            onEditFind: "find",
+            onDelete: "delete",
         },
         elementName: "Equipo",
         editDisableFields: ["codigo"],

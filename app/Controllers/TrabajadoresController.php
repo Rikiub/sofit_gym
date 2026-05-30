@@ -31,10 +31,12 @@ class TrabajadoresController extends BaseController
         return $cedula;
     }
 
-    public function getAll(): string
+    public function query(): string
     {
-        $query = $_GET["query"] ?? null;
-        $trabajadores = $this->trabajadoresModel->getAll($query);
+        $query = $_GET["search"] ?? null;
+        $id_rol = (int)($_GET["id_rol"] ?? 0);
+
+        $trabajadores = $this->trabajadoresModel->query($query, $id_rol);
         return $this->response->json($trabajadores);
     }
 

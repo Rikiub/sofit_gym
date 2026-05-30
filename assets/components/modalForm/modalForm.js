@@ -36,19 +36,17 @@ export function openModal(data, detail) {
  * id?: string,
  * }}
  */
-export function modalFormComponent(
-    {
-        page,
-        actions,
-        extraPostBody = {},
-        elementName = "",
-        prepareAddData = {},
-        transformEditData = (data) => data,
-        editDisableFields = [],
-        afterSubmit = () => null,
-        id: componentId = null,
-    },
-) {
+export function modalFormComponent({
+    page,
+    actions,
+    extraPostBody = {},
+    elementName = "",
+    prepareAddData = {},
+    transformEditData = (data) => data,
+    editDisableFields = [],
+    afterSubmit = () => null,
+    id: componentId = null,
+}) {
     return {
         currentDataId: null,
         mode: null,
@@ -168,22 +166,32 @@ export function modalFormComponent(
             this.mode = "edit";
             this.currentDataId = id;
 
-            let data = await fetchApi(
-                {
-                    page: this.page,
-                    action: this.actions.onEditFind,
-                    id: this.currentDataId,
-                },
-            );
+            let data = await fetchApi({
+                page: this.page,
+                action: this.actions.onEditFind,
+                id: this.currentDataId,
+            });
             data = transformEditData(data);
             FormDataJson.fromJson(this.$refs.form, data, {
                 clearOthers: true,
                 includeDisabled: true,
             });
 
+            // Reactivar inputs desactivados
             for (const inputName of editDisableFields) {
                 if (this.$refs.form[inputName]) {
                     this.$refs.form[inputName].disabled = true;
+                }
+            }
+
+            // Informar a otros componentes que los inputs han cambiado
+            for (const el of this.$refs.form.elements) {
+                if (
+                    el.tagName === 'INPUT'
+                    || el.tagName === 'TEXTAREA'
+                    || el.tagName === 'SELECT'
+                ) {
+                    el.dispatchEvent(new Event('input'));
                 }
             }
 
@@ -206,7 +214,8 @@ export function modalFormComponent(
             }
         },
 
-        /** @param {HTMLInputElement} input
+        /**
+         * @param {HTMLInputElement} input
          * @param {boolean} valid
          * @param {string?} message
          */

@@ -7,7 +7,7 @@ export function toIsoDate(date) {
 
 /** @param {string|Date} date */
 export function toIsoDateTime(date) {
-    return dayjs(date).format("YYYY-MM-DD[T]hh:mm:ss");
+    return dayjs(date).format("YYYY-MM-DD[T]hh:mm");
 }
 
 /** @param {string|Date} date */

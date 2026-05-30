@@ -1,15 +1,15 @@
 import Alpine from "alpinejs";
 import { fetchApi } from "@/js/api.js";
 
-Alpine.data("personasSelect", () => ({
+Alpine.data("personaSelect", () => ({
+    type: "trabajadores",
+    filterIdRol: "1",
+
     items: [],
     search: null,
     popover: null,
-    type: "trabajadores",
-
-    selected: null,
     selectedCedula: null,
-
+    
     async init() {
         document.addEventListener('click', (e) => {
             if (!this.popover) return;
@@ -22,20 +22,7 @@ Alpine.data("personasSelect", () => ({
             }
         });
 
-        this.$watch('selectedCedula', async (value) => {
-            await this.syncSelected();
-        });
-
         await this.handleSearch(); 
-    },
-
-    async syncSelected() {
-        if (!this.selectedCedula) {
-            this.selected = null;
-            return;
-        }
-
-        this.selected = await fetchApi({ page: this.type, action: "find", id: this.selectedCedula });
     },
 
     togglePopover() {
@@ -81,15 +68,14 @@ Alpine.data("personasSelect", () => ({
 
     setSelected(item) {
         this.search = "";
-        this.selected = item;
         this.selectedCedula = item.cedula;
         this.hidePopover();
     },
     
     async handleSearch() {
-        let params = { page: this.type, action: "getAll" };
+        let params = { page: this.type, action: "query" };
         if (this.search) {
-            params = { ...params, query: this.search };
+            params = { ...params, search: this.search, id_rol: this.filterIdRol };
         }
         this.items = await fetchApi(params);
         

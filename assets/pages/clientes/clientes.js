@@ -14,7 +14,7 @@ Alpine.data("crudClientes", () =>
         id: clientesId,
         params: {
             page: CLIENTES_PAGE,
-            action: "getAll",
+            action: "query",
         },
         columns: [
             {

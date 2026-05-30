@@ -112,12 +112,12 @@ class ClientesModel extends BaseModel
     /**
      * @return ClienteDTO[]
      */
-    public function getAll(?string $query = null): array
+    public function query(?string $search = null): array
     {
         $sql = $this->sqlSelect();
         $params = [];
 
-        if (!empty($query)) {
+        if ($search) {
             $columns = [
                 'persona.nombre',
                 'persona.apellido',
@@ -134,7 +134,7 @@ class ClientesModel extends BaseModel
             $sql .= " WHERE " . implode(" OR ", $clauses);
 
             // Rellena el arreglo con el mismo término de búsqueda tantas veces como columnas haya
-            $params = array_fill(0, count($columns), "%" . $query . "%");
+            $params = array_fill(0, count($columns), "%" . $search . "%");
         }
 
         $rows = $this->pdoQuery($sql, $params)->fetchAll();

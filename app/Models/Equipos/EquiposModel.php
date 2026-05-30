@@ -75,7 +75,7 @@ class EquiposModel extends BaseModel
     /**
      * @return EquipoDTO[]
      */
-    public function getAll(): array
+    public function query(): array
     {
         $rows = $this->pdoQuery($this->sqlSelect())->fetchAll();
         return array_map(

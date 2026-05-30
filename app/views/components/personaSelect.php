@@ -3,17 +3,18 @@
 $required ??= false;
 $name ??= "";
 
-$this->pushJs("components/personasSelect/personasSelect.js");
+$this->pushJs("components/personaSelect/personaSelect.js");
 ?>
 
-<div x-data="personasSelect">
+<div x-data="personaSelect">
     <input hidden <?= $required ? 'required' : '' ?> name="<?= $name ?>" x-model="selectedCedula">
     <button
         type="button"
-        class="form-select"
         @click="togglePopover()"
         x-ref="selectButton"
-        x-text="selectedCedula || 'Seleccionar persona'"></button>
+        x-text="selectedCedula || 'Seleccionar persona...'"
+        class="form-select text-start"
+        :class="{ 'text-body-secondary': !selectedCedula }"></button>
 
     <div x-ref="popoverContainer">
         <div x-ref="popoverContent" style="display: none;">
@@ -32,7 +33,6 @@ $this->pushJs("components/personasSelect/personasSelect.js");
                         <tr>
                             <th>Cedula</th>
                             <th>Nombre</th>
-                            <th>Rol</th>
                             <th>Accion</th>
                         </tr>
                     </thead>
@@ -42,7 +42,6 @@ $this->pushJs("components/personasSelect/personasSelect.js");
                             <tr>
                                 <td x-text="item.cedula"></td>
                                 <td x-text="`${item.nombre} ${item.apellido}`"></td>
-                                <td x-text="item.rol"></td>
                                 <td><button type="button" class="btn btn-sm btn-secondary" @click="setSelected(item)">Seleccionar</button></td>
                             </tr>
                         </template>

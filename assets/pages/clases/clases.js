@@ -31,7 +31,7 @@ Alpine.data("calendarClases", () => calendarComponent({
     id: PAGE,
     urlParams: {
         page: "clases",
-        action: "getAll",
+        action: "query",
     },
     mapEvent: (data) => ({
         id: data.id_clase,

@@ -31,9 +31,9 @@ class EquiposMantenimientoController extends BaseController
         return (int) $id;
     }
 
-    public function getAll()
+    public function query()
     {
-        $mantenimientos = $this->model->getAll();
+        $mantenimientos = $this->model->query();
         return $this->response->json($mantenimientos);
     }
 

@@ -31,13 +31,13 @@ class EquiposController extends BaseController
         return $codigo;
     }
 
-    public function getAllEquipos()
+    public function query()
     {
-        $results = $this->equiposModel->getAll();
+        $results = $this->equiposModel->query();
         return $this->response->json($results);
     }
 
-    public function findEquipo(): ?string
+    public function find(): ?string
     {
         $id = $this->getIdParam();
         $equipo = $this->equiposModel->find($id);
@@ -49,7 +49,7 @@ class EquiposController extends BaseController
         return $this->response->json($equipo);
     }
 
-    public function insertEquipo(): string
+    public function insert(): string
     {
         $body = $this->response->getParsedBody();
         $equipo = $this->mapper->map(EquipoDTO::class, $body);
@@ -63,7 +63,7 @@ class EquiposController extends BaseController
         return $this->response->json($equipo, 201);
     }
 
-    public function updateEquipo(): string
+    public function update(): string
     {
         $body = $this->response->getParsedBody();
         $equipo = $this->mapper->map(EquipoDTO::class, $body);
@@ -76,7 +76,7 @@ class EquiposController extends BaseController
         return $this->response->json($equipo, 201);
     }
 
-    public function deleteEquipo(): string|null
+    public function delete(): string|null
     {
         $codigo = $this->getIdParam();
 
