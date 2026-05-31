@@ -19,6 +19,7 @@ Alpine.data("crudClientes", () =>
         columns: [
             {
                 name: "Cedula",
+                id: "cedula",
                 formatter: (cell, row) => {
                     const cedula = row.cells[0].data;
                     return h(
@@ -32,13 +33,6 @@ Alpine.data("crudClientes", () =>
             "Apellido",
             "Correo",
             "Telefono",
-        ],
-        fieldMap: (item) => [
-            item.cedula,
-            item.nombre,
-            item.apellido,
-            item.correo,
-            item.telefono,
         ],
     }));
 
@@ -167,25 +161,13 @@ Alpine.data("crudSegFisico", () =>
                 name: "Fecha",
                 formatter: (cell) => new Date(cell).toLocaleDateString("en-US")
             },
-            "Altura",
-            "Peso",
-            "Cintura",
-            "Cadera",
-            "Pecho",
-            "Muslo",
-            "Hombros",
-        ],
-        fieldMap: (item) => [
-            item.id_seguimiento,
-            item.cedula_cliente,
-            item.fecha,
-            item.altura_cm,
-            item.peso_cm,
-            item.cintura_cm,
-            item.cadera_cm,
-            item.pecho_cm,
-            item.muslo_cm,
-            item.hombros_cm,
+            { name: "Altura", id: "altura_cm" },
+            { name: "Peso", id: "peso_kg" },
+            { name: "Cintura", id: "cintura_cm" },
+            { name: "Cadera", id: "cadera_cm" },
+            { name: "Pecho", id: "pecho_cm" },
+            { name: "Muslo", id: "muslo_cm" },
+            { name: "Hombros", id: "hombros_cm" },
         ],
         gridOptions: {
             search: false,
@@ -203,11 +185,13 @@ Alpine.data("modalSegFisico", () => modalFormComponent({
         onEdit: "updateSegFisico",
         onDelete: "deleteSegFisico",
     },
+    prepareAddData: {
+        fecha: toIsoDate(new Date()),
+    },
     extraPostBody: {
         cedula_cliente: new URLSearchParams(location.search).get("id"),
     }
 }));
-
 
 // SEGUIMIENTO NUTRICIONAL
 const idSegNutricional = "seg_nutricional";
@@ -233,19 +217,10 @@ Alpine.data("crudSegNutricional", () =>
                 name: "Fecha",
                 formatter: (cell) => new Date(cell).toLocaleDateString("en-US")
             },
-            "Proteinas (g)",
-            "Carbohidratos (g)",
-            "Grasas (g)",
-            "Calorias Diarias",
-        ],
-        fieldMap: (item) => [
-            item.id_seguimiento,
-            item.cedula_cliente,
-            item.fecha,
-            item.proteinas_g,
-            item.carbohidratos_g,
-            item.grasas_g,
-            item.calorias_diarias,
+            { name: "Proteinas (g)", id: "proteinas_g" },
+            { name: "Carbohidratos (g)", id: "carbohidratos_g" },
+            { name: "Grasas (g)", id: "grasas_g" },
+            { name: "Calorias Diarias", id: "calorias_diarias" },
         ],
         gridOptions: {
             search: false,
@@ -262,6 +237,9 @@ Alpine.data("modalSegNutricional", () => modalFormComponent({
         onAdd: "insertSegNutricional",
         onEdit: "updateSegNutricional",
         onDelete: "deleteSegNutricional",
+    },
+    prepareAddData: {
+        fecha: toIsoDate(new Date()),
     },
     extraPostBody: {
         cedula_cliente: new URLSearchParams(location.search).get("id"),

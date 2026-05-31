@@ -6,8 +6,8 @@ import Alpine from "alpinejs";
  * @param {{
  * params: object,
  * columns: array<string|object>,
- * fieldMap: (item: object) => array<string|number>,
- * gridOptions: object?,
+ * fieldMap?: (item: object) => array<string|number>,
+ * gridOptions?: Object?,
  * id?: string,
  * }}
  */
@@ -23,13 +23,15 @@ export function crudTableComponent({
 
         init() {
             const { crudButtons = {}, ...restOptions } = gridOptions;
+
             const query = new URLSearchParams(params);
+            const url = `?${query.toString()}`;
 
             this.grid = createGrid({
                 columns: columns,
                 server: {
-                    url: `?${query.toString()}`,
-                    then: (data) => data.map((item) => fieldMap(item)),
+                    url,
+                    then: (data) => data.map((item) => item),
                 },
                 crud: {
                     onAdd: () => openModal(this, {
