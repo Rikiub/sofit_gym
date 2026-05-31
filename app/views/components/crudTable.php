@@ -1,11 +1,11 @@
 <?php
-$alpineComponent ??= 'crudTable';
+$xData ??= 'crudTable';
 
 $this->pushJs('components/crudTable.js');
 ?>
 
 <div
-    x-data="<?= $alpineComponent ?>"
+    x-data="<?= $xData ?>"
     x-ref="table"
     @form-success.window="handleFormSuccess($event.detail)"
     class="CrudTable"></div>

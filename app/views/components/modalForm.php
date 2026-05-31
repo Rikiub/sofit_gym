@@ -1,6 +1,6 @@
 <?php
-$formHtml ??= null;
-$alpineComponent ??= 'modalForm';
+$form ??= null;
+$xData ??= 'modalForm';
 
 $this->pushJs('components/modalForm.js');
 ?>
@@ -9,7 +9,7 @@ $this->pushJs('components/modalForm.js');
     class="ModalComponent modal fade"
     tabindex="-1"
     x-ref="modal"
-    x-data="<?= $alpineComponent ?>"
+    x-data="<?= $xData ?>"
     x-id="['form']"
     :closedby="loading ? 'none' : 'any'"
     @open-modal.window="handleOpenModal($event.detail)">
@@ -56,7 +56,7 @@ $this->pushJs('components/modalForm.js');
                     @submit.prevent="handleSubmit"
                     :id="$id('form')"
                     novalidate>
-                    <?= $formHtml ?>
+                    <?= $form ?>
                 </form>
             </div>
 

@@ -127,10 +127,10 @@ $this->pushJs('pages/clientes/clientes.js');
     </summary>
 
     <div class="card-body">
-        <?= $this->insert('crudTable', ['alpineComponent' => 'crudSegFisico']) ?>
+        <?= $this->insert('crudTable', ['xData' => 'crudSegFisico']) ?>
         <?= $this->insert('modalForm', [
-            'alpineComponent' => 'modalSegFisico',
-            'formHtml' => $this->fetch('clientes/forms/seguimiento_fisico'),
+            'xData' => 'modalSegFisico',
+            'form' => $this->fetch('clientes/forms/seguimiento_fisico'),
         ]) ?>
     </div>
 </details>
@@ -143,20 +143,20 @@ $this->pushJs('pages/clientes/clientes.js');
     </summary>
 
     <div class="card-body">
-        <?= $this->insert('crudTable', ['alpineComponent' => 'crudSegNutricional']) ?>
+        <?= $this->insert('crudTable', ['xData' => 'crudSegNutricional']) ?>
         <?= $this->insert('modalForm', [
-            'alpineComponent' => 'modalSegNutricional',
-            'formHtml' => $this->fetch('clientes/forms/seguimiento_nutricional'),
+            'xData' => 'modalSegNutricional',
+            'form' => $this->fetch('clientes/forms/seguimiento_nutricional'),
         ]) ?>
     </div>
 </details>
 <?php $body = ob_get_clean() ?>
 
 <?= $this->insert('modalForm', [
-    'alpineComponent' => <<<JS
+    'xData' => <<<JS
             modalClientes({ isSinglePage: true })
         JS,
-    'formHtml' => $this->fetch('clientes/forms/cliente'),
+    'form' => $this->fetch('clientes/forms/cliente'),
 ]) ?>
 
 <?= $this->insert("card", [

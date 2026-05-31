@@ -5,8 +5,8 @@ $this->layout('layout', ['title' => $title]);
 $this->pushJs('pages/equipos/equipos.js');
 
 $modalForm = $this->fetch('modalForm', [
-    'alpineComponent' => 'modalEquipos',
-    'formHtml' => <<<HTML
+    'xData' => 'modalEquipos',
+    'form' => <<<HTML
             <fieldset class="row">
                 <label class="form-label col">Código
                     <input class="form-control" type="text" name="codigo" required placeholder="Código del equipo">
@@ -50,7 +50,7 @@ $modalForm = $this->fetch('modalForm', [
     'title' => $title,
     'body' => <<<HTML
             <main>
-                {$this->fetch('crudTable', ['alpineComponent' => 'crudEquipos'])}
+                {$this->fetch('crudTable', ['xData' => 'crudEquipos'])}
             </main>
             {$modalForm}
         HTML,

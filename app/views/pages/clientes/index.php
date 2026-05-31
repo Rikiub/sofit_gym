@@ -3,8 +3,8 @@ $this->layout('layout', ['title' => 'Clientes']);
 $this->pushJs('pages/clientes/clientes.js');
 
 $modalForm = $this->fetch('modalForm', [
-    'alpineComponent' => 'modalClientes',
-    'formHtml' => $this->fetch('clientes/forms/cliente'),
+    'xData' => 'modalClientes',
+    'form' => $this->fetch('clientes/forms/cliente'),
 ]);
 ?>
 
@@ -13,7 +13,7 @@ $modalForm = $this->fetch('modalForm', [
     'title' => 'Clientes',
     'body' => <<<HTML
             <main>
-                {$this->fetch('crudTable', ['alpineComponent' => 'crudClientes'])}
+                {$this->fetch('crudTable', ['xData' => 'crudClientes'])}
             </main>
             {$modalForm}
         HTML,

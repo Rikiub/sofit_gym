@@ -1,5 +1,5 @@
 <?php
-$alpineComponent ??= "calendar";
+$xData ??= "calendar";
 
 // Importar libreria FullCalendar junto a sus plugins
 $this->pushJs("lib/fullcalendar/index.global.min.js", false);
@@ -10,5 +10,5 @@ $this->pushJs("components/calendar.js");
 ?>
 
 <div
-    x-data="<?= $alpineComponent ?>"
+    x-data="<?= $xData ?>"
     @form-success.window="handleFormSucess($event.detail)"></div>

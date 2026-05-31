@@ -20,8 +20,8 @@ $remoteSelect = $this->fetch("querySelect", [
 ]);
 
 $modalForm = $this->fetch('modalForm', [
-    'alpineComponent' => 'modalForm',
-    'formHtml' => <<<HTML
+    'xData' => 'modalForm',
+    'form' => <<<HTML
             <input hidden name="id_clase">
 
             <fieldset class="row">
@@ -97,7 +97,7 @@ $modalForm = $this->fetch('modalForm', [
     'title' => $title,
     'body' => <<<HTML
         <main class="px-1 mb-5">
-            {$this->fetch("calendar", ["alpineComponent" => "calendarClases"])}
+            {$this->fetch("calendar", ["xData" => "calendarClases"])}
         </main>
         
         {$modalForm}

@@ -3,8 +3,8 @@ $this->pushJs('pages/trabajadores/trabajadores.js');
 $this->layout('layout', ['title' => 'Trabajadores']);
 
 $modalForm = $this->fetch('modalForm', [
-    'alpineComponent' => 'modalForm',
-    'formHtml' => <<<HTML
+    'xData' => 'modalForm',
+    'form' => <<<HTML
             {$this->fetch('personaForm')}
 
             <hr>
@@ -40,7 +40,7 @@ $modalForm = $this->fetch('modalForm', [
     'title' => 'Trabajadores',
     'body' => <<<HTML
             <main>
-                {$this->fetch('crudTable', ['alpineComponent' => 'crudTable'])}
+                {$this->fetch('crudTable', ['xData' => 'crudTable'])}
             </main>
             
             {$modalForm}
