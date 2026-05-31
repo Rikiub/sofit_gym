@@ -7,30 +7,9 @@ import dayjs from "dayjs";
 
 const PAGE = "clases";
 
-Alpine.data("modalForm", () => modalFormComponent({
-    id: PAGE,
-    page: PAGE,
-    actions: {
-        onAdd: "insert",
-        onEdit: "update",
-        onEditFind: "find",
-        onDelete: "delete",
-    },
-    elementName: "Clase",
-    prepareAddData: {
-        fecha_inicio: toIsoDateTime(new Date()),
-    },
-    transformEditData: (item) => {
-        item.fecha_inicio = toIsoDateTime(item.fecha_inicio);
-        item.fecha_fin = toIsoDateTime(item.fecha_fin);
-        return item;
-    }
-}));
-
 Alpine.data("calendarClases", () => calendarComponent({
-    id: PAGE,
     urlParams: {
-        page: "clases",
+        page: PAGE,
         action: "query",
     },
     mapEvent: (data) => ({
@@ -39,7 +18,7 @@ Alpine.data("calendarClases", () => calendarComponent({
         start: data.fecha_inicio,
         end: data.fecha_fin,
     }),
-    onAdd: (self) => openModal(self, { mode: "add", id: PAGE }),
+    onAdd: (self) => openModal(self, { mode: "add" }),
     popoverTitle: (data) => `<span class="fw-bold text-secondary small">${data.nombre}</span>`,
     popoverContent: (data) => {
         const startTime = dayjs(data.fecha_inicio).format('hh:mm A');
@@ -79,13 +58,76 @@ Alpine.data("calendarClases", () => calendarComponent({
     },
     onPopoverHover: (element, data, self) => {
         element.querySelector('.btn-ctx-edit').onclick = () => {
-            openModal(self, { mode: "edit", dataId: data.id, id: PAGE });
+            openModal(self, { mode: "edit", dataId: data.id });
             self.destroyPopover();
         };
 
         element.querySelector('.btn-ctx-delete').onclick = () => {
-            openModal(self, { mode: "delete", dataId: data.id, id: PAGE });
+            openModal(self, { mode: "delete", dataId: data.id });
             self.destroyPopover();
         };
+    },
+}));
+
+Alpine.data("modalForm", () => modalFormComponent({
+    page: PAGE,
+    actions: {
+        onAdd: "insert",
+        onEdit: "update",
+        onEditFind: "find",
+        onDelete: "delete",
+    },
+    elementName: "Clase",
+    prepareAddData: {
+        fecha_inicio: toIsoDateTime(new Date()),
+    },
+    transformEditData: (item) => {
+        item.fecha_inicio = toIsoDateTime(item.fecha_inicio);
+        item.fecha_fin = toIsoDateTime(item.fecha_fin);
+        return item;
+    }
+}));
+
+Alpine.data("listaClientes", () => ({
+    keyName: "clientes",
+
+    clientes: [],
+    cupos_ocupados: 0,
+
+    add(item) {
+        // No agregar duplicados
+        const exists = this.clientes.some(c => c.cedula === item.cedula);
+        if (exists) return;
+
+        this.clientes.push(item);
+        this.cupos_ocupados += 1;
+    },
+    remove(index) {
+        this.clientes.splice(index, 1);
+        this.cupos_ocupados -= 1;
+    },
+    reset() {
+        this.clientes = [];
+        this.cupos_ocupados = 0;
+    },
+
+    // EVENTS
+    handleItemSelected(item) {
+        this.add(item);
+    },
+    load(item) {
+        const clientes = item.data.clientes || [];
+        this.clientes = clientes;
+        this.cupos_ocupados = clientes.length;
+    },
+    validate(detail) {
+        if (this.clientes.length === 0) {
+            detail.setInvalid(this.keyName, "Selecciona al menos uno")
+        } else {
+            detail.setValid(this.keyName);
+        }
+    },
+    serialize(detail) {
+        detail.merge({ clientes: this.clientes.map((item) => item.cedula) });
     },
 }));

@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Clientes\ClienteDTO;
 use App\Helpers\Validator;
 use App\Models\BaseModel;
+use App\Models\Clientes\ClientesModel;
 use CuyZ\Valinor\Mapper\TreeMapper;
 use DateTimeImmutable;
+use InvalidArgumentException;
 use PDO;
 
 enum EstadoClase: string
@@ -21,6 +24,8 @@ readonly class ClaseGrupalDTO
     public function __construct(
         public ?int $id_clase = null,
         public ?string $cedula_trabajador = null,
+        /** @var ClienteDTO[]|string[] */
+        public ?array $clientes = [],
         public ?string $nombre = null,
         public ?string $descripcion = null,
         public ?int $cupos_ocupados = 0,
@@ -28,7 +33,17 @@ readonly class ClaseGrupalDTO
         public ?EstadoClase $estado = null,
         public ?DateTimeImmutable $fecha_inicio = null,
         public ?DateTimeImmutable $fecha_fin = null,
-    ) {}
+    ) {
+        foreach ($this->clientes as $cliente) {
+            if ($cliente instanceof ClienteDTO && !$cliente->cedula) {
+                throw new InvalidArgumentException("Cada cliente debe tener una cédula.");
+            }
+
+            if ((is_string($cliente)) && empty($cliente)) {
+                throw new InvalidArgumentException("El ID del cliente no puede estar vacío.");
+            }
+        }
+    }
 
     public function validateInsert() {}
 
@@ -42,16 +57,49 @@ class ClasesGrupalesModel extends BaseModel
 
     public function __construct(
         PDO $pdo,
+        private ClientesModel $clientesModel,
         private TreeMapper $mapper,
     ) {
         parent::__construct($pdo);
     }
 
-    private function sqlSelect(): string
+    private function sqlSelect(string $where = ""): string
     {
         return <<<SQL
-            SELECT * FROM {$this->table}
+            SELECT
+                clase.*,
+                COALESCE(
+                    CONCAT(
+                        '[', 
+                        GROUP_CONCAT(
+                            IF(cc.cedula_cliente IS NOT NULL, JSON_OBJECT('cedula', cc.cedula_cliente), NULL)
+                        ), 
+                        ']'
+                    ),
+                    '[]'
+                ) AS clientes
+            FROM {$this->table} clase
+            LEFT JOIN clase_cliente as cc
+                ON clase.id_clase = cc.id_clase
+            {$where}
+            GROUP BY clase.id_clase;
         SQL;
+    }
+
+    /** 
+     * @return ClaseGrupalDTO
+     */
+    private function map(array $row): ClaseGrupalDTO
+    {
+        $clientes = json_decode($row["clientes"], true);
+        $clientes = array_map(
+            fn($r) => $this->clientesModel->find($r["cedula"]),
+            $clientes,
+        );
+        $row["clientes"] = $clientes;
+
+        $row = $this->mapper->map(ClaseGrupalDTO::class, $row);
+        return $row;
     }
 
     /**
@@ -61,7 +109,7 @@ class ClasesGrupalesModel extends BaseModel
     {
         $rows = $this->pdoQuery($this->sqlSelect())->fetchAll();
         return array_map(
-            fn($row) => $this->mapper->map(ClaseGrupalDTO::class, $row),
+            fn($row) => $this->map($row),
             $rows
         );
     }
@@ -69,12 +117,12 @@ class ClasesGrupalesModel extends BaseModel
     public function find(int $id): ?ClaseGrupalDTO
     {
         $row = $this->pdoQuery(
-            "{$this->sqlSelect()} WHERE {$this->primaryKey} = ?",
+            $this->sqlSelect(" WHERE clase.{$this->primaryKey} = ? "),
             [$id]
         )->fetch();
 
         if (!$row) return null;
-        return $this->mapper->map(ClaseGrupalDTO::class, $row);
+        return $this->map($row);
     }
 
     public function insert(ClaseGrupalDTO $clase): ClaseGrupalDTO
@@ -83,11 +131,13 @@ class ClasesGrupalesModel extends BaseModel
         $this->pdo->beginTransaction();
 
         $this->pdoInsert($this->table, $this->dtoToArray($clase));
+        $id_clase = (int) $this->pdo->lastInsertId();
+        $this->syncClientes($id_clase, $clase->clientes);
 
-        $id = (int) $this->pdo->lastInsertId();
+        $clase = $this->find($id_clase);
         $this->pdo->commit();
 
-        return $this->find($id);
+        return $clase;
     }
 
     public function update(ClaseGrupalDTO $clase): ClaseGrupalDTO
@@ -103,6 +153,7 @@ class ClasesGrupalesModel extends BaseModel
             $array,
             [$this->primaryKey => $clase->id_clase]
         );
+        $this->syncClientes($clase->id_clase, $clase->clientes);
 
         $this->pdo->commit();
         return $this->find($clase->id_clase);
@@ -113,6 +164,31 @@ class ClasesGrupalesModel extends BaseModel
         $this->pdoDelete($this->table, [$this->primaryKey => $id]);
     }
 
+    private function syncClientes(int $id_clase, array $clientes): void
+    {
+        $table = "clase_cliente";
+
+        // Eliminar todos los clientes
+        foreach ($clientes as $cliente) {
+            $this->pdoDelete($table, ["id_clase" => $id_clase]);
+        }
+
+        // Insertar los nuevos clientes
+        foreach ($clientes as $cliente) {
+            // Extraer solo la cedula
+            if ($cliente instanceof ClienteDTO) {
+                $cedula = $cliente->cedula;
+            } else {
+                $cedula = $cliente;
+            }
+
+            $this->pdoInsert($table, [
+                "id_clase" => $id_clase,
+                "cedula_cliente" => $cedula
+            ]);
+        }
+    }
+
     private function dtoToArray(ClaseGrupalDTO $dto): array
     {
         return [
@@ -120,7 +196,7 @@ class ClasesGrupalesModel extends BaseModel
             'cedula_trabajador' => $dto->cedula_trabajador,
             'nombre'            => $dto->nombre,
             'descripcion'       => $dto->descripcion,
-            'cupos_ocupados'    => $dto->cupos_ocupados ?? 0,
+            'cupos_ocupados'    => count($dto->clientes),
             'capacidad_maxima'  => $dto->capacidad_maxima,
             'estado'            => $dto->estado->value,
             'fecha_inicio'      => Validator::dateToString($dto->fecha_inicio),

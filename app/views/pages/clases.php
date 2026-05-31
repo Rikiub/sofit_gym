@@ -4,7 +4,7 @@ $title = "Calendario de Clases";
 $this->layout("layout", ["title" => $title]);
 $this->pushJs("pages/clases/clases.js");
 
-$querySelect = $this->fetch("querySelect", [
+$selectTrabajadores = $this->fetch("querySelect", [
     "input" => ["name" => "cedula_trabajador", "required" => true],
     "columns" => [
         ["name" => "Cédula", "id" => 'cedula'],
@@ -15,6 +15,18 @@ $querySelect = $this->fetch("querySelect", [
         "page" => "trabajadores",
         "action" => "query",
         "id_rol" => 2,
+    ],
+    "itemKey" => "cedula",
+]);
+
+$selectClientes = $this->fetch("querySelect", [
+    "columns" => [
+        ["name" => "Cédula", "id" => 'cedula'],
+        ["name" => "Nombre", "id" => "nombre_completo", "computed" => '`${item.nombre} ${item.apellido}`'],
+    ],
+    "params" => [
+        "page" => "clientes",
+        "action" => "query",
     ],
     "itemKey" => "cedula",
 ]);
@@ -44,22 +56,62 @@ $modalForm = $this->fetch('modalForm', [
 
             <fieldset class="row">
                 <label class="col form-label">Entrenador
-                    {$querySelect}
+                    {$selectTrabajadores}
                     <small class="form-text" x-text="errors.cedula_trabajador"></small>
                 </label>
-                
-                <label class="col form-label">Cupos ocupados
-                    <input class="form-control" required name="cupos_ocupados" type="number" min="0" 
-                        @input.debounce="checkValidity(\$el)" placeholder="0">
-                    <small class="form-text" x-text="errors.cupos_ocupados"></small>
-                </label>
-
-                <label class="col form-label">Capacidad máxima
-                    <input class="form-control" required name="capacidad_maxima" type="number" min="1" 
-                        @input.debounce="checkValidity(\$el)" placeholder="0">
-                    <small class="form-text" x-text="errors.capacidad_maxima"></small>
-                </label>
             </fieldset>
+
+            <hr>
+
+            <div
+                x-data="listaClientes"
+                @form-reset.window="reset()"
+                @form-load.window="load(\$event.detail)"
+                @form-validate.window="validate(\$event.detail)"
+                @form-serialize.window="serialize(\$event.detail)"
+            >
+                <fieldset class="row">
+                    <label class="form-label col">Cupos Ocupados
+                        <input class="form-control" name="cupos_ocupados" :value="cupos_ocupados" placeholder="0" readonly>
+                    </label>
+
+                    <label class="form-label col">Capacidad Maxima
+                        <input class="form-control" name="capacidad_maxima" required type="number" placeholder="1" min="1" @input="checkValidity(\$el)">
+                        <small class="form-text" x-text="errors.capacidad_maxima"></small>
+                    </label>
+                </fieldset>
+
+                <div>
+                    <label class="form-label">Lista de Clientes</label>
+
+                    <div @item-selected="handleItemSelected(\$event.detail)">
+                        {$selectClientes}
+                    </div>
+
+                    <ul class="list-group mb-3">
+                        <template x-for="(cliente, index) in clientes" :key="cliente.cedula">
+                            <li class="list-group-item d-flex justify-content-between align-items-center view-fade-in">
+                                <div>
+                                    <span class="badge bg-secondary me-2" x-text="cliente.cedula"></span>
+                                    <span class="text-dark" x-text='`\${cliente.nombre} \${cliente.apellido}`'></span>
+                                </div>
+                                
+                                <button type="button" class="btn btn-sm btn-danger border-0" @click="remove(index)">
+                                    Eliminar
+                                </button>
+                            </li>
+                        </template>
+
+                        <template x-if="clientes.length === 0">
+                            <li class="list-group-item text-muted text-center py-3 bg-light">
+                                No hay clientes asignados a esta clase todavía.
+                            </li>
+                        </template>
+                    </ul>
+
+                    <small class="form-text" x-text="errors.clientes"></small>
+                </div>
+            </div>
 
             <hr>
 

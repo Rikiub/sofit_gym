@@ -64,6 +64,7 @@ Alpine.data("querySelect", ({
         setSelected(item) {
             this.search = null;
             this.selected = item[itemKey];
+            this.$dispatch("item-selected", item);
             this.hidePopover();
         },
         

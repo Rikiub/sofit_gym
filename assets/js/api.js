@@ -44,7 +44,7 @@ export async function fetchApi(params = "", options = {}) {
             errorBody = await response.clone().text();
         }
 
-        if (self.DEBUG === true) console.error(errorBody);
+        if (self.DEBUG) console.error(errorBody);
 
         // Si es un objeto (JSON) se esparce, si es un string se guarda en una propiedad 'message'
         const errorCause = typeof errorBody === "object" 

@@ -60,6 +60,19 @@ export function modalFormComponent({
 
         init() {
             this.modal = bootstrap.Modal.getOrCreateInstance(this.$refs.modal);
+
+            window.addEventListener("form-error", (event) => {
+                const { id = null, key = "", message = null } = event.detail;
+                if (id !== componentId) return;
+
+                if (message) {
+                    // Set the error message reactively
+                    this.errors[key] = message;
+                } else {
+                    // Clear the error message reactively
+                    delete this.errors[key];
+                }
+            });
         },
         openModal() {
             this.modal.show();
@@ -104,6 +117,18 @@ export function modalFormComponent({
                 }
             }
 
+            /** Validar Eventos de Validación */
+            this.$dispatch("form-validate", {
+                id: componentId,
+                setValid: (errorKey) => {
+                    delete this.errors[errorKey];
+                },
+                setInvalid: (errorKey, message) => {
+                    this.errors[errorKey] = message;
+                    valid = false;
+                },
+            });
+
             if (this.mode === "delete" || valid) {
                 this.loading = true;
                 let body = null;
@@ -125,7 +150,23 @@ export function modalFormComponent({
                         skipEmpty: true,
                         includeDisabled: true,
                     });
-                    body = { ...body, ...extraPostBody };
+
+                    /** 
+                     * Evento de serialización personalizado
+                     * Permite a otros componentes definir como pasar sus datos al body.
+                     */
+                    let customPayload = {};
+                    this.$dispatch("form-serialize", {
+                        id: componentId,
+                        merge: (data) => {
+                            customPayload = { ...customPayload, ...data };
+                        }
+                    });
+
+                    body = { ...body, ...customPayload, ...extraPostBody };
+
+                    // Mostrar datos a enviar
+                    if (self.DEBUG) console.log("BODY: ", body);
                 }
 
                 try {
@@ -145,12 +186,18 @@ export function modalFormComponent({
                 });
                 afterSubmit(this.mode);
             } else {
-                console.log("Invalid input, form submit canceled");
+                if (self.DEBUG) {
+                    // Remover keys vacias
+                    const cleanObject = (obj) => Object.fromEntries(
+                        Object.entries(obj).filter(([_, value]) => value !== "" && value !== null && value !== undefined)
+                    );
+                    console.log("Inputs invalidos: ", cleanObject(this.errors));
+                }
             }
         },
 
         async onAdd() {
-            this.clearForm();
+            this.resetForm();
             this.mode = "add";
 
             FormDataJson.fromJson(this.$refs.form, prepareAddData, {
@@ -161,7 +208,7 @@ export function modalFormComponent({
             this.openModal();
         },
         async onEdit(id) {
-            this.clearForm();
+            this.resetForm();
 
             this.mode = "edit";
             this.currentDataId = id;
@@ -172,6 +219,12 @@ export function modalFormComponent({
                 id: this.currentDataId,
             });
             data = transformEditData(data);
+
+            // Alertar a otros componentes que preparen sus datos
+            this.$dispatch("form-load", { id: this.currentId, data });
+            await this.$nextTick();
+
+            // Rellenar datos iniciales
             FormDataJson.fromJson(this.$refs.form, data, {
                 clearOthers: true,
                 includeDisabled: true,
@@ -195,6 +248,7 @@ export function modalFormComponent({
                 }
             }
 
+            this.$dispatch("form-ready");
             this.openModal();
         },
         async onDelete(id) {
@@ -232,7 +286,7 @@ export function modalFormComponent({
             input.setCustomValidity("");
             this.errors[input.name] = "";
         },
-        clearForm() {
+        resetForm() {
             this.$refs.form.reset();
 
             for (const inputName of editDisableFields) {
@@ -244,6 +298,9 @@ export function modalFormComponent({
             for (const input of this.$refs.form.elements) {
                 this.clearInputValidity(input);
             }
+
+            this.errors = {};
+            this.$dispatch("form-reset", { id: componentId });
         },
 
         // Validaciones reutilizables
