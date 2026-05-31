@@ -3,7 +3,7 @@ $title = 'Historial de mantenimientos';
 $this->layout('layout', ['title' => $title]);
 $this->pushJs('pages/equipos/equipos_mantenimiento.js');
 
-$remoteSelect = $this->fetch("querySelect", [
+$querySelect = $this->fetch("querySelect", [
     "input" => ["name" => "codigo_equipo", "required" => true],
     "columns" => [
         ["name" => "Codigo", "id" => 'codigo'],
@@ -23,7 +23,7 @@ $modalForm = $this->fetch('modalForm', [
 
         <fieldset class="row">
             <label class="text-label col">Equipo
-                {$remoteSelect}
+                {$querySelect}
                 <small x-text="errors.codigo_equipo"></small>
             </label>
 

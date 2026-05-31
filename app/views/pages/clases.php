@@ -4,7 +4,7 @@ $title = "Calendario de Clases";
 $this->layout("layout", ["title" => $title]);
 $this->pushJs("pages/clases/clases.js");
 
-$remoteSelect = $this->fetch("querySelect", [
+$querySelect = $this->fetch("querySelect", [
     "input" => ["name" => "cedula_trabajador", "required" => true],
     "columns" => [
         ["name" => "Cédula", "id" => 'cedula'],
@@ -44,7 +44,7 @@ $modalForm = $this->fetch('modalForm', [
 
             <fieldset class="row">
                 <label class="col form-label">Entrenador
-                    {$remoteSelect}
+                    {$querySelect}
                     <small class="form-text" x-text="errors.cedula_trabajador"></small>
                 </label>
                 
