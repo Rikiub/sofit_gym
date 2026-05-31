@@ -2,7 +2,7 @@
 import Alpine from "alpinejs";
 import { fetchApi } from "@/js/api.js";
 
-Alpine.data("remoteSelect", ({
+Alpine.data("querySelect", ({
     params = {},
     searchParam = "search",
     itemKey = "id",

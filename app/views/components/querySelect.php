@@ -33,7 +33,7 @@ $configJson = encodeToJson([
 $this->pushJs("components/querySelect.js");
 ?>
 
-<div x-data="remoteSelect(<?= $this->e($configJson) ?>)">
+<div x-data="querySelect(<?= $this->e($configJson) ?>)">
     <input x-model="selected" hidden <?= stringifyAttributes($input) ?>>
 
     <button
