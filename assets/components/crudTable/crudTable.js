@@ -6,7 +6,7 @@ import Alpine from "alpinejs";
  * @param {{
  * params: object,
  * columns: array<string|object>,
- * fieldMap: (item: object) => array<string|int>,
+ * fieldMap: (item: object) => array<string|number>,
  * gridOptions: object?,
  * id?: string,
  * }}

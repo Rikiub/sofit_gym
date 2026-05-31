@@ -4,6 +4,21 @@ $title = "Calendario de Clases";
 $this->layout("layout", ["title" => $title]);
 $this->pushJs("pages/clases/clases.js");
 
+$remoteSelect = $this->fetch("querySelect", [
+    "input" => ["name" => "cedula_trabajador", "required" => true],
+    "columns" => [
+        ["name" => "Cédula", "id" => 'cedula'],
+        ["name" => "Nombre", "id" => "nombre_completo", "computed" => '`${item.nombre} ${item.apellido}`'],
+        ["name" => "Rol", "id" => 'rol']
+    ],
+    "params" => [
+        "page" => "trabajadores",
+        "action" => "query",
+        "id_rol" => 2,
+    ],
+    "itemKey" => "cedula",
+]);
+
 $modalForm = $this->fetch('modalForm', [
     'alpineComponent' => 'modalForm',
     'formHtml' => <<<HTML
@@ -29,7 +44,7 @@ $modalForm = $this->fetch('modalForm', [
 
             <fieldset class="row">
                 <label class="col form-label">Entrenador
-                    {$this->fetch("personaSelect", ["name" => "cedula_trabajador", "required" => true])}
+                    {$remoteSelect}
                     <small class="form-text" x-text="errors.cedula_trabajador"></small>
                 </label>
                 

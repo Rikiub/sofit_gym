@@ -1,0 +1,33 @@
+<?php
+
+/**
+ * Funciones globales cargadas por composer.
+ */
+
+namespace App\Helpers;
+
+/** Convierte un array en una lista de atributos HTML */
+function stringifyAttributes(array $inputAttributes): string
+{
+    $htmlParts = [];
+
+    foreach ($inputAttributes as $key => $value) {
+        // Handle boolean attributes (true means just render the key, false means skip it)
+        if ($value === true) {
+            $htmlParts[] = $key;
+        } elseif ($value !== false && $value !== null) {
+            // Securely escape the value for HTML attributes
+            $escapedValue = htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+            $htmlParts[] = sprintf('%s="%s"', $key, $escapedValue);
+        }
+    }
+
+    // Join them with a single space
+    return implode(' ', $htmlParts);
+}
+
+/** Convierte cualquier dato y lo codifica en JSON escapeandolo */
+function encodeToJson(mixed $js): string
+{
+    return json_encode($js, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
+}

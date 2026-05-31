@@ -26,28 +26,16 @@ Alpine.data("crudMantenimiento", () => (
             action: "query",
         },
         columns: [
-            {
-                name: "id",
-                hidden: true,
-            },
-            "Codigo Equipo",
+            { name: "id", hidden: true },
+            { name: "Codigo Equipo",  id: "codigo_equipo" },
             {
                 name: "Fecha",
                 formatter: (cell) => new Date(cell).toLocaleDateString("en-US")
             },
             "Tipo",
-            "Descripción",
-            "Costo",
+            { name: "Descripción", id: "descripcion" },
+            { name: "Costo", formatter: (cell) => cell ? `\$${cell}` : ""},
             "Tecnico",
-        ],
-        fieldMap: (item) => [
-            item.id,
-            item.codigo_equipo,
-            item.fecha,
-            item.tipo,
-            item.descripcion,
-            item.costo,
-            item.tecnico,
         ],
     })))
 
@@ -61,6 +49,9 @@ Alpine.data("modalMantenimiento", () => (
             onDelete: "delete",
         },
         elementName: "Mantenimiento",
+        prepareAddData: {
+            fecha: toIsoDate(new Date()),
+        },
         transformEditData: (item) => {
             item.fecha = toIsoDate(item.fecha);
             return item;
