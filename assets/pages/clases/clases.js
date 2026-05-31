@@ -1,6 +1,6 @@
 import Alpine from "alpinejs";
-import { modalFormComponent, openModal } from "@/components/modalForm/modalForm.js";
-import { calendarComponent } from "@/components/calendar/calendar.js";
+import { modalFormComponent, openModal } from "@/components/modalForm.js";
+import { calendarComponent } from "@/components/calendar.js";
 import { fetchApi } from "@/js/api.js";
 import { toIsoDateTime } from "@/js/dates.js";
 import dayjs from "dayjs";

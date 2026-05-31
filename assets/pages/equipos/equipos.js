@@ -1,7 +1,7 @@
 import Alpine from "alpinejs";
 import { fetchApi } from "@/js/api.js";
-import { crudTableComponent } from "@/components/crudTable/crudTable.js";
-import { modalFormComponent } from "@/components/modalForm/modalForm.js";
+import { crudTableComponent } from "@/components/crudTable.js";
+import { modalFormComponent } from "@/components/modalForm.js";
 
 Alpine.data("crudEquipos", () => (
     crudTableComponent({

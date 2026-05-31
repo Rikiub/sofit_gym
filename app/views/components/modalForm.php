@@ -2,7 +2,7 @@
 $formHtml ??= null;
 $alpineComponent ??= 'modalForm';
 
-$this->pushJs('components/modalForm/modalForm.js');
+$this->pushJs('components/modalForm.js');
 ?>
 
 <div

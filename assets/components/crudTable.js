@@ -1,5 +1,5 @@
 import { createGrid } from "@/js/grid.js";
-import { openModal } from "@/components/modalForm/modalForm.js";
+import { openModal } from "@/components/modalForm.js";
 import Alpine from "alpinejs";
 
 /**

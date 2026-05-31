@@ -6,7 +6,7 @@ $this->pushJs("lib/fullcalendar/index.global.min.js", false);
 $this->pushJs("lib/fullcalendar/bootstrap5/index.global.min.js", false);
 $this->pushJs("lib/fullcalendar/core/locales/es.global.min.js", false);
 
-$this->pushJs("components/calendar/calendar.js");
+$this->pushJs("components/calendar.js");
 ?>
 
 <div

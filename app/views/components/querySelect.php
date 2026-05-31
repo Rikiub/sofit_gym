@@ -30,7 +30,7 @@ $configJson = encodeToJson([
     "itemKey" => $itemKey ??= "id", // Clave primaria para identificar cada item
 ]);
 
-$this->pushJs("components/remoteSelect.js");
+$this->pushJs("components/querySelect.js");
 ?>
 
 <div x-data="remoteSelect(<?= $this->e($configJson) ?>)">
