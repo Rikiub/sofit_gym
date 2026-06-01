@@ -155,8 +155,10 @@ class ClasesGrupalesModel extends BaseModel
         );
         $this->syncClientes($clase->id_clase, $clase->clientes);
 
+        $clase = $this->find($clase->id_clase);
         $this->pdo->commit();
-        return $this->find($clase->id_clase);
+
+        return $clase;
     }
 
     public function delete(int $id): void
