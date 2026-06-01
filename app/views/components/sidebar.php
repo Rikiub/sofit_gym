@@ -111,9 +111,8 @@
 				<i class="fas fa-chevron-down toggle-icon"></i>
 			</summary>
 			<div class="group-items">
-				<a href="seguridad.php"><i class="fas fa-lock"></i> <span>Seguridad</span></a>
-				<a href="roles_permisos.php"><i class="fas fa-users-cog"></i> <span>Roles y permisos</span></a>
-				<a href="bitacora.php"><i class="fas fa-history"></i> <span>Bitácora</span></a>
+				<a href="?page=usuarios"><i class="fas fa-lock"></i> <span>Usuarios y permisos</span></a>
+				<a href="?page=bitacora"><i class="fas fa-history"></i> <span>Bitácora</span></a>
 			</div>
 		</details>
 
@@ -123,15 +122,15 @@
 				<i class="fas fa-chevron-down toggle-icon"></i>
 			</summary>
 			<div class="group-items">
-				<a href="reportes.php"><i class="fas fa-chart-bar"></i> <span>Reportes estadísticos</span></a>
-				<a href="mantenimiento_bd.php"><i class="fas fa-database"></i> <span>Mantenimiento de BD</span></a>
-				<a href="ayuda.php"><i class="fas fa-question-circle"></i> <span>Manual de usuario</span></a>
+				<a href="?page=reportes"><i class="fas fa-chart-bar"></i> <span>Reportes estadísticos</span></a>
+				<a href="?page=mantenimiento_sistema"><i class="fas fa-database"></i> <span>Mantenimiento del sistema</span></a>
+				<a href="?page=ayuda"><i class="fas fa-question-circle"></i> <span>Manual de usuario</span></a>
 			</div>
 		</details>
 	</nav>
 
-	<div class="sidebar-footer">
-		<i class="fas fa-cog"></i> <span>Soporte y configuración</span>
+	<div class="sidebar-footer text-center">
+		<span>SOFIT GYM&copy;</span>
 	</div>
 </aside>
 
