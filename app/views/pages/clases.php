@@ -37,17 +37,28 @@ $modalForm = $this->fetch('modalForm', [
             <input hidden name="id_clase">
 
             <fieldset class="row">
-                <label class="col form-label">Nombre de la clase
-                    <input class="form-control" required name="nombre" type="text" 
-                        @input.debounce="checkValidity(\$el)">
+                <label class="col">
+                    <span class="form-label">Nombre de la clase</span>
+                    <input
+                        @input.debounce="checkValidity(\$el)"
+                        class="form-control"
+                        name="nombre"
+                        type="text" 
+                        required
+                    >
                     <small class="form-text" x-text="errors.nombre"></small>
                 </label>
             </fieldset>
 
             <fieldset class="row">
-                <label class="col form-label">Descripción
-                    <textarea class="form-control" name="descripcion" rows="2" 
-                            @input.debounce="checkValidity(\$el)"></textarea>
+                <label class="col">
+                    <span class="form-label">Descripción</span>
+                    <textarea
+                        @input.debounce="checkValidity(\$el)"
+                        class="form-control"
+                        name="descripcion"
+                        rows="2" 
+                    ></textarea>
                     <small class="form-text" x-text="errors.descripcion"></small>
                 </label>
             </fieldset>
@@ -55,7 +66,8 @@ $modalForm = $this->fetch('modalForm', [
             <hr>
 
             <fieldset class="row">
-                <label class="col form-label">Entrenador
+                <label class="col">
+                    <span class="form-label">Entrenador</span>
                     {$selectTrabajadores}
                     <small class="form-text" x-text="errors.cedula_trabajador"></small>
                 </label>
@@ -71,24 +83,26 @@ $modalForm = $this->fetch('modalForm', [
                 @form-serialize.window="serialize(\$event.detail)"
             >
                 <fieldset class="row">
-                    <label class="form-label col">Cupos Ocupados
+                    <label class="col">
+                        <span class="form-label">Cupos Ocupados</span>
                         <input class="form-control" name="cupos_ocupados" :value="cupos_ocupados" placeholder="0" readonly>
                     </label>
 
-                    <label class="form-label col">Capacidad Maxima
+                    <label class="col">
+                        <span class="form-label">Capacidad Maxima</span>
                         <input class="form-control" name="capacidad_maxima" required type="number" placeholder="1" min="1" @input="checkValidity(\$el)">
                         <small class="form-text" x-text="errors.capacidad_maxima"></small>
                     </label>
                 </fieldset>
 
                 <div>
-                    <label class="form-label">Lista de Clientes</label>
+                    <span class="form-label">Lista de Clientes</span>
 
                     <div @item-selected="handleItemSelected(\$event.detail)">
                         {$selectClientes}
                     </div>
 
-                    <ul class="list-group mb-3">
+                    <ul class="list-group">
                         <template x-for="(cliente, index) in clientes" :key="cliente.cedula">
                             <li class="list-group-item d-flex justify-content-between align-items-center view-fade-in">
                                 <div>
@@ -116,21 +130,34 @@ $modalForm = $this->fetch('modalForm', [
             <hr>
 
             <fieldset class="row">
-                <label class="col form-label">Fecha y hora de inicio
-                    <input class="form-control" required name="fecha_inicio" type="datetime-local" 
-                        @input.debounce="checkValidity(\$el)">
+                <label class="col">
+                    <span class="form-label">Fecha y hora de inicio</span>
+                    <input
+                        @input.debounce="checkValidity(\$el)"
+                        class="form-control"
+                        type="datetime-local" 
+                        name="fecha_inicio"
+                        required
+                    >
                     <small class="form-text" x-text="errors.fecha_inicio"></small>
                 </label>
 
-                <label class="col form-label">Fecha y hora de fin
-                    <input class="form-control" required name="fecha_fin" type="datetime-local" 
-                        @input.debounce="checkValidity(\$el)">
+                <label class="col">
+                    <span class="form-label">Fecha y hora de fin</span>
+                    <input
+                        @input.debounce="checkValidity(\$el)"
+                        class="form-control"
+                        name="fecha_fin"
+                        type="datetime-local" 
+                        required
+                    >
                     <small class="form-text" x-text="errors.fecha_fin"></small>
                 </label>
             </fieldset>
 
             <fieldset class="row">
-                <label class="col form-label">Estado
+                <label class="col">
+                    <span class="form-label">Estado</span>
                     <select class="form-control" name="estado" required @change="checkValidity(\$el)">
                         <option value="Programado">Programado</option>
                         <option value="En curso">En curso</option>
