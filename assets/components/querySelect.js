@@ -1,4 +1,3 @@
-// public/components/remoteSelect/remoteSelect.js
 import Alpine from "alpinejs";
 import { fetchApi } from "@/js/api.js";
 

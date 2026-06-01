@@ -1,7 +1,7 @@
 <?php
 $this->pushJs("pages/productos/productos.js");
 
-$this->layout("layout", ["title" => "Gestion de Productos"]);
+$this->layout("layout", ["title" => "Inventario de Productos"]);
 ?>
 
 <!-- ==================== ESTILOS ADICIONALES ==================== -->

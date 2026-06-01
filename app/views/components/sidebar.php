@@ -47,84 +47,85 @@
 
 		<a href="?page=inicio" class="active"><i class="fas fa-home"></i> <span>Inicio</span></a>
 
+		<hr>
+
 		<a href="?page=clientes" class="nav-single">
-			<i class="fas fa-id-card"></i> <span>Gestionar Clientes e Inscripciones</span>
+			<i class="fas fa-id-card"></i> <span>Clientes</span>
 		</a>
 
-		<!-- Multi‑item groups remain as <details> -->
-		<details class="nav-group">
-			<summary class="group-title">
-				<i class="fas fa-chalkboard-user"></i> <span>Gestionar Trabajadores y Clases</span>
-				<i class="fas fa-chevron-down toggle-icon"></i>
-			</summary>
-			<div class="group-items">
-				<a href="?page=trabajadores"><i class="fas fa-user-tie"></i> <span>Registro de trabajadores</span></a>
-				<a href="?page=clases"><i class="fas fa-user-check"></i> <span>Horarios de clases</span></a>
-			</div>
-		</details>
+		<a href="?page=trabajadores" class="nav-single">
+			<i class="fas fa-id-card"></i> <span>Trabajadores</span>
+		</a>
+
+		<hr>
 
 		<a href="?page=facturacion" class="nav-single">
-			<i class="fas fa-coins"></i> <span>Gestionar Facturación y Control de Pagos</span>
+			<i class="fas fa-coins"></i> <span>Facturación y Control de Pagos</span>
 		</a>
 
 		<a href="?page=asistencia" class="nav-single">
-			<i class="fas fa-fingerprint"></i> <span>Controlar Asistencia</span>
+			<i class="fas fa-fingerprint"></i> <span>Control de Asistencia</span>
+		</a>
+
+		<a href="?page=clases" class="nav-single">
+			<i class="fas fa-calendar"></i> <span>Horarios de clases</span>
 		</a>
 
 		<details class="nav-group">
 			<summary class="group-title">
-				<i class="fas fa-microchip"></i> <span>Gestionar Equipos y Maquinaria</span>
+				<i class="fas fa-dumbbell"></i> <span>Rutinas de Entrenamiento</span>
 				<i class="fas fa-chevron-down toggle-icon"></i>
 			</summary>
 			<div class="group-items">
-				<a href="?page=equipos"><i class="fas fa-tools"></i> <span>Registro de equipos</span></a>
+				<a href="?page=rutinas&action=index"><i class="fas fa-pen-ruler"></i> <span>Planes de entrenamiento</span></a>
+				<a href="?page=rutinas&action=asignadas"><i class="fas fa-user-check"></i> <span>Asignación de rutinas</span></a>
+			</div>
+		</details>
+
+		<hr>
+
+		<details class="nav-group">
+			<summary class="group-title">
+				<i class="fas fa-microchip"></i> <span>Equipos y Maquinaria</span>
+				<i class="fas fa-chevron-down toggle-icon"></i>
+			</summary>
+			<div class="group-items">
+				<a href="?page=equipos"><i class="fas fa-tools"></i> <span>Inventario de equipos</span></a>
 				<a href="?page=equiposMantenimiento"><i class="fas fa-history"></i> <span>Historial de mantenimientos</span></a>
 			</div>
 		</details>
 
 		<a href="?page=productos" class="nav-single">
-			<i class="fas fa-boxes"></i> <span>Gestionar Productos</span>
+			<i class="fas fa-boxes"></i> <span>Inventario de Productos</span>
 		</a>
 
-		<details class="nav-group">
-			<summary class="group-title">
-				<i class="fas fa-dumbbell"></i> <span>Gestionar Rutinas de Entrenamiento</span>
-				<i class="fas fa-chevron-down toggle-icon"></i>
-			</summary>
-			<div class="group-items">
-				<a href="?page=rutinas&action=index"><i class="fas fa-pen-ruler"></i> <span>Diseñar planes de entrenamiento</span></a>
-				<a href="?page=rutinas&action=asignadas"><i class="fas fa-user-check"></i> <span>Asignar rutinas a clientes</span></a>
-			</div>
-		</details>
-
 		<a href="?page=asistente" class="nav-single">
-			<i class="fas fa-robot"></i> <span>Consultar Asistente de Entrenamiento</span>
+			<i class="fas fa-robot"></i> <span>Asistente de Entrenamiento</span>
 		</a>
 
 		<div class="sidebar-divider" role="separator"></div>
 
 		<details class="nav-group">
 			<summary class="group-title">
-				<i class="fas fa-shield-alt"></i> <span>Gestión de Auditoría y Seguridad</span>
+				<i class="fas fa-shield-alt"></i> <span>Auditoría y seguridad</span>
 				<i class="fas fa-chevron-down toggle-icon"></i>
 			</summary>
 			<div class="group-items">
-				<a href="seguridad.php"><i class="fas fa-lock"></i> <span>Seguridad (Login/MD5/Captcha)</span></a>
-				<a href="roles_permisos.php"><i class="fas fa-users-cog"></i> <span>Roles y Permisos</span></a>
-				<a href="bitacora.php"><i class="fas fa-history"></i> <span>Bitácora del Sistema</span></a>
+				<a href="seguridad.php"><i class="fas fa-lock"></i> <span>Seguridad</span></a>
+				<a href="roles_permisos.php"><i class="fas fa-users-cog"></i> <span>Roles y permisos</span></a>
+				<a href="bitacora.php"><i class="fas fa-history"></i> <span>Bitácora</span></a>
 			</div>
 		</details>
 
 		<details class="nav-group">
 			<summary class="group-title">
-				<i class="fas fa-database"></i> <span>Gestión de Soporte y Datos</span>
+				<i class="fas fa-database"></i> <span>Soporte y Datos</span>
 				<i class="fas fa-chevron-down toggle-icon"></i>
 			</summary>
 			<div class="group-items">
-				<a href="reportes.php"><i class="fas fa-chart-bar"></i> <span>Reportes Estadísticos</span></a>
+				<a href="reportes.php"><i class="fas fa-chart-bar"></i> <span>Reportes estadísticos</span></a>
 				<a href="mantenimiento_bd.php"><i class="fas fa-database"></i> <span>Mantenimiento de BD</span></a>
-				<a href="ayuda.php"><i class="fas fa-question-circle"></i> <span>Ayuda Interactiva</span></a>
-				<a href="componente_inteligente.php"><i class="fas fa-brain"></i> <span>Componente Inteligente (IO/PERT)</span></a>
+				<a href="ayuda.php"><i class="fas fa-question-circle"></i> <span>Manual de usuario</span></a>
 			</div>
 		</details>
 	</nav>

@@ -8,7 +8,7 @@ $this->layout('layout', ['title' => 'Asistente']);
     <div class="card shadow-lg border-0 rounded-4 overflow-hidden" style="width: 100%; height: 600px;">
 
         <!-- Header -->
-        <div class="card-header bg-primary text-white d-flex align-items-center gap-3 px-3 py-2 border-0">
+        <div class="card-header text-white d-flex align-items-center gap-3 px-3 py-2 border-0" style="background-color: var(--primary-bg);">
             <div class="rounded-circle bg-white bg-opacity-25 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
                 <i class="fa-solid fa-robot fs-5"></i>
             </div>

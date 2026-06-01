@@ -6,7 +6,7 @@ $this->layout("layout", ["title" => "Gestion de Rutinas"]);
 
 <div class="container">
     <div class="header">
-        <h1><i class="fas fa-dumbbell"></i> Gestión de Rutinas Base</h1>
+        <h1><i class="fas fa-dumbbell"></i> Planes de Entrenamiento</h1>
     </div>
 
     <?php if (!empty($mensaje)): ?>

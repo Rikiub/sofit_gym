@@ -1,5 +1,5 @@
 <?php
-$title = 'Gestion de equipos';
+$title = 'Inventario de equipos';
 
 $this->layout('layout', ['title' => $title]);
 $this->pushJs('pages/equipos/equipos.js');
@@ -48,6 +48,7 @@ $modalForm = $this->fetch('modalForm', [
 
 <?= $this->insert('card', [
     'title' => $title,
+    'icon' => 'fa-tools',
     'body' => <<<HTML
             <main>
                 {$this->fetch('crudTable', ['xData' => 'crudEquipos'])}

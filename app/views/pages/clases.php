@@ -1,5 +1,5 @@
 <?php
-$title = "Calendario de Clases";
+$title = "Horarios de Clases";
 
 $this->layout("layout", ["title" => $title]);
 $this->pushJs("pages/clases/clases.js");
@@ -173,6 +173,7 @@ $modalForm = $this->fetch('modalForm', [
 
 <?= $this->insert('card', [
     "class" => "main",
+    "icon" => "fa-calendar",
     'title' => $title,
     'body' => <<<HTML
         <main class="px-1 mb-5">

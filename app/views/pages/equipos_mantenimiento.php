@@ -91,6 +91,7 @@ $modalForm = $this->fetch('modalForm', [
 
 <div x-data="mainData">
     <?= $this->insert('card', [
+        'icon' => 'fa-history',
         'title' => $title,
         'body' => <<<HTML
                 <main>
